@@ -106,6 +106,40 @@ val navigator = rememberNavigatorByKey("Hello") { key ->
 }
 ```
 
+##### Key State changes
+
+The key of the currently displayed `@Composable` can be accessed by the `ComposeNavigator.currentKey` property:
+
+```kotlin
+navigator.currentKey
+```
+
+To listen to changes to the current key, use the `ComposeNavigator.keyChanges` property along with
+the `Flow<T>.collectAsState` function:
+
+```kotlin
+val currentKey by navigator.keyChanges.collectAsState(initial = currentKey)
+```
+
+For convenience, there is an extension function that performs the above logic: `ComposeNavigator.currentKeyAsState()`
+This is especially useful when a `@Composable` needs to be updated when the key changes, for instance in a Bottom
+Navigation component:
+
+```kotlin
+val currentKey by navigator.currentKeyAsState()
+
+BottomNavigation {
+    listOf(ScreenIntent.ColorList, ScreenIntent.Palette).forEach {
+        BottomNavigationItem(
+            selected = currentKey == it,
+            onClick = {
+                navigator.goTo(it)
+            }
+        )
+    }
+}
+```
+
 #### Android
 
 To create a `Navigator` use one the provided `navigator()` functions. For instance:
