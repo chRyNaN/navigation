@@ -90,6 +90,22 @@ navigator.goTo(HomeNavigationIntent.Farewell)
 navigator.goBack()
 ```
 
+##### Nested navigation
+
+Within the scope of the content blocks, you can access the `navigator` property which can be used for nested navigation:
+
+```kotlin
+val navigator = rememberNavigatorByKey("Hello") { key ->
+    when (key) {
+        "Greeting" -> Button("Hello") {
+            navigator.goBack() // Safe access to the navigator property within this scope.
+        }
+        "Farewell" -> Text("Good-bye")
+        else -> Text("Unexpected Key: $key")
+    }
+}
+```
+
 #### Android
 
 To create a `Navigator` use one the provided `navigator()` functions. For instance:
