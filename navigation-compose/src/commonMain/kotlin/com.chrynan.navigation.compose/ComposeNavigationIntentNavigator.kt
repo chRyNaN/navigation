@@ -9,27 +9,33 @@ import kotlinx.coroutines.flow.filterNotNull
 @ExperimentalNavigationApi
 interface ComposeNavigationIntentStackNavigatorByKey<I : NavigationIntent> :
     ComposeStackNavigatorByKey<I>,
-    NavigationEventHandler<I, ComposeNavigationScope>,
+    NavigationEventHandler<I, ComposeNavigationIntentScope<I>>,
     NavigationEventNavigator<I> {
 
-    override fun ComposeNavigationScope.onGoBack() {
+    override fun ComposeNavigationIntentScope<I>.onGoBack() {
         goBack()
     }
 
-    override fun ComposeNavigationScope.onGoUp() = onGoBack()
+    override fun ComposeNavigationIntentScope<I>.onGoUp() = onGoBack()
 
-    override fun ComposeNavigationScope.onGoTo(intent: I) = goTo(key = intent)
+    override fun ComposeNavigationIntentScope<I>.onGoTo(intent: I) = goTo(key = intent)
 
     override fun navigate(event: NavigationEvent<I>) {
-        ComposeNavigationScope.onNavigate(event = event)
+        val scope = object : ComposeNavigationIntentScope<I> {
+
+            override val navigator: ComposeNavigationIntentStackNavigatorByKey<I>
+                get() = this@ComposeNavigationIntentStackNavigatorByKey
+        }
+
+        scope.onNavigate(event = event)
     }
 }
 
 @ExperimentalNavigationApi
 class ComposeNavigationIntentNavigatorByKeyViewModel<I : NavigationIntent> internal constructor(
     override val initialKey: I,
-    override val content: @Composable (key: I) -> Unit
-) : BaseComposeNavigatorByKeyViewModel<I>(),
+    override val content: @Composable ComposeNavigationIntentScope<I>.(key: I) -> Unit
+) : BaseComposeNavigatorByKeyViewModel<I, ComposeNavigationIntentScope<I>>(),
     ComposeNavigationIntentStackNavigatorByKey<I> {
 
     override val keyChanges: Flow<I>

@@ -14,13 +14,13 @@ abstract class BaseComposeNavigatorByContentViewModel<T> : ViewModel(),
     ComposeStackNavigatorByContent<T> {
 
     @Composable
-    internal abstract fun content(key: T)
+    internal abstract fun ComposeNavigationContentScope<T>.content(key: T)
 }
 
 @ExperimentalNavigationApi
 class ComposeNavigatorByContentViewModel<T> internal constructor(
     override val initialKey: T,
-    private val initialContent: @Composable () -> Unit
+    private val initialContent: @Composable ComposeNavigationContentScope<T>.() -> Unit
 ) : BaseComposeNavigatorByContentViewModel<T>() {
 
     override val keyChanges: Flow<T>
@@ -34,14 +34,14 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
 
     private val mutableKeyFlow = MutableStateFlow<T?>(value = null)
 
-    private val contents = mutableMapOf<T, (@Composable () -> Unit)>()
+    private val contents = mutableMapOf<T, (@Composable ComposeNavigationContentScope<T>.() -> Unit)>()
     private val keyStack = mutableListOf<T>()
 
     @Composable
     override fun goTo(
         key: T,
         strategy: NavStackDuplicateContentStrategy,
-        content: @Composable () -> Unit
+        content: @Composable ComposeNavigationContentScope<T>.() -> Unit
     ) {
         if (contents.containsKey(key) && strategy == NavStackDuplicateContentStrategy.CLEAR_STACK) {
             // Go Back to the content with the provided key using the updated content
@@ -80,19 +80,19 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
     override fun canGoBack(): Boolean = contents.isNotEmpty() && keyStack.isNotEmpty()
 
     @Composable
-    override fun content(key: T) {
+    override fun ComposeNavigationContentScope<T>.content(key: T) {
         if (contents.isEmpty()) {
             addToStack(key = key, content = initialContent)
 
             isInitialized = true
         }
 
-        contents[key]?.invoke()
+        contents[key]?.invoke(this)
     }
 
     private fun addToStack(
         key: T,
-        content: @Composable () -> Unit
+        content: @Composable ComposeNavigationContentScope<T>.() -> Unit
     ) {
         contents[key] = content
         keyStack.add(key)

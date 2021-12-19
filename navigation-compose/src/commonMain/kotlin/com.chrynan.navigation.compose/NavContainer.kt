@@ -3,6 +3,7 @@
 package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
+import com.chrynan.navigation.NavigationIntent
 
 @Composable
 @ExperimentalNavigationApi
@@ -10,7 +11,10 @@ internal expect fun <T> InternalNavContainer(navigator: BaseComposeNavigatorByCo
 
 @Composable
 @ExperimentalNavigationApi
-internal expect fun <T> InternalNavContainer(navigator: BaseComposeNavigatorByKeyViewModel<T>)
+internal expect fun <T, S : ComposeNavigationKeyScope<T>> InternalNavContainer(
+    navigator: BaseComposeNavigatorByKeyViewModel<T, S>,
+    scope: S
+)
 
 /**
  * Displays the content from a [navigator] in this [Composable] UI Container.
@@ -33,7 +37,7 @@ internal expect fun <T> InternalNavContainer(navigator: BaseComposeNavigatorByKe
  */
 @Composable
 @ExperimentalNavigationApi
-fun <T> NavContainer(navigator: BaseComposeNavigatorByContentViewModel<T>) {
+fun <T> NavContainer(navigator: ComposeNavigatorByContentViewModel<T>) {
     InternalNavContainer(navigator = navigator)
 }
 
@@ -61,10 +65,51 @@ fun <T> NavContainer(navigator: BaseComposeNavigatorByContentViewModel<T>) {
  * ```
  *
  * @see [rememberNavigatorByKey]
+ */
+@Composable
+@ExperimentalNavigationApi
+fun <T> NavContainer(navigator: ComposeNavigatorByKeyViewModel<T>) {
+    val scope = object : ComposeNavigationKeyScope<T> {
+
+        override val navigator: ComposeStackNavigatorByKey<T>
+            get() = navigator
+    }
+
+    InternalNavContainer(navigator = navigator, scope = scope)
+}
+
+/**
+ * Displays the content from a [navigator] in this [Composable] UI Container.
+ *
+ * When the [navigator] changes its content, even outside this [NavContainer], it will be reflected within this UI
+ * container.
+ *
+ * Example usage:
+ * ```
+ * val navigator = rememberNavigatorByKey(HomeNavigationIntent.Greeting) { navigationIntent ->
+ *     when(navigationIntent) {
+ *         HomeNavigationIntent.Greeting -> Text("Hello")
+ *         HomeNavigationIntent.Farewell -> Text("Good-bye")
+ *     }
+ * }
+ *
+ * // The NavContainer will start by displaying the initial content, which in this case is "Hello"
+ * NavContainer(navigator)
+ *
+ * // The above NavContainer will display "Good Bye" after the following call:
+ * navigator.goTo(HomeNavigationIntent.Farewell)
+ * ```
+ *
  * @see [rememberNavigatorByIntent]
  */
 @Composable
 @ExperimentalNavigationApi
-fun <T> NavContainer(navigator: BaseComposeNavigatorByKeyViewModel<T>) {
-    InternalNavContainer(navigator = navigator)
+fun <T : NavigationIntent> NavContainer(navigator: ComposeNavigationIntentNavigatorByKeyViewModel<T>) {
+    val scope = object : ComposeNavigationIntentScope<T> {
+
+        override val navigator: ComposeNavigationIntentStackNavigatorByKey<T>
+            get() = navigator
+    }
+
+    InternalNavContainer(navigator = navigator, scope = scope)
 }

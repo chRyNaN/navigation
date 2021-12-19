@@ -12,19 +12,29 @@ internal actual fun <T> InternalNavContainer(
 ) {
     val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)
 
+    val scope = object : ComposeNavigationContentScope<T> {
+
+        override val navigator: ComposeStackNavigatorByContent<T> = navigator
+    }
+
     Box {
-        navigator.content(contentKey)
+        navigator.apply {
+            scope.content(contentKey)
+        }
     }
 }
 
 @Composable
 @ExperimentalNavigationApi
-internal actual fun <T> InternalNavContainer(
-    navigator: BaseComposeNavigatorByKeyViewModel<T>
+internal actual fun <T, S : ComposeNavigationKeyScope<T>> InternalNavContainer(
+    navigator: BaseComposeNavigatorByKeyViewModel<T, S>,
+    scope: S
 ) {
     val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)
 
     Box {
-        navigator.content(contentKey)
+        navigator.apply {
+            scope.content(contentKey)
+        }
     }
 }

@@ -26,7 +26,7 @@ interface ComposeNavigatorByContent<T> : ComposeNavigator<T> {
     fun goTo(
         key: T,
         strategy: NavStackDuplicateContentStrategy,
-        content: @Composable () -> Unit
+        content: @Composable ComposeNavigationContentScope<T>.() -> Unit
     )
 }
 
@@ -34,7 +34,7 @@ interface ComposeNavigatorByContent<T> : ComposeNavigator<T> {
 @Suppress("unused")
 @ExperimentalNavigationApi
 @Composable
-fun <T> ComposeNavigatorByContent<T>.goTo(key: T, content: @Composable () -> Unit) =
+fun <T> ComposeNavigatorByContent<T>.goTo(key: T, content: @Composable ComposeNavigationContentScope<T>.() -> Unit) =
     goTo(key = key, strategy = NavStackDuplicateContentStrategy.CLEAR_STACK, content = content)
 
 @ExperimentalNavigationApi

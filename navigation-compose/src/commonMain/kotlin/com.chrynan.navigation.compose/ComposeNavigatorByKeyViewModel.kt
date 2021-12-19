@@ -8,19 +8,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 
 @ExperimentalNavigationApi
-abstract class BaseComposeNavigatorByKeyViewModel<T> : ViewModel(),
+abstract class BaseComposeNavigatorByKeyViewModel<T, S : ComposeNavigationKeyScope<T>> : ViewModel(),
     ComposeNavigator<T>,
     ComposeNavigatorByKey<T>,
     ComposeStackNavigatorByKey<T> {
 
-    internal abstract val content: @Composable (key: T) -> Unit
+    internal abstract val content: @Composable S.(key: T) -> Unit
 }
 
 @ExperimentalNavigationApi
 class ComposeNavigatorByKeyViewModel<T> internal constructor(
     override val initialKey: T,
-    override val content: @Composable (key: T) -> Unit
-) : BaseComposeNavigatorByKeyViewModel<T>() {
+    override val content: @Composable ComposeNavigationKeyScope<T>.(key: T) -> Unit
+) : BaseComposeNavigatorByKeyViewModel<T, ComposeNavigationKeyScope<T>>() {
 
     override val keyChanges: Flow<T>
         get() = mutableKeyFlow.filterNotNull()

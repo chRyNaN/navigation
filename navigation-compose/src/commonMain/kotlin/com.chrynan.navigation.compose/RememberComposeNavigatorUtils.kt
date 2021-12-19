@@ -34,7 +34,7 @@ import com.chrynan.navigation.Navigator
 @Composable
 fun <T> rememberNavigatorByContent(
     initialKey: T,
-    initialContent: @Composable () -> Unit
+    initialContent: @Composable ComposeNavigationContentScope<T>.() -> Unit
 ): ComposeNavigatorByContentViewModel<T> = remember {
     ComposeNavigatorByContentViewModel(
         initialKey = initialKey,
@@ -74,7 +74,7 @@ fun <T> rememberNavigatorByContent(
 @Composable
 fun <T> rememberNavigatorByKey(
     initialKey: T,
-    content: @Composable (key: T) -> Unit
+    content: @Composable ComposeNavigationKeyScope<T>.(key: T) -> Unit
 ): ComposeNavigatorByKeyViewModel<T> = remember {
     ComposeNavigatorByKeyViewModel(
         initialKey = initialKey,
@@ -114,7 +114,7 @@ fun <T> rememberNavigatorByKey(
 @Composable
 fun <I : NavigationIntent> rememberNavigatorByIntent(
     initialIntent: I,
-    content: @Composable (intent: I) -> Unit
+    content: @Composable ComposeNavigationIntentScope<I>.(intent: I) -> Unit
 ): ComposeNavigationIntentNavigatorByKeyViewModel<I> = remember {
     ComposeNavigationIntentNavigatorByKeyViewModel(
         initialKey = initialIntent,
