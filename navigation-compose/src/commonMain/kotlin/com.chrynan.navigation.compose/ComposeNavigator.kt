@@ -12,7 +12,7 @@ interface ComposeNavigator<T> : Navigator {
 
     val initialKey: T
 
-    val currentKey: T?
+    val currentKey: T
 
     val keyChanges: Flow<T>
 

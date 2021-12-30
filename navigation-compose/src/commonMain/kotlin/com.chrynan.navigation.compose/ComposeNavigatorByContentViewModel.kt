@@ -26,15 +26,17 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
     override val keyChanges: Flow<T>
         get() = mutableKeyFlow.filterNotNull()
 
-    override val currentKey: T?
+    override val currentKey: T
         get() = mutableKeyFlow.value
 
     override var isInitialized: Boolean = false
         private set
 
-    private val mutableKeyFlow = MutableStateFlow<T?>(value = null)
+    private val mutableKeyFlow = MutableStateFlow(value = initialKey)
 
-    private val contents = mutableMapOf<T, (@Composable ComposeNavigationContentScope<T>.() -> Unit)>()
+    private val contents = mutableMapOf<T, (@Composable ComposeNavigationContentScope<T>.() -> Unit)>(
+        initialKey to initialContent
+    )
     private val keyStack = mutableListOf<T>()
 
     @Composable
@@ -77,7 +79,7 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
         return wentBack
     }
 
-    override fun canGoBack(): Boolean = contents.isNotEmpty() && keyStack.isNotEmpty()
+    override fun canGoBack(): Boolean = contents.size > 1 && keyStack.size > 1
 
     @Composable
     override fun ComposeNavigationContentScope<T>.content(key: T) {
@@ -106,6 +108,6 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
             contents.remove(removedKey)
         }
 
-        mutableKeyFlow.value = keyStack.lastOrNull()
+        mutableKeyFlow.value = keyStack.last()
     }
 }

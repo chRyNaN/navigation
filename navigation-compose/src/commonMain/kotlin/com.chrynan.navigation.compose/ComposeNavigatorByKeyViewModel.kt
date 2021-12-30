@@ -25,12 +25,12 @@ class ComposeNavigatorByKeyViewModel<T> internal constructor(
     override val keyChanges: Flow<T>
         get() = mutableKeyFlow.filterNotNull()
 
-    override val currentKey: T?
+    override val currentKey: T
         get() = mutableKeyFlow.value
 
     override val isInitialized: Boolean = true
 
-    private val mutableKeyFlow = MutableStateFlow<T?>(value = initialKey)
+    private val mutableKeyFlow = MutableStateFlow(value = initialKey)
 
     private val keyStack = mutableListOf<T>()
 
@@ -62,7 +62,7 @@ class ComposeNavigatorByKeyViewModel<T> internal constructor(
         return wentBack
     }
 
-    override fun canGoBack(): Boolean = keyStack.isNotEmpty()
+    override fun canGoBack(): Boolean = keyStack.size > 1
 
     private fun addToStack(key: T) {
         keyStack.add(key)
@@ -71,6 +71,6 @@ class ComposeNavigatorByKeyViewModel<T> internal constructor(
 
     private fun removeLastFromStack() {
         keyStack.removeLast()
-        mutableKeyFlow.value = keyStack.lastOrNull()
+        mutableKeyFlow.value = keyStack.last()
     }
 }

@@ -41,12 +41,12 @@ class ComposeNavigationIntentNavigatorByKeyViewModel<I : NavigationIntent> inter
     override val keyChanges: Flow<I>
         get() = mutableKeyFlow.filterNotNull()
 
-    override val currentKey: I?
+    override val currentKey: I
         get() = mutableKeyFlow.value
 
     override val isInitialized: Boolean = true
 
-    private val mutableKeyFlow = MutableStateFlow<I?>(value = initialKey)
+    private val mutableKeyFlow = MutableStateFlow(value = initialKey)
 
     private val keyStack = mutableListOf<I>()
 
@@ -78,7 +78,7 @@ class ComposeNavigationIntentNavigatorByKeyViewModel<I : NavigationIntent> inter
         return wentBack
     }
 
-    override fun canGoBack(): Boolean = keyStack.isNotEmpty()
+    override fun canGoBack(): Boolean = keyStack.size > 1
 
     private fun addToStack(key: I) {
         keyStack.add(key)
@@ -87,6 +87,6 @@ class ComposeNavigationIntentNavigatorByKeyViewModel<I : NavigationIntent> inter
 
     private fun removeLastFromStack() {
         keyStack.removeLast()
-        mutableKeyFlow.value = keyStack.lastOrNull()
+        mutableKeyFlow.value = keyStack.last()
     }
 }
