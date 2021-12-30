@@ -45,6 +45,8 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
         strategy: NavStackDuplicateContentStrategy,
         content: @Composable ComposeNavigationContentScope<T>.() -> Unit
     ) {
+        if (key == currentKey) return
+
         if (contents.containsKey(key) && strategy == NavStackDuplicateContentStrategy.CLEAR_STACK) {
             // Go Back to the content with the provided key using the updated content
             var lastKey = keyStack.lastOrNull()

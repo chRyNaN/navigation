@@ -51,6 +51,8 @@ class ComposeNavigationIntentNavigatorByKeyViewModel<I : NavigationIntent> inter
     private val keyStack = mutableListOf<I>()
 
     override fun goTo(key: I, strategy: NavStackDuplicateContentStrategy) {
+        if (key == currentKey) return
+
         if (keyStack.contains(key) && strategy == NavStackDuplicateContentStrategy.CLEAR_STACK) {
             // Go Back to the content with the provided key using the updated content
             var lastKey = keyStack.lastOrNull()
