@@ -22,4 +22,5 @@ import androidx.compose.runtime.collectAsState
  */
 @ExperimentalNavigationApi
 @Composable
-fun <T> ComposeNavigator<T>.currentKeyAsState(): State<T?> = keyChanges.collectAsState(initial = currentKey)
+fun <T> ComposeNavigator<T>.currentKeyAsState(initialCurrentKey: T? = currentKey): State<T?> =
+    keyChanges.collectAsState(initial = initialCurrentKey)
