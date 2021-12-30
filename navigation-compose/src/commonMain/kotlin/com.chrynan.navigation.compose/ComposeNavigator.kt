@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
@@ -28,6 +30,8 @@ interface ComposeNavigatorByContent<T> : ComposeNavigator<T> {
         strategy: NavStackDuplicateContentStrategy,
         content: @Composable ComposeNavigationContentScope<T>.() -> Unit
     )
+
+    companion object
 }
 
 // Note: This is needed because defaults aren't working for @Composable functions for interfaces.
@@ -44,6 +48,8 @@ interface ComposeNavigatorByKey<T> : ComposeNavigator<T> {
         key: T,
         strategy: NavStackDuplicateContentStrategy
     )
+
+    companion object
 }
 
 // Note: This is needed because defaults aren't working for @Composable functions for interfaces.
@@ -56,6 +62,8 @@ fun <T> ComposeNavigatorByKey<T>.goTo(key: T) =
 interface ComposeStackNavigator<T> : ComposeNavigator<T> {
 
     fun canGoBack(): Boolean
+
+    companion object
 }
 
 @ExperimentalNavigationApi
@@ -64,6 +72,8 @@ interface ComposeStackNavigatorByContent<T> : ComposeStackNavigator<T>,
 
     @Composable
     fun goBack(): Boolean
+
+    companion object
 }
 
 @ExperimentalNavigationApi
@@ -71,4 +81,20 @@ interface ComposeStackNavigatorByKey<T> : ComposeStackNavigator<T>,
     ComposeNavigatorByKey<T> {
 
     fun goBack(): Boolean
+
+    companion object
+}
+
+@ExperimentalNavigationApi
+interface ComposeScopedNavigator<Scope, Key> : ComposeNavigator<Key> {
+
+    val initialScope: Scope
+
+    val currentScope: Scope
+
+    val scopeChanges: Flow<Scope>
+
+    fun changeScope(to: Scope)
+
+    companion object
 }
