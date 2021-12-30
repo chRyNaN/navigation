@@ -85,11 +85,11 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
     override fun ComposeNavigationContentScope<T>.content(key: T) {
         if (contents.isEmpty()) {
             addToStack(key = key, content = initialContent)
-
-            isInitialized = true
         }
 
         contents[key]?.invoke(this)
+
+        isInitialized = true
     }
 
     private fun addToStack(
