@@ -2,9 +2,6 @@ package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
 import com.chrynan.navigation.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 
 @ExperimentalNavigationApi
 interface ComposeNavigationIntentStackNavigatorByKey<I : NavigationIntent> :
@@ -32,63 +29,11 @@ interface ComposeNavigationIntentStackNavigatorByKey<I : NavigationIntent> :
 }
 
 @ExperimentalNavigationApi
-class ComposeNavigationIntentNavigatorByKeyViewModel<I : NavigationIntent> internal constructor(
-    override val initialKey: I,
-    override val content: @Composable ComposeNavigationIntentScope<I>.(key: I) -> Unit
-) : BaseComposeNavigatorByKeyViewModel<I, ComposeNavigationIntentScope<I>>(),
-    ComposeNavigationIntentStackNavigatorByKey<I> {
-
-    override val keyChanges: Flow<I>
-        get() = mutableKeyFlow.filterNotNull()
-
-    override val currentKey: I
-        get() = mutableKeyFlow.value
-
-    override val isInitialized: Boolean = true
-
-    private val mutableKeyFlow = MutableStateFlow(value = initialKey)
-
-    private val keyStack = mutableListOf<I>()
-
-    override fun goTo(key: I, strategy: NavStackDuplicateContentStrategy) {
-        if (key == currentKey) return
-
-        if (keyStack.contains(key) && strategy == NavStackDuplicateContentStrategy.CLEAR_STACK) {
-            // Go Back to the content with the provided key using the updated content
-            var lastKey = keyStack.lastOrNull()
-
-            while (lastKey != null && lastKey != key) {
-                keyStack.removeLast()
-                lastKey = keyStack.lastOrNull()
-            }
-
-            // Replace the content with the updated content
-            mutableKeyFlow.value = key
-        } else {
-            // Go to the provided content
-            addToStack(key = key)
-        }
-    }
-
-    override fun goBack(): Boolean {
-        val wentBack = canGoBack()
-
-        if (wentBack) {
-            removeLastFromStack()
-        }
-
-        return wentBack
-    }
-
-    override fun canGoBack(): Boolean = keyStack.size > 1
-
-    private fun addToStack(key: I) {
-        keyStack.add(key)
-        mutableKeyFlow.value = key
-    }
-
-    private fun removeLastFromStack() {
-        keyStack.removeLast()
-        mutableKeyFlow.value = keyStack.last()
-    }
-}
+class ComposeNavigationIntentNavigatorByKeyViewModel<Scope, Intent : NavigationIntent> internal constructor(
+    initialScope: Scope,
+    initialKeys: (Scope) -> Intent,
+    override val content: @Composable ComposeNavigationIntentScope<Intent>.(key: Intent) -> Unit
+) : BaseComposeNavigatorByKeyViewModel<Scope, Intent, ComposeNavigationIntentScope<Intent>>(
+    initialScope = initialScope,
+    initialKeys = initialKeys
+), ComposeNavigationIntentStackNavigatorByKey<Intent>

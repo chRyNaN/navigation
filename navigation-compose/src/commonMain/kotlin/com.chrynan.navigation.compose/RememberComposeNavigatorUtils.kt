@@ -72,12 +72,13 @@ fun <T> rememberNavigatorByContent(
  */
 @ExperimentalNavigationApi
 @Composable
-fun <T> rememberNavigatorByKey(
-    initialKey: T,
-    content: @Composable ComposeNavigationKeyScope<T>.(key: T) -> Unit
-): ComposeNavigatorByKeyViewModel<T> = remember {
+fun <Key> rememberNavigatorByKey(
+    initialKey: Key,
+    content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
+): ComposeNavigatorByKeyViewModel<Nothing?, Key> = remember {
     ComposeNavigatorByKeyViewModel(
-        initialKey = initialKey,
+        initialScope = null,
+        initialKeys = { initialKey },
         content = content
     )
 }
@@ -112,12 +113,13 @@ fun <T> rememberNavigatorByKey(
  */
 @ExperimentalNavigationApi
 @Composable
-fun <I : NavigationIntent> rememberNavigatorByIntent(
-    initialIntent: I,
-    content: @Composable ComposeNavigationIntentScope<I>.(intent: I) -> Unit
-): ComposeNavigationIntentNavigatorByKeyViewModel<I> = remember {
+fun <Intent : NavigationIntent> rememberNavigatorByIntent(
+    initialIntent: Intent,
+    content: @Composable ComposeNavigationIntentScope<Intent>.(intent: Intent) -> Unit
+): ComposeNavigationIntentNavigatorByKeyViewModel<Nothing?, Intent> = remember {
     ComposeNavigationIntentNavigatorByKeyViewModel(
-        initialKey = initialIntent,
+        initialScope = null,
+        initialKeys = { initialIntent },
         content = content
     )
 }
