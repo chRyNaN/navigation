@@ -29,16 +29,69 @@ import com.chrynan.navigation.Navigator
  *
  * **Note:** That it is typical to use a [ComposeNavigator] with a [NavContainer] to display the [Composable] content
  * and listen to changes.
+ *
+ * **Note:** This function differs slightly from the [rememberNavigatorByContent] function in that it only uses a single
+ * scope of type [Nothing]. This means that scopes cannot be changed on the returned
+ * [ComposeNavigatorByContentViewModel].
+ *
+ * @see [rememberNavigatorByContent]
  */
 @ExperimentalNavigationApi
 @Composable
-fun <T> rememberNavigatorByContent(
-    initialKey: T,
-    initialContent: @Composable ComposeNavigationContentScope<T>.() -> Unit
-): ComposeNavigatorByContentViewModel<T> = remember {
+fun <Key> rememberNavigatorByContent(
+    initialKey: Key,
+    initialContent: @Composable ComposeNavigationContentScope<Key>.() -> Unit
+): ComposeNavigatorByContentViewModel<Nothing?, Key> = remember {
     ComposeNavigatorByContentViewModel(
-        initialKey = initialKey,
-        initialContent = initialContent
+        initialScope = null,
+        initialKeysAndContent = { initialKey to initialContent }
+    )
+}
+
+/**
+ * Creates and remembers a [ComposeNavigator] that can navigate with a key and [Composable] content. This allows for
+ * explicitly specifying the [Composable] content to navigate to at the [ComposeNavigatorByContent.goTo] function call
+ * site. Meaning the [Composable] content is more flexible and doesn't need to specified upfront when creating this
+ * [ComposeNavigatorByContent].
+ *
+ * Example usage:
+ * ```kotlin
+ * val navigator = rememberNavigatorByContent(
+ *                     initialScope = BottomNavBarItem.HOME,
+ *                     initialKeysAndContent = { scope ->
+ *                         when (scope) {
+ *                             is BottomNavBarItem.HOME -> "Greeting" to { Text("Hello") }
+ *                         }
+ *                     }
+ *                 )
+ *
+ * // The NavContainer will start by displaying the initial content, which in this case is "Hello".
+ * NavContainer(navigator)
+ *
+ * // The above NavContainer will display "Good-bye" after the following call:
+ * navigator.goTo("Farewell") { Text("Good-bye") }
+ *
+ * // Goes back to the initial content: "Hello":
+ * navigator.goBack()
+ * ```
+ *
+ * **Note:** That it is typical to use a [ComposeNavigator] with a [NavContainer] to display the [Composable] content
+ * and listen to changes.
+ *
+ * **Note:** That this function differs slightly from the [rememberNavigatorByContent] function in that this function
+ * allows changing of scopes, which is useful for more complex navigation.
+ *
+ * @see [rememberNavigatorByContent]
+ */
+@ExperimentalNavigationApi
+@Composable
+fun <Scope, Key> rememberNavigatorByContent(
+    initialScope: Scope,
+    initialKeysAndContent: (Scope) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
+): ComposeNavigatorByContentViewModel<Scope, Key> = remember {
+    ComposeNavigatorByContentViewModel(
+        initialScope = initialScope,
+        initialKeysAndContent = initialKeysAndContent
     )
 }
 

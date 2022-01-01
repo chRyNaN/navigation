@@ -72,8 +72,10 @@ abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : 
         val wentBack = canGoBack()
 
         if (wentBack) {
+            val currentScope = this.currentScope
             val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
             currentKeyStack.removeLast()
+            scopedKeyStack[currentScope] = currentKeyStack
             mutableKeyFlow.value = currentKeyStack.last()
         }
 

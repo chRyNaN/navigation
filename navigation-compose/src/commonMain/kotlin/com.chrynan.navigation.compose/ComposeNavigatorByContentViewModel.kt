@@ -8,65 +8,88 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 
 @ExperimentalNavigationApi
-abstract class BaseComposeNavigatorByContentViewModel<T> : ViewModel(),
-    ComposeNavigator<T>,
-    ComposeNavigatorByContent<T>,
-    ComposeStackNavigatorByContent<T> {
+abstract class BaseComposeNavigatorByContentViewModel<Scope, Key> : ViewModel(),
+    ComposeNavigator<Key>,
+    ComposeNavigatorByContent<Key>,
+    ComposeStackNavigatorByContent<Key>,
+    ComposeScopedNavigator<Scope, Key> {
 
     @Composable
-    internal abstract fun ComposeNavigationContentScope<T>.content(key: T)
+    internal abstract fun ComposeNavigationContentScope<Key>.content(key: Key)
 }
 
 @ExperimentalNavigationApi
-class ComposeNavigatorByContentViewModel<T> internal constructor(
-    override val initialKey: T,
-    private val initialContent: @Composable ComposeNavigationContentScope<T>.() -> Unit
-) : BaseComposeNavigatorByContentViewModel<T>() {
+class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
+    override val initialScope: Scope,
+    private val initialKeysAndContent: (Scope) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
+) : BaseComposeNavigatorByContentViewModel<Scope, Key>() {
 
-    override val keyChanges: Flow<T>
+    override val keyChanges: Flow<Key>
         get() = mutableKeyFlow.filterNotNull()
 
-    override val currentKey: T
+    override val initialKey: Key
+        get() = initialKeysAndContent(initialScope).first
+
+    private val initialContent: @Composable ComposeNavigationContentScope<Key>.() -> Unit
+        get() = initialKeysAndContent(initialScope).second
+
+    override val currentKey: Key
         get() = mutableKeyFlow.value
 
     override var isInitialized: Boolean = false
         private set
 
-    private val mutableKeyFlow = MutableStateFlow(value = initialKey)
+    override val currentScope: Scope
+        get() = mutableScopeFlow.value
 
-    private val contents = mutableMapOf<T, (@Composable ComposeNavigationContentScope<T>.() -> Unit)>(
+    override val scopeChanges: Flow<Scope>
+        get() = mutableScopeFlow.filterNotNull()
+
+    private val mutableKeyFlow = MutableStateFlow(value = initialKey)
+    private val mutableScopeFlow = MutableStateFlow(value = initialScope)
+
+    private val contents = mutableMapOf<Key, (@Composable ComposeNavigationContentScope<Key>.() -> Unit)>(
         initialKey to initialContent
     )
-    private val keyStack = mutableListOf<T>()
+
+    private val scopedKeyStack = mutableMapOf(initialScope to mutableListOf(initialKey))
 
     @Composable
     override fun goTo(
-        key: T,
+        key: Key,
         strategy: NavStackDuplicateContentStrategy,
-        content: @Composable ComposeNavigationContentScope<T>.() -> Unit
+        content: @Composable ComposeNavigationContentScope<Key>.() -> Unit
     ) {
-        if (key == currentKey) return
+        val currentScope = this.currentScope
+        val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
 
-        if (contents.containsKey(key) && strategy == NavStackDuplicateContentStrategy.CLEAR_STACK) {
+        // If we are already displaying this key on the current scoped stack, then return.
+        if (key == currentKeyStack.lastOrNull()) return
+
+        if (strategy == NavStackDuplicateContentStrategy.CLEAR_STACK && contents.containsKey(key)) {
             // Go Back to the content with the provided key using the updated content
-            var lastKey = keyStack.lastOrNull()
+            var lastKey = currentKeyStack.lastOrNull()
 
             while (lastKey != null && lastKey != key) {
-                keyStack.removeLast()
+                currentKeyStack.removeLast()
 
-                if (!keyStack.contains(lastKey)) {
+                if (!currentKeyStack.contains(lastKey)) {
                     contents.remove(lastKey)
                 }
 
-                lastKey = keyStack.lastOrNull()
+                lastKey = currentKeyStack.lastOrNull()
             }
 
             // Replace the content with the updated content
             contents[key] = content
+            scopedKeyStack[currentScope] = currentKeyStack
             mutableKeyFlow.value = key
         } else {
             // Go to the provided content
-            addToStack(key = key, content = content)
+            contents[key] = content
+            currentKeyStack.add(key)
+            scopedKeyStack[currentScope] = currentKeyStack
+            mutableKeyFlow.value = key
         }
     }
 
@@ -75,41 +98,52 @@ class ComposeNavigatorByContentViewModel<T> internal constructor(
         val wentBack = canGoBack()
 
         if (wentBack) {
-            removeLastFromStack()
+            val currentScope = this.currentScope
+            val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
+
+            val removedKey = currentKeyStack.removeLast()
+
+            if (!currentKeyStack.contains(removedKey)) {
+                contents.remove(removedKey)
+            }
+
+            scopedKeyStack[currentScope] = currentKeyStack
+            mutableKeyFlow.value = currentKeyStack.last()
         }
 
         return wentBack
     }
 
-    override fun canGoBack(): Boolean = contents.size > 1 && keyStack.size > 1
+    override fun canGoBack(): Boolean {
+        val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
+
+        return currentKeyStack.size > 1
+    }
 
     @Composable
-    override fun ComposeNavigationContentScope<T>.content(key: T) {
-        if (contents.isEmpty()) {
-            addToStack(key = key, content = initialContent)
-        }
-
+    override fun ComposeNavigationContentScope<Key>.content(key: Key) {
         contents[key]?.invoke(this)
 
         isInitialized = true
     }
 
-    private fun addToStack(
-        key: T,
-        content: @Composable ComposeNavigationContentScope<T>.() -> Unit
-    ) {
-        contents[key] = content
-        keyStack.add(key)
-        mutableKeyFlow.value = key
-    }
+    override fun changeScope(to: Scope) {
+        if (to == currentScope) return
 
-    private fun removeLastFromStack() {
-        val removedKey = keyStack.removeLast()
+        val keyStack = scopedKeyStack[to]
 
-        if (!keyStack.contains(removedKey)) {
-            contents.remove(removedKey)
+        if (keyStack.isNullOrEmpty()) {
+            val key = initialKeysAndContent(to).first
+            val content = initialKeysAndContent(to).second
+            contents[key] = content
+            val newKeyStack = mutableListOf(key)
+            scopedKeyStack[to] = newKeyStack
+            mutableScopeFlow.value = to
+            mutableKeyFlow.value = key
+        } else {
+            val key = keyStack.last()
+            mutableScopeFlow.value = to
+            mutableKeyFlow.value = key
         }
-
-        mutableKeyFlow.value = keyStack.last()
     }
 }
