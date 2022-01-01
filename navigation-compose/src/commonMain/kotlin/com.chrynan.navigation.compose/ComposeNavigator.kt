@@ -63,6 +63,8 @@ interface ComposeStackNavigator<T> : ComposeNavigator<T> {
 
     fun canGoBack(): Boolean
 
+    fun goBack(): Boolean
+
     companion object
 }
 
@@ -70,16 +72,12 @@ interface ComposeStackNavigator<T> : ComposeNavigator<T> {
 interface ComposeStackNavigatorByContent<T> : ComposeStackNavigator<T>,
     ComposeNavigatorByContent<T> {
 
-    fun goBack(): Boolean
-
     companion object
 }
 
 @ExperimentalNavigationApi
 interface ComposeStackNavigatorByKey<T> : ComposeStackNavigator<T>,
     ComposeNavigatorByKey<T> {
-
-    fun goBack(): Boolean
 
     companion object
 }
