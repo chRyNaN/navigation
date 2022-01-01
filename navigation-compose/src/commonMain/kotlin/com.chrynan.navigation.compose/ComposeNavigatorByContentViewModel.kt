@@ -37,7 +37,7 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
         get() = mutableKeyFlow.value
 
     override var isInitialized: Boolean = false
-        private set
+        internal set
 
     override val currentScope: Scope
         get() = mutableScopeFlow.value
@@ -123,8 +123,6 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
     @Composable
     override fun ComposeNavigationContentScope<Key>.content(key: Key) {
         contents[key]?.invoke(this)
-
-        isInitialized = true
     }
 
     override fun changeScope(to: Scope) {

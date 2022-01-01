@@ -39,6 +39,8 @@ internal expect fun <Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key
 @ExperimentalNavigationApi
 fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByContentViewModel<Scope, Key>) {
     InternalNavContainer(navigator = navigator)
+
+    navigator.isInitialized = true
 }
 
 /**
@@ -76,6 +78,8 @@ fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByKeyViewModel<Scope, K
     }
 
     InternalNavContainer(navigator = navigator, scope = scope)
+
+    navigator.isInitialized = true
 }
 
 /**
@@ -112,4 +116,6 @@ fun <Scope, Intent : NavigationIntent> NavContainer(navigator: ComposeNavigation
     }
 
     InternalNavContainer(navigator = navigator, scope = scope)
+
+    navigator.isInitialized = true
 }

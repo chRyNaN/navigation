@@ -28,7 +28,8 @@ abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : 
     override val currentKey: Key
         get() = mutableKeyFlow.value
 
-    override val isInitialized: Boolean = true
+    override var isInitialized: Boolean = false
+        internal set
 
     override val currentScope: Scope
         get() = mutableScopeFlow.value
