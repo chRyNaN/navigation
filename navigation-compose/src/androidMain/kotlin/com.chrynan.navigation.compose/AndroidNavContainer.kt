@@ -7,14 +7,14 @@ import androidx.compose.runtime.getValue
 
 @Composable
 @ExperimentalNavigationApi
-internal actual fun <T> InternalNavContainer(
-    navigator: BaseComposeNavigatorByContentViewModel<T>
+internal actual fun <Scope, Key> InternalNavContainer(
+    navigator: BaseComposeNavigatorByContentViewModel<Scope, Key>
 ) {
     val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)
 
-    val scope = object : ComposeNavigationContentScope<T> {
+    val scope = object : ComposeNavigationContentScope<Key> {
 
-        override val navigator: ComposeStackNavigatorByContent<T> = navigator
+        override val navigator: ComposeStackNavigatorByContent<Key> = navigator
     }
 
     Box {
@@ -26,9 +26,9 @@ internal actual fun <T> InternalNavContainer(
 
 @Composable
 @ExperimentalNavigationApi
-internal actual fun <T, S : ComposeNavigationKeyScope<T>> InternalNavContainer(
-    navigator: BaseComposeNavigatorByKeyViewModel<T, S>,
-    scope: S
+internal actual fun <Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key>> InternalNavContainer(
+    navigator: BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope>,
+    scope: NavigationScope
 ) {
     val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)
 

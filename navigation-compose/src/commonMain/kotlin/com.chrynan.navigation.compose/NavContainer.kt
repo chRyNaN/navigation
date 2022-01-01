@@ -7,13 +7,13 @@ import com.chrynan.navigation.NavigationIntent
 
 @Composable
 @ExperimentalNavigationApi
-internal expect fun <T> InternalNavContainer(navigator: BaseComposeNavigatorByContentViewModel<T>)
+internal expect fun <Scope, Key> InternalNavContainer(navigator: BaseComposeNavigatorByContentViewModel<Scope, Key>)
 
 @Composable
 @ExperimentalNavigationApi
-internal expect fun <T, S : ComposeNavigationKeyScope<T>> InternalNavContainer(
-    navigator: BaseComposeNavigatorByKeyViewModel<T, S>,
-    scope: S
+internal expect fun <Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key>> InternalNavContainer(
+    navigator: BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope>,
+    scope: NavigationScope
 )
 
 /**
@@ -37,7 +37,7 @@ internal expect fun <T, S : ComposeNavigationKeyScope<T>> InternalNavContainer(
  */
 @Composable
 @ExperimentalNavigationApi
-fun <T> NavContainer(navigator: ComposeNavigatorByContentViewModel<T>) {
+fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByContentViewModel<Scope, Key>) {
     InternalNavContainer(navigator = navigator)
 }
 
@@ -68,10 +68,10 @@ fun <T> NavContainer(navigator: ComposeNavigatorByContentViewModel<T>) {
  */
 @Composable
 @ExperimentalNavigationApi
-fun <T> NavContainer(navigator: ComposeNavigatorByKeyViewModel<T>) {
-    val scope = object : ComposeNavigationKeyScope<T> {
+fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByKeyViewModel<Scope, Key>) {
+    val scope = object : ComposeNavigationKeyScope<Key> {
 
-        override val navigator: ComposeStackNavigatorByKey<T>
+        override val navigator: ComposeStackNavigatorByKey<Key>
             get() = navigator
     }
 
@@ -104,10 +104,10 @@ fun <T> NavContainer(navigator: ComposeNavigatorByKeyViewModel<T>) {
  */
 @Composable
 @ExperimentalNavigationApi
-fun <T : NavigationIntent> NavContainer(navigator: ComposeNavigationIntentNavigatorByKeyViewModel<T>) {
-    val scope = object : ComposeNavigationIntentScope<T> {
+fun <Scope, Intent : NavigationIntent> NavContainer(navigator: ComposeNavigationIntentNavigatorByKeyViewModel<Scope, Intent>) {
+    val scope = object : ComposeNavigationIntentScope<Intent> {
 
-        override val navigator: ComposeNavigationIntentStackNavigatorByKey<T>
+        override val navigator: ComposeNavigationIntentStackNavigatorByKey<Intent>
             get() = navigator
     }
 
