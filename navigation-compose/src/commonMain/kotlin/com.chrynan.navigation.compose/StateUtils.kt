@@ -22,7 +22,7 @@ import androidx.compose.runtime.collectAsState
  */
 @ExperimentalNavigationApi
 @Composable
-fun <Key> ComposeNavigator<Key>.currentKeyAsState(initialCurrentKey: Key? = currentKey): State<Key?> =
+fun <Key> ComposeNavigator<Key>.currentKeyAsState(initialCurrentKey: Key = currentKey): State<Key> =
     keyChanges.collectAsState(initial = initialCurrentKey)
 
 /**
@@ -41,5 +41,5 @@ fun <Key> ComposeNavigator<Key>.currentKeyAsState(initialCurrentKey: Key? = curr
  */
 @ExperimentalNavigationApi
 @Composable
-fun <Scope, Key> ComposeScopedNavigator<Scope, Key>.currentScopeAsState(initialCurrentScope: Scope? = currentScope): State<Scope?> =
+fun <Scope, Key> ComposeScopedNavigator<Scope, Key>.currentScopeAsState(initialCurrentScope: Scope = currentScope): State<Scope> =
     scopeChanges.collectAsState(initial = initialCurrentScope)
