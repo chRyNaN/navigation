@@ -1,5 +1,6 @@
 package com.chrynan.navigation.compose
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,6 +23,8 @@ internal actual fun <Scope, Key> InternalNavContainer(
             scope.content(contentKey)
         }
     }
+
+    BackHandler { navigator.goBack() }
 }
 
 @Composable
@@ -37,4 +40,6 @@ internal actual fun <Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key
             scope.content(contentKey)
         }
     }
+
+    BackHandler { navigator.goBack() }
 }

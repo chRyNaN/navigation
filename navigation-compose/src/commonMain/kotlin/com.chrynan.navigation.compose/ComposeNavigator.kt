@@ -70,7 +70,6 @@ interface ComposeStackNavigator<T> : ComposeNavigator<T> {
 interface ComposeStackNavigatorByContent<T> : ComposeStackNavigator<T>,
     ComposeNavigatorByContent<T> {
 
-    @Composable
     fun goBack(): Boolean
 
     companion object

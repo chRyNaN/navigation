@@ -48,6 +48,7 @@ kotlin {
             dependencies {
                 implementation(compose.ui)
                 implementation(compose.material)
+                implementation("androidx.activity:activity-compose:1.4.0")
             }
         }
         val jsMain by getting {

@@ -93,7 +93,6 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
         }
     }
 
-    @Composable
     override fun goBack(): Boolean {
         val wentBack = canGoBack()
 
