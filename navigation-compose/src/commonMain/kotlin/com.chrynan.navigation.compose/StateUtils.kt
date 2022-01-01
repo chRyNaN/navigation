@@ -22,5 +22,24 @@ import androidx.compose.runtime.collectAsState
  */
 @ExperimentalNavigationApi
 @Composable
-fun <T> ComposeNavigator<T>.currentKeyAsState(initialCurrentKey: T? = currentKey): State<T?> =
+fun <Key> ComposeNavigator<Key>.currentKeyAsState(initialCurrentKey: Key? = currentKey): State<Key?> =
     keyChanges.collectAsState(initial = initialCurrentKey)
+
+/**
+ * Obtains the changes to the [ComposeScopedNavigator.currentScope] value and returns it as a [State]. This allows it
+ * to be used in a [Composable] and cause recomposition when the value changes.
+ *
+ * If you just need to get the current scope value and do not need to cause recomposition when the value changes, simply
+ * use the [ComposeScopedNavigator.currentScope] property.
+ *
+ * **Note:** Internally this function uses the [ComposeScopedNavigator.scopeChanges] Flow and the [collectAsState]
+ * function using the [ComposeScopedNavigator.currentScope] as the initial value.
+ *
+ * @see [ComposeScopedNavigator.currentScope]
+ * @see [ComposeScopedNavigator.scopeChanges]
+ * @see [collectAsState]
+ */
+@ExperimentalNavigationApi
+@Composable
+fun <Scope, Key> ComposeScopedNavigator<Scope, Key>.currentScopeAsState(initialCurrentScope: Scope? = currentScope): State<Scope?> =
+    scopeChanges.collectAsState(initial = initialCurrentScope)
