@@ -33,7 +33,7 @@ kotlin {
             dependencies {
                 api(project(":navigation-core"))
 
-                implementation("com.chrynan.presentation:presentation-core:0.6.0")
+                implementation("com.chrynan.presentation:presentation-core:0.7.1")
 
                 implementation(compose.runtime)
             }
@@ -100,7 +100,7 @@ android {
 tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
 
 dependencies {
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
 }
 
 afterEvaluate {
