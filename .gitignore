@@ -30,3 +30,5 @@ build/
 
 **/*.log
 *.log
+
+kotlin-js-store
