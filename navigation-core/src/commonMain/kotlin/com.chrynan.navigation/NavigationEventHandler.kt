@@ -7,7 +7,7 @@ package com.chrynan.navigation
  * [NavigationEvent]s.
  */
 interface NavigationEventHandler<I : NavigationIntent, S : NavigationScope> :
-    NavigationHandler<I, S> {
+    NavigationHandler<NavigationEvent<I>, S> {
 
     fun S.onGoBack()
 
