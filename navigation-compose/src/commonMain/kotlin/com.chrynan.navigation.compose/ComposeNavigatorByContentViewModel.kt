@@ -8,30 +8,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 
 @ExperimentalNavigationApi
-abstract class BaseComposeNavigatorByContentViewModel<Scope, Key> : ViewModel(),
+abstract class BaseComposeNavigatorByContentViewModel<Context, Key> : ViewModel(),
     ComposeNavigator<Key>,
     ComposeNavigatorByContent<Key>,
     ComposeStackNavigatorByContent<Key>,
-    ComposeScopedNavigator<Scope, Key> {
+    ComposeContextNavigator<Context, Key> {
 
     @Composable
     internal abstract fun ComposeNavigationContentScope<Key>.content(key: Key)
 }
 
 @ExperimentalNavigationApi
-class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
-    override val initialScope: Scope,
-    private val initialKeysAndContent: (Scope) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
-) : BaseComposeNavigatorByContentViewModel<Scope, Key>() {
+class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
+    override val initialContext: Context,
+    private val initialKeysAndContent: (Context) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
+) : BaseComposeNavigatorByContentViewModel<Context, Key>() {
 
     override val keyChanges: Flow<Key>
         get() = mutableKeyFlow.filterNotNull()
 
     override val initialKey: Key
-        get() = initialKeysAndContent(initialScope).first
+        get() = initialKeysAndContent(initialContext).first
 
     private val initialContent: @Composable ComposeNavigationContentScope<Key>.() -> Unit
-        get() = initialKeysAndContent(initialScope).second
+        get() = initialKeysAndContent(initialContext).second
 
     override val currentKey: Key
         get() = mutableKeyFlow.value
@@ -39,20 +39,20 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
     override var isInitialized: Boolean = false
         internal set
 
-    override val currentScope: Scope
+    override val currentContext: Context
         get() = mutableScopeFlow.value
 
-    override val scopeChanges: Flow<Scope>
+    override val contextChanges: Flow<Context>
         get() = mutableScopeFlow.filterNotNull()
 
     private val mutableKeyFlow = MutableStateFlow(value = initialKey)
-    private val mutableScopeFlow = MutableStateFlow(value = initialScope)
+    private val mutableScopeFlow = MutableStateFlow(value = initialContext)
 
     private val contents = mutableMapOf<Key, (@Composable ComposeNavigationContentScope<Key>.() -> Unit)>(
         initialKey to initialContent
     )
 
-    private val scopedKeyStack = mutableMapOf(initialScope to mutableListOf(initialKey))
+    private val scopedKeyStack = mutableMapOf(initialContext to mutableListOf(initialKey))
 
     @Composable
     override fun goTo(
@@ -60,7 +60,7 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
         strategy: NavStackDuplicateContentStrategy,
         content: @Composable ComposeNavigationContentScope<Key>.() -> Unit
     ) {
-        val currentScope = this.currentScope
+        val currentScope = this.currentContext
         val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
 
         // If we are already displaying this key on the current scoped stack, then return.
@@ -97,7 +97,7 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
         val wentBack = canGoBack()
 
         if (wentBack) {
-            val currentScope = this.currentScope
+            val currentScope = this.currentContext
             val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
 
             val removedKey = currentKeyStack.removeLast()
@@ -114,7 +114,7 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
     }
 
     override fun canGoBack(): Boolean {
-        val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
+        val currentKeyStack = scopedKeyStack[currentContext] ?: mutableListOf()
 
         return currentKeyStack.size > 1
     }
@@ -124,8 +124,8 @@ class ComposeNavigatorByContentViewModel<Scope, Key> internal constructor(
         contents[key]?.invoke(this)
     }
 
-    override fun changeScope(to: Scope) {
-        if (to == currentScope) return
+    override fun changeContext(to: Context) {
+        if (to == currentContext) return
 
         val keyStack = scopedKeyStack[to]
 

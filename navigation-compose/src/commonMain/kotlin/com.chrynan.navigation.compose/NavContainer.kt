@@ -7,12 +7,12 @@ import com.chrynan.navigation.NavigationIntent
 
 @Composable
 @ExperimentalNavigationApi
-internal expect fun <Scope, Key> InternalNavContainer(navigator: BaseComposeNavigatorByContentViewModel<Scope, Key>)
+internal expect fun <Context, Key> InternalNavContainer(navigator: BaseComposeNavigatorByContentViewModel<Context, Key>)
 
 @Composable
 @ExperimentalNavigationApi
-internal expect fun <Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key>> InternalNavContainer(
-    navigator: BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope>,
+internal expect fun <Context, Key, NavigationScope : ComposeNavigationKeyScope<Key>> InternalNavContainer(
+    navigator: BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope>,
     scope: NavigationScope
 )
 
@@ -37,7 +37,7 @@ internal expect fun <Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key
  */
 @Composable
 @ExperimentalNavigationApi
-fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByContentViewModel<Scope, Key>) {
+fun <Context, Key> NavContainer(navigator: ComposeNavigatorByContentViewModel<Context, Key>) {
     InternalNavContainer(navigator = navigator)
 
     navigator.isInitialized = true
@@ -70,7 +70,7 @@ fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByContentViewModel<Scop
  */
 @Composable
 @ExperimentalNavigationApi
-fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByKeyViewModel<Scope, Key>) {
+fun <Context, Key> NavContainer(navigator: ComposeNavigatorByKeyViewModel<Context, Key>) {
     val scope = object : ComposeNavigationKeyScope<Key> {
 
         override val navigator: ComposeStackNavigatorByKey<Key>
@@ -108,7 +108,7 @@ fun <Scope, Key> NavContainer(navigator: ComposeNavigatorByKeyViewModel<Scope, K
  */
 @Composable
 @ExperimentalNavigationApi
-fun <Scope, Intent : NavigationIntent> NavContainer(navigator: ComposeNavigationIntentNavigatorByKeyViewModel<Scope, Intent>) {
+fun <Context, Intent : NavigationIntent> NavContainer(navigator: ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent>) {
     val scope = object : ComposeNavigationIntentScope<Intent> {
 
         override val navigator: ComposeNavigationIntentStackNavigatorByKey<Intent>

@@ -83,15 +83,15 @@ interface ComposeStackNavigatorByKey<T> : ComposeStackNavigator<T>,
 }
 
 @ExperimentalNavigationApi
-interface ComposeScopedNavigator<Scope, Key> : ComposeNavigator<Key> {
+interface ComposeContextNavigator<Context, Key> : ComposeNavigator<Key> {
 
-    val initialScope: Scope
+    val initialContext: Context
 
-    val currentScope: Scope
+    val currentContext: Context
 
-    val scopeChanges: Flow<Scope>
+    val contextChanges: Flow<Context>
 
-    fun changeScope(to: Scope)
+    fun changeContext(to: Context)
 
     companion object
 }

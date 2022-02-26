@@ -7,8 +7,8 @@ import org.jetbrains.compose.web.dom.Div
 
 @Composable
 @ExperimentalNavigationApi
-internal actual fun <Scope, Key> InternalNavContainer(
-    navigator: BaseComposeNavigatorByContentViewModel<Scope, Key>
+internal actual fun <Context, Key> InternalNavContainer(
+    navigator: BaseComposeNavigatorByContentViewModel<Context, Key>
 ) {
     val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)
 
@@ -26,8 +26,8 @@ internal actual fun <Scope, Key> InternalNavContainer(
 
 @Composable
 @ExperimentalNavigationApi
-internal actual fun <Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key>> InternalNavContainer(
-    navigator: BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope>,
+internal actual fun <Context, Key, NavigationScope : ComposeNavigationKeyScope<Key>> InternalNavContainer(
+    navigator: BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope>,
     scope: NavigationScope
 ) {
     val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)

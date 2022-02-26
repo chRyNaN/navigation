@@ -19,7 +19,7 @@ import com.chrynan.navigation.compose.rememberNavigatorByKey
 @Composable
 fun App() {
     val navigator = rememberNavigatorByKey(
-        initialScope = MainScope.HOME,
+        initialContext = MainScope.HOME,
         initialKeys = { scope ->
             when (scope) {
                 MainScope.HOME -> NavKey.HOME
@@ -60,7 +60,7 @@ fun App() {
             MainScope.values().forEach { scope ->
                 BottomNavigationItem(
                     selected = false,
-                    onClick = { navigator.changeScope(scope) },
+                    onClick = { navigator.changeContext(scope) },
                     label = { Text(scope.title) },
                     icon = { Image(imageVector = scope.icon, contentDescription = null) }
                 )

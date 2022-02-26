@@ -47,41 +47,41 @@ fun <Key> ComposeNavigator<Key>.currentKeyAsState(): State<Key> =
     keyChanges.collectAsState(initial = currentKey)
 
 /**
- * Obtains the changes to the [ComposeScopedNavigator.currentScope] value and returns it as a [State]. This allows it
+ * Obtains the changes to the [ComposeContextNavigator.currentContext] value and returns it as a [State]. This allows it
  * to be used in a [Composable] and cause recomposition when the value changes.
  *
  * If you just need to get the current scope value and do not need to cause recomposition when the value changes, simply
- * use the [ComposeScopedNavigator.currentScope] property.
+ * use the [ComposeContextNavigator.currentContext] property.
  *
- * **Note:** Internally this function uses the [ComposeScopedNavigator.scopeChanges] Flow and the [collectAsState]
- * function using the [ComposeScopedNavigator.currentScope] as the initial value.
+ * **Note:** Internally this function uses the [ComposeContextNavigator.contextChanges] Flow and the [collectAsState]
+ * function using the [ComposeContextNavigator.currentContext] as the initial value.
  *
- * @see [ComposeScopedNavigator.currentScope]
- * @see [ComposeScopedNavigator.scopeChanges]
+ * @see [ComposeContextNavigator.currentContext]
+ * @see [ComposeContextNavigator.contextChanges]
  * @see [collectAsState]
  */
 @ExperimentalNavigationApi
 @Composable
-fun <Scope, Key> ComposeScopedNavigator<Scope, Key>.currentScopeAsState(initialCurrentScope: Scope): State<Scope> =
-    scopeChanges.collectAsState(initial = initialCurrentScope)
+fun <Context, Key> ComposeContextNavigator<Context, Key>.currentContextAsState(initialCurrentScope: Context): State<Context> =
+    contextChanges.collectAsState(initial = initialCurrentScope)
 
 /**
- * Obtains the changes to the [ComposeScopedNavigator.currentScope] value and returns it as a [State]. This allows it
+ * Obtains the changes to the [ComposeContextNavigator.currentContext] value and returns it as a [State]. This allows it
  * to be used in a [Composable] and cause recomposition when the value changes.
  *
  * If you just need to get the current scope value and do not need to cause recomposition when the value changes, simply
- * use the [ComposeScopedNavigator.currentScope] property.
+ * use the [ComposeContextNavigator.currentContext] property.
  *
- * **Note:** Internally this function uses the [ComposeScopedNavigator.scopeChanges] Flow and the [collectAsState]
- * function using the [ComposeScopedNavigator.currentScope] as the initial value.
+ * **Note:** Internally this function uses the [ComposeContextNavigator.contextChanges] Flow and the [collectAsState]
+ * function using the [ComposeContextNavigator.currentContext] as the initial value.
  *
- * @see [ComposeScopedNavigator.currentScope]
- * @see [ComposeScopedNavigator.scopeChanges]
+ * @see [ComposeContextNavigator.currentContext]
+ * @see [ComposeContextNavigator.contextChanges]
  * @see [collectAsState]
  */
 // **Note:** For some reason adding a default value to the `initialCurrentScope` parameter in the [currentScopeAsState]
 // function is causing an issue so this function is needed for the default case.
 @ExperimentalNavigationApi
 @Composable
-fun <Scope, Key> ComposeScopedNavigator<Scope, Key>.currentScopeAsState(): State<Scope> =
-    scopeChanges.collectAsState(initial = currentScope)
+fun <Context, Key> ComposeContextNavigator<Context, Key>.currentContextAsState(): State<Context> =
+    contextChanges.collectAsState(initial = currentContext)

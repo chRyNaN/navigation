@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 
 @ExperimentalNavigationApi
-abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : ComposeNavigationKeyScope<Key>>(
-    final override val initialScope: Scope,
-    private val initialKeys: (Scope) -> Key
+abstract class BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope : ComposeNavigationKeyScope<Key>>(
+    final override val initialContext: Context,
+    private val initialKeys: (Context) -> Key
 ) : ViewModel(),
     ComposeNavigator<Key>,
     ComposeNavigatorByKey<Key>,
     ComposeStackNavigatorByKey<Key>,
-    ComposeScopedNavigator<Scope, Key> {
+    ComposeContextNavigator<Context, Key> {
 
     internal abstract val content: @Composable NavigationScope.(key: Key) -> Unit
 
@@ -23,7 +23,7 @@ abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : 
         get() = mutableKeyFlow.filterNotNull()
 
     final override val initialKey: Key
-        get() = initialKeys(initialScope)
+        get() = initialKeys(initialContext)
 
     override val currentKey: Key
         get() = mutableKeyFlow.value
@@ -31,19 +31,19 @@ abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : 
     override var isInitialized: Boolean = false
         internal set
 
-    override val currentScope: Scope
+    override val currentContext: Context
         get() = mutableScopeFlow.value
 
-    override val scopeChanges: Flow<Scope>
+    override val contextChanges: Flow<Context>
         get() = mutableScopeFlow.filterNotNull()
 
     private val mutableKeyFlow = MutableStateFlow(value = initialKey)
-    private val mutableScopeFlow = MutableStateFlow(value = initialScope)
+    private val mutableScopeFlow = MutableStateFlow(value = initialContext)
 
-    private val scopedKeyStack = mutableMapOf(initialScope to mutableListOf(initialKey))
+    private val scopedKeyStack = mutableMapOf(initialContext to mutableListOf(initialKey))
 
     override fun goTo(key: Key, strategy: NavStackDuplicateContentStrategy) {
-        val currentScope = this.currentScope
+        val currentScope = this.currentContext
         val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
 
         // If we are already displaying this key on the current scoped stack, then return.
@@ -73,7 +73,7 @@ abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : 
         val wentBack = canGoBack()
 
         if (wentBack) {
-            val currentScope = this.currentScope
+            val currentScope = this.currentContext
             val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
             currentKeyStack.removeLast()
             scopedKeyStack[currentScope] = currentKeyStack
@@ -84,13 +84,13 @@ abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : 
     }
 
     override fun canGoBack(): Boolean {
-        val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
+        val currentKeyStack = scopedKeyStack[currentContext] ?: mutableListOf()
 
         return currentKeyStack.size > 1
     }
 
-    override fun changeScope(to: Scope) {
-        if (to == currentScope) return
+    override fun changeContext(to: Context) {
+        if (to == currentContext) return
 
         val keyStack = scopedKeyStack[to]
 
@@ -109,11 +109,11 @@ abstract class BaseComposeNavigatorByKeyViewModel<Scope, Key, NavigationScope : 
 }
 
 @ExperimentalNavigationApi
-class ComposeNavigatorByKeyViewModel<Scope, Key> internal constructor(
-    initialScope: Scope,
-    initialKeys: (Scope) -> Key,
+class ComposeNavigatorByKeyViewModel<Context, Key> internal constructor(
+    initialScope: Context,
+    initialKeys: (Context) -> Key,
     override val content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
-) : BaseComposeNavigatorByKeyViewModel<Scope, Key, ComposeNavigationKeyScope<Key>>(
-    initialScope = initialScope,
+) : BaseComposeNavigatorByKeyViewModel<Context, Key, ComposeNavigationKeyScope<Key>>(
+    initialContext = initialScope,
     initialKeys = initialKeys
 )

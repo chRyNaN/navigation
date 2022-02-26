@@ -43,7 +43,7 @@ fun <Key> rememberNavigatorByContent(
     initialContent: @Composable ComposeNavigationContentScope<Key>.() -> Unit
 ): ComposeNavigatorByContentViewModel<Nothing?, Key> = remember {
     ComposeNavigatorByContentViewModel(
-        initialScope = null,
+        initialContext = null,
         initialKeysAndContent = { initialKey to initialContent }
     )
 }
@@ -85,12 +85,12 @@ fun <Key> rememberNavigatorByContent(
  */
 @ExperimentalNavigationApi
 @Composable
-fun <Scope, Key> rememberNavigatorByContent(
-    initialScope: Scope,
-    initialKeysAndContent: (Scope) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
-): ComposeNavigatorByContentViewModel<Scope, Key> = remember {
+fun <Context, Key> rememberNavigatorByContent(
+    initialContext: Context,
+    initialKeysAndContent: (Context) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
+): ComposeNavigatorByContentViewModel<Context, Key> = remember {
     ComposeNavigatorByContentViewModel(
-        initialScope = initialScope,
+        initialContext = initialContext,
         initialKeysAndContent = initialKeysAndContent
     )
 }
@@ -189,13 +189,13 @@ fun <Key> rememberNavigatorByKey(
  */
 @ExperimentalNavigationApi
 @Composable
-fun <Scope, Key> rememberNavigatorByKey(
-    initialScope: Scope,
-    initialKeys: (Scope) -> Key,
+fun <Context, Key> rememberNavigatorByKey(
+    initialContext: Context,
+    initialKeys: (Context) -> Key,
     content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
-): ComposeNavigatorByKeyViewModel<Scope, Key> = remember {
+): ComposeNavigatorByKeyViewModel<Context, Key> = remember {
     ComposeNavigatorByKeyViewModel(
-        initialScope = initialScope,
+        initialScope = initialContext,
         initialKeys = initialKeys,
         content = content
     )
@@ -293,13 +293,13 @@ fun <Intent : NavigationIntent> rememberNavigatorByIntent(
  */
 @ExperimentalNavigationApi
 @Composable
-fun <Scope, Intent : NavigationIntent> rememberNavigatorByIntent(
-    initialScope: Scope,
-    initialIntents: (Scope) -> Intent,
+fun <Context, Intent : NavigationIntent> rememberNavigatorByIntent(
+    initialContext: Context,
+    initialIntents: (Context) -> Intent,
     content: @Composable ComposeNavigationIntentScope<Intent>.(intent: Intent) -> Unit
-): ComposeNavigationIntentNavigatorByKeyViewModel<Scope, Intent> = remember {
+): ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent> = remember {
     ComposeNavigationIntentNavigatorByKeyViewModel(
-        initialScope = initialScope,
+        initialScope = initialContext,
         initialKeys = initialIntents,
         content = content
     )

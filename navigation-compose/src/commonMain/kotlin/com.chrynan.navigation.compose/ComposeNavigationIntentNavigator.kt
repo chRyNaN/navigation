@@ -29,11 +29,11 @@ interface ComposeNavigationIntentStackNavigatorByKey<I : NavigationIntent> :
 }
 
 @ExperimentalNavigationApi
-class ComposeNavigationIntentNavigatorByKeyViewModel<Scope, Intent : NavigationIntent> internal constructor(
-    initialScope: Scope,
-    initialKeys: (Scope) -> Intent,
+class ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent : NavigationIntent> internal constructor(
+    initialScope: Context,
+    initialKeys: (Context) -> Intent,
     override val content: @Composable ComposeNavigationIntentScope<Intent>.(key: Intent) -> Unit
-) : BaseComposeNavigatorByKeyViewModel<Scope, Intent, ComposeNavigationIntentScope<Intent>>(
-    initialScope = initialScope,
+) : BaseComposeNavigatorByKeyViewModel<Context, Intent, ComposeNavigationIntentScope<Intent>>(
+    initialContext = initialScope,
     initialKeys = initialKeys
 ), ComposeNavigationIntentStackNavigatorByKey<Intent>
