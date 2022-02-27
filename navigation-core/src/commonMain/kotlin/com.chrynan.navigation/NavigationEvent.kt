@@ -10,11 +10,11 @@ package com.chrynan.navigation
  */
 sealed class NavigationEvent<I : NavigationIntent> {
 
-    class Back<I : NavigationIntent> : NavigationEvent<I>()
+    class Back<I : NavigationIntent> internal constructor() : NavigationEvent<I>()
 
-    class Up<I : NavigationIntent> : NavigationEvent<I>()
+    class Up<I : NavigationIntent> internal constructor() : NavigationEvent<I>()
 
-    data class To<I : NavigationIntent>(val intent: I) : NavigationEvent<I>()
+    data class To<I : NavigationIntent> internal constructor(val intent: I) : NavigationEvent<I>()
 
     companion object
 }
