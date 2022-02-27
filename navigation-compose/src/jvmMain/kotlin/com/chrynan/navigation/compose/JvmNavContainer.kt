@@ -2,15 +2,17 @@ package com.chrynan.navigation.compose
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 
 @Composable
 @ExperimentalNavigationApi
 internal actual fun <Context, Key> InternalNavContainer(
     navigator: BaseComposeNavigatorByContentViewModel<Context, Key>
 ) {
-    val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)
+    val contentKey = rememberSaveable(navigator.keySaver) { mutableStateOf(navigator.initialKey) }
+
+    navigator.keyChanges.collectAsStateIn(state = contentKey)
 
     val scope = object : ComposeNavigationContentScope<Key> {
 
@@ -19,7 +21,7 @@ internal actual fun <Context, Key> InternalNavContainer(
 
     Box {
         navigator.apply {
-            scope.content(contentKey)
+            scope.content(contentKey.value)
         }
     }
 }
@@ -30,11 +32,13 @@ internal actual fun <Context, Key, NavigationScope : ComposeNavigationKeyScope<K
     navigator: BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope>,
     scope: NavigationScope
 ) {
-    val contentKey by navigator.keyChanges.collectAsState(initial = navigator.initialKey)
+    val contentKey = rememberSaveable(navigator.keySaver) { mutableStateOf(navigator.initialKey) }
+
+    navigator.keyChanges.collectAsStateIn(state = contentKey)
 
     Box {
         navigator.apply {
-            scope.content(contentKey)
+            scope.content(contentKey.value)
         }
     }
 }

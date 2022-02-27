@@ -32,8 +32,10 @@ interface ComposeNavigationIntentStackNavigatorByKey<I : NavigationIntent> :
 class ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent : NavigationIntent> internal constructor(
     initialScope: Context,
     initialKeys: (Context) -> Intent,
+    keySaver: Saver<Intent, Any>,
     override val content: @Composable ComposeNavigationIntentScope<Intent>.(key: Intent) -> Unit
 ) : BaseComposeNavigatorByKeyViewModel<Context, Intent, ComposeNavigationIntentScope<Intent>>(
     initialContext = initialScope,
-    initialKeys = initialKeys
+    initialKeys = initialKeys,
+    keySaver = keySaver
 ), ComposeNavigationIntentStackNavigatorByKey<Intent>

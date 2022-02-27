@@ -8,27 +8,29 @@ import com.chrynan.navigation.NavStackDuplicateContentStrategy
 import com.chrynan.navigation.Navigator
 
 @ExperimentalNavigationApi
-interface ComposeNavigator<T> : Navigator {
+interface ComposeNavigator<Key> : Navigator {
 
-    val initialKey: T
+    val initialKey: Key
 
-    val currentKey: T
+    val currentKey: Key
 
-    val keyChanges: Flow<T>
+    val keyChanges: Flow<Key>
 
     val isInitialized: Boolean
+
+    val keySaver: Saver<Key, Any>
 
     companion object
 }
 
 @ExperimentalNavigationApi
-interface ComposeNavigatorByContent<T> : ComposeNavigator<T> {
+interface ComposeNavigatorByContent<Key> : ComposeNavigator<Key> {
 
     @Composable
     fun goTo(
-        key: T,
+        key: Key,
         strategy: NavStackDuplicateContentStrategy,
-        content: @Composable ComposeNavigationContentScope<T>.() -> Unit
+        content: @Composable ComposeNavigationContentScope<Key>.() -> Unit
     )
 
     companion object
@@ -38,14 +40,14 @@ interface ComposeNavigatorByContent<T> : ComposeNavigator<T> {
 @Suppress("unused")
 @ExperimentalNavigationApi
 @Composable
-fun <T> ComposeNavigatorByContent<T>.goTo(key: T, content: @Composable ComposeNavigationContentScope<T>.() -> Unit) =
+fun <Key> ComposeNavigatorByContent<Key>.goTo(key: Key, content: @Composable ComposeNavigationContentScope<Key>.() -> Unit) =
     goTo(key = key, strategy = NavStackDuplicateContentStrategy.CLEAR_STACK, content = content)
 
 @ExperimentalNavigationApi
-interface ComposeNavigatorByKey<T> : ComposeNavigator<T> {
+interface ComposeNavigatorByKey<Key> : ComposeNavigator<Key> {
 
     fun goTo(
-        key: T,
+        key: Key,
         strategy: NavStackDuplicateContentStrategy
     )
 
@@ -55,11 +57,11 @@ interface ComposeNavigatorByKey<T> : ComposeNavigator<T> {
 // Note: This is needed because defaults aren't working for @Composable functions for interfaces.
 @Suppress("unused")
 @ExperimentalNavigationApi
-fun <T> ComposeNavigatorByKey<T>.goTo(key: T) =
+fun <Key> ComposeNavigatorByKey<Key>.goTo(key: Key) =
     goTo(key = key, strategy = NavStackDuplicateContentStrategy.CLEAR_STACK)
 
 @ExperimentalNavigationApi
-interface ComposeStackNavigator<T> : ComposeNavigator<T> {
+interface ComposeStackNavigator<Key> : ComposeNavigator<Key> {
 
     fun canGoBack(): Boolean
 
@@ -69,15 +71,15 @@ interface ComposeStackNavigator<T> : ComposeNavigator<T> {
 }
 
 @ExperimentalNavigationApi
-interface ComposeStackNavigatorByContent<T> : ComposeStackNavigator<T>,
-    ComposeNavigatorByContent<T> {
+interface ComposeStackNavigatorByContent<Key> : ComposeStackNavigator<Key>,
+    ComposeNavigatorByContent<Key> {
 
     companion object
 }
 
 @ExperimentalNavigationApi
-interface ComposeStackNavigatorByKey<T> : ComposeStackNavigator<T>,
-    ComposeNavigatorByKey<T> {
+interface ComposeStackNavigatorByKey<Key> : ComposeStackNavigator<Key>,
+    ComposeNavigatorByKey<Key> {
 
     companion object
 }

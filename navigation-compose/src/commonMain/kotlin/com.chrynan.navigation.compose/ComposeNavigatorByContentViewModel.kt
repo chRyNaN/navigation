@@ -21,6 +21,7 @@ abstract class BaseComposeNavigatorByContentViewModel<Context, Key> : ViewModel(
 @ExperimentalNavigationApi
 class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
     override val initialContext: Context,
+    override val keySaver: Saver<Key, Any>,
     private val initialKeysAndContent: (Context) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
 ) : BaseComposeNavigatorByContentViewModel<Context, Key>() {
 

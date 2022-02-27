@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.filterNotNull
 @ExperimentalNavigationApi
 abstract class BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope : ComposeNavigationKeyScope<Key>>(
     final override val initialContext: Context,
+    final override val keySaver: Saver<Key, Any>,
     private val initialKeys: (Context) -> Key
 ) : ViewModel(),
     ComposeNavigator<Key>,
@@ -110,10 +111,12 @@ abstract class BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope 
 
 @ExperimentalNavigationApi
 class ComposeNavigatorByKeyViewModel<Context, Key> internal constructor(
-    initialScope: Context,
+    initialContext: Context,
     initialKeys: (Context) -> Key,
+    keySaver: Saver<Key, Any>,
     override val content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
 ) : BaseComposeNavigatorByKeyViewModel<Context, Key, ComposeNavigationKeyScope<Key>>(
-    initialContext = initialScope,
-    initialKeys = initialKeys
+    initialContext = initialContext,
+    initialKeys = initialKeys,
+    keySaver = keySaver
 )
