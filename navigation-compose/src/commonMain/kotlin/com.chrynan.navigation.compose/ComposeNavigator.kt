@@ -4,7 +4,7 @@ package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.Flow
-import com.chrynan.navigation.NavStackDuplicateContentStrategy
+import com.chrynan.navigation.StackDuplicateContentStrategy
 import com.chrynan.navigation.Navigator
 
 @ExperimentalNavigationApi
@@ -29,7 +29,7 @@ interface ComposeNavigatorByContent<Key> : ComposeNavigator<Key> {
     @Composable
     fun goTo(
         key: Key,
-        strategy: NavStackDuplicateContentStrategy,
+        strategy: StackDuplicateContentStrategy,
         content: @Composable ComposeNavigationContentScope<Key>.() -> Unit
     )
 
@@ -41,14 +41,14 @@ interface ComposeNavigatorByContent<Key> : ComposeNavigator<Key> {
 @ExperimentalNavigationApi
 @Composable
 fun <Key> ComposeNavigatorByContent<Key>.goTo(key: Key, content: @Composable ComposeNavigationContentScope<Key>.() -> Unit) =
-    goTo(key = key, strategy = NavStackDuplicateContentStrategy.CLEAR_STACK, content = content)
+    goTo(key = key, strategy = StackDuplicateContentStrategy.CLEAR_STACK, content = content)
 
 @ExperimentalNavigationApi
 interface ComposeNavigatorByKey<Key> : ComposeNavigator<Key> {
 
     fun goTo(
         key: Key,
-        strategy: NavStackDuplicateContentStrategy
+        strategy: StackDuplicateContentStrategy
     )
 
     companion object
@@ -58,7 +58,7 @@ interface ComposeNavigatorByKey<Key> : ComposeNavigator<Key> {
 @Suppress("unused")
 @ExperimentalNavigationApi
 fun <Key> ComposeNavigatorByKey<Key>.goTo(key: Key) =
-    goTo(key = key, strategy = NavStackDuplicateContentStrategy.CLEAR_STACK)
+    goTo(key = key, strategy = StackDuplicateContentStrategy.CLEAR_STACK)
 
 @ExperimentalNavigationApi
 interface ComposeStackNavigator<Key> : ComposeNavigator<Key> {

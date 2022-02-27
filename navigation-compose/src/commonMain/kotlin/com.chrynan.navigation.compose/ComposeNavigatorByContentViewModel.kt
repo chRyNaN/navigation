@@ -2,7 +2,7 @@ package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
 import com.chrynan.presentation.ViewModel
-import com.chrynan.navigation.NavStackDuplicateContentStrategy
+import com.chrynan.navigation.StackDuplicateContentStrategy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -58,7 +58,7 @@ class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
     @Composable
     override fun goTo(
         key: Key,
-        strategy: NavStackDuplicateContentStrategy,
+        strategy: StackDuplicateContentStrategy,
         content: @Composable ComposeNavigationContentScope<Key>.() -> Unit
     ) {
         val currentScope = this.currentContext
@@ -67,7 +67,7 @@ class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
         // If we are already displaying this key on the current scoped stack, then return.
         if (key == currentKeyStack.lastOrNull()) return
 
-        if (strategy == NavStackDuplicateContentStrategy.CLEAR_STACK && contents.containsKey(key)) {
+        if (strategy == StackDuplicateContentStrategy.CLEAR_STACK && contents.containsKey(key)) {
             // Go Back to the content with the provided key using the updated content
             var lastKey = currentKeyStack.lastOrNull()
 

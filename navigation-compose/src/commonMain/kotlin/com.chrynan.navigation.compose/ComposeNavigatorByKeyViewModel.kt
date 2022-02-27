@@ -2,7 +2,7 @@ package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
 import com.chrynan.presentation.ViewModel
-import com.chrynan.navigation.NavStackDuplicateContentStrategy
+import com.chrynan.navigation.StackDuplicateContentStrategy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -43,14 +43,14 @@ abstract class BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope 
 
     private val scopedKeyStack = mutableMapOf(initialContext to mutableListOf(initialKey))
 
-    override fun goTo(key: Key, strategy: NavStackDuplicateContentStrategy) {
+    override fun goTo(key: Key, strategy: StackDuplicateContentStrategy) {
         val currentScope = this.currentContext
         val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
 
         // If we are already displaying this key on the current scoped stack, then return.
         if (key == currentKeyStack.lastOrNull()) return
 
-        if (strategy == NavStackDuplicateContentStrategy.CLEAR_STACK && currentKeyStack.contains(key)) {
+        if (strategy == StackDuplicateContentStrategy.CLEAR_STACK && currentKeyStack.contains(key)) {
             // Go Back to the content with the provided key using the updated content
             var lastKey = currentKeyStack.lastOrNull()
 

@@ -1,7 +1,7 @@
 package com.chrynan.navigation
 
 @Suppress("unused")
-enum class NavStackDuplicateContentStrategy {
+enum class StackDuplicateContentStrategy {
 
     CLEAR_STACK,
     ADD_TO_STACK;
