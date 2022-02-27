@@ -4,12 +4,12 @@ package com.chrynan.navigation
 
 import android.app.Activity
 
-internal class AndroidNavigator<I : NavigationIntent>(
-    private val handler: AndroidNavigationHandler<I>,
+internal class AndroidNavigator<Intent : NavigationIntent>(
+    private val handler: AndroidNavigationHandler<Intent>,
     private val scope: AndroidNavigationScope
-) : NavigationEventNavigator<I> {
+) : NavigationEventNavigator<Intent> {
 
-    override fun navigate(event: NavigationEvent<I>) {
+    override fun navigate(event: NavigationEvent<Intent>) {
         handler.apply {
             scope.onNavigate(event = event)
         }
@@ -32,10 +32,10 @@ internal class AndroidNavigator<I : NavigationIntent>(
  * navigator.goBack()
  * ```
  */
-fun <I : NavigationIntent> navigator(
+fun <Intent : NavigationIntent> navigator(
     activity: Activity,
-    handler: AndroidNavigationHandler<I>
-): NavigationEventNavigator<I> {
+    handler: AndroidNavigationHandler<Intent>
+): NavigationEventNavigator<Intent> {
     val scope = AndroidNavigationScope(activity = activity)
 
     return AndroidNavigator(handler = handler, scope = scope)
@@ -54,21 +54,25 @@ fun <I : NavigationIntent> navigator(
  * navigator.goBack()
  * ```
  */
-fun <I : NavigationIntent> navigator(
+fun <Intent : NavigationIntent> navigator(
     activity: Activity,
+    canGoBack: () -> Boolean = { false },
     onGoBack: () -> Unit = { activity.onBackPressed() },
     onGoUp: () -> Unit = { activity.onBackPressed() },
-    onGoTo: (intent: I) -> Unit
-): NavigationEventNavigator<I> {
+    onGoTo: (intent: Intent) -> Unit
+): NavigationEventNavigator<Intent> {
     val scope = AndroidNavigationScope(activity = activity)
 
     return AndroidNavigator(
-        handler = { event ->
-            when (event) {
-                is NavigationEvent.Back -> onGoBack()
-                is NavigationEvent.Up -> onGoUp()
-                is NavigationEvent.To -> onGoTo(event.intent)
-            }
+        handler = object : AndroidNavigationHandler<Intent> {
+
+            override fun AndroidNavigationScope.onGoBack() = onGoBack()
+
+            override fun AndroidNavigationScope.onGoUp() = onGoUp()
+
+            override fun AndroidNavigationScope.onGoTo(intent: Intent) = onGoTo(intent)
+
+            override fun AndroidNavigationScope.canGoBack(): Boolean = canGoBack()
         },
         scope = scope
     )

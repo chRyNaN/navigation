@@ -25,7 +25,7 @@ internal actual fun <Context, Key> InternalNavContainer(
         }
     }
 
-    BackHandler { navigator.goBack() }
+    BackHandler(enabled = navigator.canGoBack()) { navigator.goBack() }
 }
 
 @Composable
@@ -44,5 +44,5 @@ internal actual fun <Context, Key, NavigationScope : ComposeNavigationKeyScope<K
         }
     }
 
-    BackHandler { navigator.goBack() }
+    BackHandler(enabled = navigator.canGoBack()) { navigator.goBack() }
 }
