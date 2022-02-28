@@ -11,7 +11,7 @@ internal class AndroidNavigator<Intent : NavigationIntent>(
 
     override fun navigate(event: NavigationEvent<Intent>) {
         handler.apply {
-            scope.onNavigate(event = event)
+            scope.onNavigate(value = event)
         }
     }
 

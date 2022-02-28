@@ -20,7 +20,7 @@ interface ComposeNavigationIntentStackNavigatorByKey<Context, Intent : Navigatio
     override fun ComposeNavigationIntentScope<Context, Intent>.onGoTo(intent: Intent) = goTo(key = intent)
 
     override fun navigate(event: NavigationEvent<Intent>) {
-        scope.onNavigate(event = event)
+        scope.onNavigate(value = event)
     }
 }
 

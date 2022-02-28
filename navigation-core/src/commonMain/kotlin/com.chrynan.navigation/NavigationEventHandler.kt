@@ -16,11 +16,11 @@ interface NavigationEventHandler<Intent : NavigationIntent, Scope : NavigationSc
 
     fun Scope.onGoTo(intent: Intent)
 
-    override fun Scope.onNavigate(event: NavigationEvent<Intent>) =
-        when (event) {
+    override fun Scope.onNavigate(value: NavigationEvent<Intent>) =
+        when (value) {
             is NavigationEvent.Back -> onGoBack()
             is NavigationEvent.Up -> onGoUp()
-            is NavigationEvent.To -> onGoTo(intent = event.intent)
+            is NavigationEvent.To -> onGoTo(intent = value.intent)
         }
 
     override fun Scope.canGoBack(): Boolean = false
