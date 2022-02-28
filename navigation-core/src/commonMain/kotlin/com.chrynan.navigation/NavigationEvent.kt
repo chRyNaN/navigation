@@ -8,13 +8,13 @@ package com.chrynan.navigation
  * @see [Navigator.navigate]
  * @see [NavigationHandler.onNavigate]
  */
-sealed class NavigationEvent<Intent : NavigationIntent> {
+sealed class NavigationEvent<NavigationValue> {
 
-    class Back<Intent : NavigationIntent> internal constructor() : NavigationEvent<Intent>()
+    class Back<NavigationValue> internal constructor() : NavigationEvent<NavigationValue>()
 
-    class Up<Intent : NavigationIntent> internal constructor() : NavigationEvent<Intent>()
+    class Up<NavigationValue> internal constructor() : NavigationEvent<NavigationValue>()
 
-    data class To<Intent : NavigationIntent> internal constructor(val intent: Intent) : NavigationEvent<Intent>()
+    data class To<NavigationValue> internal constructor(val value: NavigationValue) : NavigationEvent<NavigationValue>()
 
     companion object
 }

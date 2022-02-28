@@ -33,4 +33,4 @@ fun <Intent : NavigationIntent> NavigationEventNavigator<Intent>.goUp() =
  * A convenience function for calling [NavigationEventNavigator.navigate] with [NavigationEvent.To].
  */
 fun <Intent : NavigationIntent> NavigationEventNavigator<Intent>.goTo(intent: Intent) =
-    navigate(event = NavigationEvent.To(intent = intent))
+    navigate(event = NavigationEvent.To(value = intent))
