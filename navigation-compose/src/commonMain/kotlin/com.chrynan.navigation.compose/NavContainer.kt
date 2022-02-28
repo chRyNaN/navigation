@@ -3,6 +3,7 @@
 package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
+import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.NavigationIntent
 
 @Composable

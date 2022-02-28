@@ -4,6 +4,7 @@ package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.NavigationContext
 import com.chrynan.navigation.NavigationIntent
 import com.chrynan.navigation.Navigator

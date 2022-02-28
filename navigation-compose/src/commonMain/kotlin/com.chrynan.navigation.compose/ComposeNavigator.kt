@@ -3,6 +3,7 @@
 package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
+import com.chrynan.navigation.ExperimentalNavigationApi
 import kotlinx.coroutines.flow.Flow
 import com.chrynan.navigation.StackDuplicateContentStrategy
 import com.chrynan.navigation.Navigator

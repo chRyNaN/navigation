@@ -5,6 +5,7 @@ package com.chrynan.navigation.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import com.chrynan.navigation.ExperimentalNavigationApi
 
 /**
  * Obtains the changes to the [ComposeNavigator.currentKey] value and returns it as a [State]. This allows it to be

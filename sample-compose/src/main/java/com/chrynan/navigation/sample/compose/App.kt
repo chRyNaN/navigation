@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.chrynan.navigation.compose.ExperimentalNavigationApi
+import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.compose.NavContainer
 import com.chrynan.navigation.compose.goTo
 import com.chrynan.navigation.compose.rememberNavigatorByKey

@@ -1,5 +1,6 @@
 package com.chrynan.navigation.compose
 
+import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.NavigationIntent
 import com.chrynan.navigation.NavigationScope
 

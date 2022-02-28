@@ -3,6 +3,7 @@ package com.chrynan.navigation.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.chrynan.navigation.ExperimentalNavigationApi
 import org.jetbrains.compose.web.dom.Div
 
 @Composable

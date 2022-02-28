@@ -1,6 +1,7 @@
 package com.chrynan.navigation.compose
 
 import androidx.compose.runtime.Composable
+import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.presentation.ViewModel
 import com.chrynan.navigation.StackDuplicateContentStrategy
 import kotlinx.coroutines.flow.Flow

@@ -1,6 +1,4 @@
-@file:Suppress("unused")
-
-package com.chrynan.navigation.compose
+package com.chrynan.navigation
 
 /**
  * Indicates that the component annotated with this annotation is experimental and could change or be removed in the

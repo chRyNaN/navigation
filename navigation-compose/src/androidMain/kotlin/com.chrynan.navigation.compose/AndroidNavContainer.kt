@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.chrynan.navigation.ExperimentalNavigationApi
 
 @Composable
 @ExperimentalNavigationApi
