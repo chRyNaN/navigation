@@ -62,8 +62,8 @@ fun <Key> ComposeNavigator<Key>.currentKeyAsState(): State<Key> =
  */
 @ExperimentalNavigationApi
 @Composable
-fun <Context, Key> ComposeContextNavigator<Context, Key>.currentContextAsState(initialCurrentScope: Context): State<Context> =
-    contextChanges.collectAsState(initial = initialCurrentScope)
+fun <Context, Key> ComposeContextNavigator<Context, Key>.currentContextAsState(initialCurrentContext: Context): State<Context> =
+    contextChanges.collectAsState(initial = initialCurrentContext)
 
 /**
  * Obtains the changes to the [ComposeContextNavigator.currentContext] value and returns it as a [State]. This allows it
