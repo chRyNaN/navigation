@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.Flow
 import com.chrynan.navigation.StackDuplicateContentStrategy
 import com.chrynan.navigation.Navigator
+import com.chrynan.navigation.StackNavigator
 
 @ExperimentalNavigationApi
 interface ComposeNavigator<Key> : Navigator {
@@ -39,7 +40,8 @@ interface ComposeContextNavigator<Context, Key> : ComposeNavigator<Key> {
 
 @ExperimentalNavigationApi
 interface ComposeNavigatorByContent<Context, Key> : ComposeNavigator<Key>,
-    ComposeContextNavigator<Context, Key> {
+    ComposeContextNavigator<Context, Key>,
+    StackNavigator {
 
     @Composable
     fun goTo(
@@ -63,7 +65,8 @@ fun <Context, Key> ComposeNavigatorByContent<Context, Key>.goTo(
 
 @ExperimentalNavigationApi
 interface ComposeNavigatorByKey<Context, Key> : ComposeNavigator<Key>,
-    ComposeContextNavigator<Context, Key> {
+    ComposeContextNavigator<Context, Key>,
+    StackNavigator {
 
     fun goTo(
         key: Key,

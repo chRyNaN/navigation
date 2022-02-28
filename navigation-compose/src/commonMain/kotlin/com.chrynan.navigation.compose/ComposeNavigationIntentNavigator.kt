@@ -7,8 +7,7 @@ import com.chrynan.navigation.*
 interface ComposeNavigationIntentStackNavigatorByKey<Context, Intent : NavigationIntent> :
     ComposeNavigatorByKey<Context, Intent>,
     NavigationEventHandler<Intent, ComposeNavigationIntentScope<Context, Intent>>,
-    NavigationEventNavigator<Intent>,
-    StackNavigator {
+    NavigationEventNavigator<Intent> {
 
     val scope: ComposeNavigationIntentScope<Context, Intent>
 
