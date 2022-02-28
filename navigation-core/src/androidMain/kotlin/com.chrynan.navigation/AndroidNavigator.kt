@@ -72,7 +72,7 @@ fun <Intent : NavigationIntent> navigator(
 
             override fun AndroidNavigationScope.onGoUp() = onGoUp()
 
-            override fun AndroidNavigationScope.onGoTo(intent: Intent) = onGoTo(intent)
+            override fun AndroidNavigationScope.onGoTo(value: Intent) = onGoTo(value)
 
             override fun AndroidNavigationScope.canGoBack(): Boolean = canGoBack()
         },
