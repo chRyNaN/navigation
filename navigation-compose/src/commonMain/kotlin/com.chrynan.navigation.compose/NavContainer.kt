@@ -7,11 +7,11 @@ import com.chrynan.navigation.NavigationIntent
 
 @Composable
 @ExperimentalNavigationApi
-internal expect fun <Context, Key> InternalNavContainer(navigator: BaseComposeNavigatorByContentViewModel<Context, Key>)
+internal expect fun <Context, Key> InternalNavContainer(navigator: ComposeNavigatorByContentViewModel<Context, Key>)
 
 @Composable
 @ExperimentalNavigationApi
-internal expect fun <Context, Key, NavigationScope : ComposeNavigationKeyScope<Key>> InternalNavContainer(
+internal expect fun <Context, Key, NavigationScope : ComposeNavigationKeyScope<Context, Key>> InternalNavContainer(
     navigator: BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope>,
     scope: NavigationScope
 )
@@ -71,9 +71,9 @@ fun <Context, Key> NavContainer(navigator: ComposeNavigatorByContentViewModel<Co
 @Composable
 @ExperimentalNavigationApi
 fun <Context, Key> NavContainer(navigator: ComposeNavigatorByKeyViewModel<Context, Key>) {
-    val scope = object : ComposeNavigationKeyScope<Key> {
+    val scope = object : ComposeNavigationKeyScope<Context, Key> {
 
-        override val navigator: ComposeStackNavigatorByKey<Key>
+        override val navigator: ComposeNavigatorByKeyViewModel<Context, Key>
             get() = navigator
     }
 
@@ -109,9 +109,9 @@ fun <Context, Key> NavContainer(navigator: ComposeNavigatorByKeyViewModel<Contex
 @Composable
 @ExperimentalNavigationApi
 fun <Context, Intent : NavigationIntent> NavContainer(navigator: ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent>) {
-    val scope = object : ComposeNavigationIntentScope<Intent> {
+    val scope = object : ComposeNavigationIntentScope<Context, Intent> {
 
-        override val navigator: ComposeNavigationIntentStackNavigatorByKey<Intent>
+        override val navigator: ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent>
             get() = navigator
     }
 

@@ -14,6 +14,8 @@ internal class AndroidNavigator<Intent : NavigationIntent>(
             scope.onNavigate(event = event)
         }
     }
+
+    override fun canGoBack(): Boolean = handler.run { scope.canGoBack() }
 }
 
 /**

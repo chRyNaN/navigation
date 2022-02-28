@@ -42,7 +42,7 @@ import com.chrynan.navigation.Navigator
 fun <Key> rememberNavigatorByContent(
     initialKey: Key,
     keySaver: Saver<Key, Any> = autoSaver(),
-    initialContent: @Composable ComposeNavigationContentScope<Key>.() -> Unit
+    initialContent: @Composable ComposeNavigationContentScope<Nothing?, Key>.() -> Unit
 ): ComposeNavigatorByContentViewModel<Nothing?, Key> = remember {
     ComposeNavigatorByContentViewModel(
         initialContext = null,
@@ -91,7 +91,7 @@ fun <Key> rememberNavigatorByContent(
 fun <Context, Key> rememberNavigatorByContent(
     initialContext: Context,
     keySaver: Saver<Key, Any> = autoSaver(),
-    initialKeysAndContent: (Context) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
+    initialKeysAndContent: (Context) -> Pair<Key, @Composable ComposeNavigationContentScope<Context, Key>.() -> Unit>
 ): ComposeNavigatorByContentViewModel<Context, Key> = remember {
     ComposeNavigatorByContentViewModel(
         initialContext = initialContext,
@@ -140,7 +140,7 @@ fun <Context, Key> rememberNavigatorByContent(
 fun <Context : NavigationContext<Key>, Key> rememberNavigatorByContent(
     initialContext: Context,
     keySaver: Saver<Key, Any> = autoSaver(),
-    initialContent: (Context) -> @Composable ComposeNavigationContentScope<Key>.() -> Unit
+    initialContent: (Context) -> @Composable ComposeNavigationContentScope<Context, Key>.() -> Unit
 ): ComposeNavigatorByContentViewModel<Context, Key> = remember {
     ComposeNavigatorByContentViewModel(
         initialContext = initialContext,
@@ -187,7 +187,7 @@ fun <Context : NavigationContext<Key>, Key> rememberNavigatorByContent(
 fun <Key> rememberNavigatorByKey(
     initialKey: Key,
     keySaver: Saver<Key, Any> = autoSaver(),
-    content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
+    content: @Composable ComposeNavigationKeyScope<Nothing?, Key>.(key: Key) -> Unit
 ): ComposeNavigatorByKeyViewModel<Nothing?, Key> = remember {
     ComposeNavigatorByKeyViewModel(
         initialContext = null,
@@ -249,7 +249,7 @@ fun <Context, Key> rememberNavigatorByKey(
     initialContext: Context,
     initialKeys: (Context) -> Key,
     keySaver: Saver<Key, Any> = autoSaver(),
-    content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
+    content: @Composable ComposeNavigationKeyScope<Context, Key>.(key: Key) -> Unit
 ): ComposeNavigatorByKeyViewModel<Context, Key> = remember {
     ComposeNavigatorByKeyViewModel(
         initialContext = initialContext,
@@ -303,7 +303,7 @@ fun <Context, Key> rememberNavigatorByKey(
 fun <Context : NavigationContext<Key>, Key> rememberNavigatorByKey(
     initialContext: Context,
     keySaver: Saver<Key, Any> = autoSaver(),
-    content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
+    content: @Composable ComposeNavigationKeyScope<Context, Key>.(key: Key) -> Unit
 ): ComposeNavigatorByKeyViewModel<Context, Key> = remember {
     ComposeNavigatorByKeyViewModel(
         initialContext = initialContext,
@@ -352,7 +352,7 @@ fun <Context : NavigationContext<Key>, Key> rememberNavigatorByKey(
 fun <Intent : NavigationIntent> rememberNavigatorByIntent(
     initialIntent: Intent,
     keySaver: Saver<Intent, Any> = autoSaver(),
-    content: @Composable ComposeNavigationIntentScope<Intent>.(intent: Intent) -> Unit
+    content: @Composable ComposeNavigationIntentScope<Nothing?, Intent>.(intent: Intent) -> Unit
 ): ComposeNavigationIntentNavigatorByKeyViewModel<Nothing?, Intent> = remember {
     ComposeNavigationIntentNavigatorByKeyViewModel(
         initialScope = null,
@@ -411,7 +411,7 @@ fun <Context, Intent : NavigationIntent> rememberNavigatorByIntent(
     initialContext: Context,
     initialIntents: (Context) -> Intent,
     keySaver: Saver<Intent, Any> = autoSaver(),
-    content: @Composable ComposeNavigationIntentScope<Intent>.(intent: Intent) -> Unit
+    content: @Composable ComposeNavigationIntentScope<Context, Intent>.(intent: Intent) -> Unit
 ): ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent> = remember {
     ComposeNavigationIntentNavigatorByKeyViewModel(
         initialScope = initialContext,
@@ -462,7 +462,7 @@ fun <Context, Intent : NavigationIntent> rememberNavigatorByIntent(
 fun <Context : NavigationContext<Intent>, Intent : NavigationIntent> rememberNavigatorByIntent(
     initialContext: Context,
     keySaver: Saver<Intent, Any> = autoSaver(),
-    content: @Composable ComposeNavigationIntentScope<Intent>.(intent: Intent) -> Unit
+    content: @Composable ComposeNavigationIntentScope<Context, Intent>.(intent: Intent) -> Unit
 ): ComposeNavigationIntentNavigatorByKeyViewModel<Context, Intent> = remember {
     ComposeNavigationIntentNavigatorByKeyViewModel(
         initialScope = initialContext,

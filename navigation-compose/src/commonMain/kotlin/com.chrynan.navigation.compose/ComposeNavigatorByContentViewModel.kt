@@ -3,6 +3,7 @@ package com.chrynan.navigation.compose
 import androidx.compose.runtime.Composable
 import com.chrynan.presentation.ViewModel
 import com.chrynan.navigation.StackDuplicateContentStrategy
+import com.chrynan.navigation.StackNavigator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -10,19 +11,19 @@ import kotlinx.coroutines.flow.filterNotNull
 @ExperimentalNavigationApi
 abstract class BaseComposeNavigatorByContentViewModel<Context, Key> : ViewModel(),
     ComposeNavigator<Key>,
-    ComposeNavigatorByContent<Key>,
-    ComposeStackNavigatorByContent<Key>,
+    ComposeNavigatorByContent<Context, Key>,
+    StackNavigator,
     ComposeContextNavigator<Context, Key> {
 
     @Composable
-    internal abstract fun ComposeNavigationContentScope<Key>.content(key: Key)
+    internal abstract fun ComposeNavigationContentScope<Context, Key>.content(key: Key)
 }
 
 @ExperimentalNavigationApi
 class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
     override val initialContext: Context,
     override val keySaver: Saver<Key, Any>,
-    private val initialKeysAndContent: (Context) -> Pair<Key, @Composable ComposeNavigationContentScope<Key>.() -> Unit>
+    private val initialKeysAndContent: (Context) -> Pair<Key, @Composable ComposeNavigationContentScope<Context, Key>.() -> Unit>
 ) : BaseComposeNavigatorByContentViewModel<Context, Key>() {
 
     override val keyChanges: Flow<Key>
@@ -31,7 +32,7 @@ class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
     override val initialKey: Key
         get() = initialKeysAndContent(initialContext).first
 
-    private val initialContent: @Composable ComposeNavigationContentScope<Key>.() -> Unit
+    private val initialContent: @Composable ComposeNavigationContentScope<Context, Key>.() -> Unit
         get() = initialKeysAndContent(initialContext).second
 
     override val currentKey: Key
@@ -49,7 +50,7 @@ class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
     private val mutableKeyFlow = MutableStateFlow(value = initialKey)
     private val mutableScopeFlow = MutableStateFlow(value = initialContext)
 
-    private val contents = mutableMapOf<Key, (@Composable ComposeNavigationContentScope<Key>.() -> Unit)>(
+    private val contents = mutableMapOf<Key, (@Composable ComposeNavigationContentScope<Context, Key>.() -> Unit)>(
         initialKey to initialContent
     )
 
@@ -59,7 +60,7 @@ class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
     override fun goTo(
         key: Key,
         strategy: StackDuplicateContentStrategy,
-        content: @Composable ComposeNavigationContentScope<Key>.() -> Unit
+        content: @Composable ComposeNavigationContentScope<Context, Key>.() -> Unit
     ) {
         val currentScope = this.currentContext
         val currentKeyStack = scopedKeyStack[currentScope] ?: mutableListOf()
@@ -121,7 +122,7 @@ class ComposeNavigatorByContentViewModel<Context, Key> internal constructor(
     }
 
     @Composable
-    override fun ComposeNavigationContentScope<Key>.content(key: Key) {
+    override fun ComposeNavigationContentScope<Context, Key>.content(key: Key) {
         contents[key]?.invoke(this)
     }
 

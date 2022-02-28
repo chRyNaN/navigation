@@ -10,25 +10,26 @@ interface ComposeNavigationScope : NavigationScope {
 }
 
 @ExperimentalNavigationApi
-interface ComposeNavigationKeyScope<K> : ComposeNavigationScope {
+interface ComposeNavigationKeyScope<Context, Key> : ComposeNavigationScope {
 
-    val navigator: ComposeStackNavigatorByKey<K>
-
-    companion object
-}
-
-@ExperimentalNavigationApi
-interface ComposeNavigationIntentScope<I : NavigationIntent> : ComposeNavigationKeyScope<I> {
-
-    override val navigator: ComposeNavigationIntentStackNavigatorByKey<I>
+    val navigator: ComposeNavigatorByKey<Context, Key>
 
     companion object
 }
 
 @ExperimentalNavigationApi
-interface ComposeNavigationContentScope<K> : ComposeNavigationScope {
+interface ComposeNavigationIntentScope<Context, Intent : NavigationIntent> : ComposeNavigationScope,
+    ComposeNavigationKeyScope<Context, Intent> {
 
-    val navigator: ComposeStackNavigatorByContent<K>
+    override val navigator: ComposeNavigationIntentStackNavigatorByKey<Context, Intent>
+
+    companion object
+}
+
+@ExperimentalNavigationApi
+interface ComposeNavigationContentScope<Context, Key> : ComposeNavigationScope {
+
+    val navigator: ComposeNavigatorByContent<Context, Key>
 
     companion object
 }

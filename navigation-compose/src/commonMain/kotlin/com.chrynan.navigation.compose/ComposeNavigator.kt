@@ -24,67 +24,6 @@ interface ComposeNavigator<Key> : Navigator {
 }
 
 @ExperimentalNavigationApi
-interface ComposeNavigatorByContent<Key> : ComposeNavigator<Key> {
-
-    @Composable
-    fun goTo(
-        key: Key,
-        strategy: StackDuplicateContentStrategy,
-        content: @Composable ComposeNavigationContentScope<Key>.() -> Unit
-    )
-
-    companion object
-}
-
-// Note: This is needed because defaults aren't working for @Composable functions for interfaces.
-@Suppress("unused")
-@ExperimentalNavigationApi
-@Composable
-fun <Key> ComposeNavigatorByContent<Key>.goTo(key: Key, content: @Composable ComposeNavigationContentScope<Key>.() -> Unit) =
-    goTo(key = key, strategy = StackDuplicateContentStrategy.CLEAR_STACK, content = content)
-
-@ExperimentalNavigationApi
-interface ComposeNavigatorByKey<Key> : ComposeNavigator<Key> {
-
-    fun goTo(
-        key: Key,
-        strategy: StackDuplicateContentStrategy
-    )
-
-    companion object
-}
-
-// Note: This is needed because defaults aren't working for @Composable functions for interfaces.
-@Suppress("unused")
-@ExperimentalNavigationApi
-fun <Key> ComposeNavigatorByKey<Key>.goTo(key: Key) =
-    goTo(key = key, strategy = StackDuplicateContentStrategy.CLEAR_STACK)
-
-@ExperimentalNavigationApi
-interface ComposeStackNavigator<Key> : ComposeNavigator<Key> {
-
-    fun canGoBack(): Boolean
-
-    fun goBack(): Boolean
-
-    companion object
-}
-
-@ExperimentalNavigationApi
-interface ComposeStackNavigatorByContent<Key> : ComposeStackNavigator<Key>,
-    ComposeNavigatorByContent<Key> {
-
-    companion object
-}
-
-@ExperimentalNavigationApi
-interface ComposeStackNavigatorByKey<Key> : ComposeStackNavigator<Key>,
-    ComposeNavigatorByKey<Key> {
-
-    companion object
-}
-
-@ExperimentalNavigationApi
 interface ComposeContextNavigator<Context, Key> : ComposeNavigator<Key> {
 
     val initialContext: Context
@@ -97,3 +36,45 @@ interface ComposeContextNavigator<Context, Key> : ComposeNavigator<Key> {
 
     companion object
 }
+
+@ExperimentalNavigationApi
+interface ComposeNavigatorByContent<Context, Key> : ComposeNavigator<Key>,
+    ComposeContextNavigator<Context, Key> {
+
+    @Composable
+    fun goTo(
+        key: Key,
+        strategy: StackDuplicateContentStrategy,
+        content: @Composable ComposeNavigationContentScope<Context, Key>.() -> Unit
+    )
+
+    companion object
+}
+
+// Note: This is needed because defaults aren't working for @Composable functions for interfaces.
+@Suppress("unused")
+@ExperimentalNavigationApi
+@Composable
+fun <Context, Key> ComposeNavigatorByContent<Context, Key>.goTo(
+    key: Key,
+    content: @Composable ComposeNavigationContentScope<Context, Key>.() -> Unit
+) =
+    goTo(key = key, strategy = StackDuplicateContentStrategy.CLEAR_STACK, content = content)
+
+@ExperimentalNavigationApi
+interface ComposeNavigatorByKey<Context, Key> : ComposeNavigator<Key>,
+    ComposeContextNavigator<Context, Key> {
+
+    fun goTo(
+        key: Key,
+        strategy: StackDuplicateContentStrategy
+    )
+
+    companion object
+}
+
+// Note: This is needed because defaults aren't working for @Composable functions for interfaces.
+@Suppress("unused")
+@ExperimentalNavigationApi
+fun <Context, Key> ComposeNavigatorByKey<Context, Key>.goTo(key: Key) =
+    goTo(key = key, strategy = StackDuplicateContentStrategy.CLEAR_STACK)

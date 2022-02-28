@@ -3,19 +3,20 @@ package com.chrynan.navigation.compose
 import androidx.compose.runtime.Composable
 import com.chrynan.presentation.ViewModel
 import com.chrynan.navigation.StackDuplicateContentStrategy
+import com.chrynan.navigation.StackNavigator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 
 @ExperimentalNavigationApi
-abstract class BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope : ComposeNavigationKeyScope<Key>>(
+abstract class BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope : ComposeNavigationKeyScope<Context, Key>>(
     final override val initialContext: Context,
     final override val keySaver: Saver<Key, Any>,
     private val initialKeys: (Context) -> Key
 ) : ViewModel(),
     ComposeNavigator<Key>,
-    ComposeNavigatorByKey<Key>,
-    ComposeStackNavigatorByKey<Key>,
+    ComposeNavigatorByKey<Context, Key>,
+    StackNavigator,
     ComposeContextNavigator<Context, Key> {
 
     internal abstract val content: @Composable NavigationScope.(key: Key) -> Unit
@@ -114,8 +115,8 @@ class ComposeNavigatorByKeyViewModel<Context, Key> internal constructor(
     initialContext: Context,
     initialKeys: (Context) -> Key,
     keySaver: Saver<Key, Any>,
-    override val content: @Composable ComposeNavigationKeyScope<Key>.(key: Key) -> Unit
-) : BaseComposeNavigatorByKeyViewModel<Context, Key, ComposeNavigationKeyScope<Key>>(
+    override val content: @Composable ComposeNavigationKeyScope<Context, Key>.(key: Key) -> Unit
+) : BaseComposeNavigatorByKeyViewModel<Context, Key, ComposeNavigationKeyScope<Context, Key>>(
     initialContext = initialContext,
     initialKeys = initialKeys,
     keySaver = keySaver
