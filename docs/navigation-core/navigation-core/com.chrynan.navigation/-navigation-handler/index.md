@@ -3,7 +3,7 @@
 # NavigationHandler
 
 [common]\
-fun interface [NavigationHandler](index.md)&lt;[I](index.md) : [NavigationIntent](../-navigation-intent/index.md), [S](index.md) : [NavigationScope](../-navigation-scope/index.md)&gt;
+fun interface [NavigationHandler](index.md)&lt;[NavigationValue](index.md) : [Any](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html), [Scope](index.md) : [NavigationScope](../-navigation-scope/index.md)&gt;
 
 Handles the navigation from a [Navigator](../-navigator/index.md).
 
@@ -17,11 +17,11 @@ Handles the navigation from a [Navigator](../-navigator/index.md).
 
 | Name | Summary |
 |---|---|
-| [onNavigate](on-navigate.md) | [common]<br>abstract fun [S](index.md).[onNavigate](on-navigate.md)(event: [NavigationEvent](../-navigation-event/index.md)&lt;[I](index.md)&gt;)<br>Handles the actual navigation to a different part of the app defined by the provided [event](on-navigate.md) using the [S](index.md) scope. |
+| [onNavigate](on-navigate.md) | [common]<br>abstract fun [Scope](index.md).[onNavigate](on-navigate.md)(value: [NavigationValue](index.md))<br>Handles the actual navigation to a different part of the app defined by the provided [value](on-navigate.md) using the [Scope](index.md) scope. |
 
 ## Inheritors
 
 | Name |
 |---|
-| [AndroidNavigationHandler](../-android-navigation-handler/index.md) |
 | [NavigationEventHandler](../-navigation-event-handler/index.md) |
+| [StackNavigationHandler](../-stack-navigation-handler/index.md) |

@@ -20,3 +20,4 @@ A [Navigator](index.md) is platform and UI framework dependent, so each implemen
 | Name |
 |---|
 | [NavigationEventNavigator](../-navigation-event-navigator/index.md) |
+| [StackNavigator](../-stack-navigator/index.md) |

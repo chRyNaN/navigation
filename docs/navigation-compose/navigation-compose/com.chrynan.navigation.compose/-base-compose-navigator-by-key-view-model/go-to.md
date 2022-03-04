@@ -3,4 +3,4 @@
 # goTo
 
 [common]\
-open override fun [goTo](go-to.md)(key: [Key](index.md), strategy: [NavStackDuplicateContentStrategy](../../../../navigation-core/navigation-core/com.chrynan.navigation/-nav-stack-duplicate-content-strategy/index.md))
+open override fun [goTo](go-to.md)(key: [Key](index.md), strategy: [StackDuplicateContentStrategy](../../../../navigation-core/navigation-core/com.chrynan.navigation/-stack-duplicate-content-strategy/index.md))

@@ -3,4 +3,4 @@
 # navigator
 
 [common]\
-abstract override val [navigator](navigator.md): [ComposeNavigationIntentStackNavigatorByKey](../-compose-navigation-intent-stack-navigator-by-key/index.md)&lt;[I](index.md)&gt;
+abstract override val [navigator](navigator.md): [ComposeNavigationIntentStackNavigatorByKey](../-compose-navigation-intent-stack-navigator-by-key/index.md)&lt;[Context](index.md), [Intent](index.md)&gt;

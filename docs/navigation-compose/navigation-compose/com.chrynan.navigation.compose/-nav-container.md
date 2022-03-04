@@ -6,9 +6,9 @@
 
 @Composable
 
-@[ExperimentalNavigationApi](-experimental-navigation-api/index.md)
+@[ExperimentalNavigationApi](../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-fun &lt;[Scope](-nav-container.md), [Key](-nav-container.md)&gt; [NavContainer](-nav-container.md)(navigator: [ComposeNavigatorByContentViewModel](-compose-navigator-by-content-view-model/index.md)&lt;[Scope](-nav-container.md), [Key](-nav-container.md)&gt;)
+fun &lt;[Context](-nav-container.md), [Key](-nav-container.md)&gt; [NavContainer](-nav-container.md)(navigator: [ComposeNavigatorByContentViewModel](-compose-navigator-by-content-view-model/index.md)&lt;[Context](-nav-container.md), [Key](-nav-container.md)&gt;)
 
 Displays the content from a [navigator](-nav-container.md) in this Composable UI Container.
 
@@ -36,9 +36,9 @@ common
 
 @Composable
 
-@[ExperimentalNavigationApi](-experimental-navigation-api/index.md)
+@[ExperimentalNavigationApi](../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-fun &lt;[Scope](-nav-container.md), [Key](-nav-container.md)&gt; [NavContainer](-nav-container.md)(navigator: [ComposeNavigatorByKeyViewModel](-compose-navigator-by-key-view-model/index.md)&lt;[Scope](-nav-container.md), [Key](-nav-container.md)&gt;)
+fun &lt;[Context](-nav-container.md), [Key](-nav-container.md)&gt; [NavContainer](-nav-container.md)(navigator: [ComposeNavigatorByKeyViewModel](-compose-navigator-by-key-view-model/index.md)&lt;[Context](-nav-container.md), [Key](-nav-container.md)&gt;)
 
 Displays the content from a [navigator](-nav-container.md) in this Composable UI Container.
 
@@ -72,9 +72,9 @@ common
 
 @Composable
 
-@[ExperimentalNavigationApi](-experimental-navigation-api/index.md)
+@[ExperimentalNavigationApi](../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-fun &lt;[Scope](-nav-container.md), [Intent](-nav-container.md) : [NavigationIntent](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-intent/index.md)&gt; [NavContainer](-nav-container.md)(navigator: [ComposeNavigationIntentNavigatorByKeyViewModel](-compose-navigation-intent-navigator-by-key-view-model/index.md)&lt;[Scope](-nav-container.md), [Intent](-nav-container.md)&gt;)
+fun &lt;[Context](-nav-container.md), [Intent](-nav-container.md) : [NavigationIntent](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-intent/index.md)&gt; [NavContainer](-nav-container.md)(navigator: [ComposeNavigationIntentNavigatorByKeyViewModel](-compose-navigation-intent-navigator-by-key-view-model/index.md)&lt;[Context](-nav-container.md), [Intent](-nav-container.md)&gt;)
 
 Displays the content from a [navigator](-nav-container.md) in this Composable UI Container.
 

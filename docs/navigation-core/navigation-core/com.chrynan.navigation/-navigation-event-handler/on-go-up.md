@@ -3,4 +3,4 @@
 # onGoUp
 
 [common]\
-abstract fun [S](index.md).[onGoUp](on-go-up.md)()
+abstract fun [Scope](index.md).[onGoUp](on-go-up.md)()

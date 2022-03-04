@@ -3,6 +3,6 @@
 # onNavigate
 
 [common]\
-abstract fun [S](index.md).[onNavigate](on-navigate.md)(event: [NavigationEvent](../-navigation-event/index.md)&lt;[I](index.md)&gt;)
+abstract fun [Scope](index.md).[onNavigate](on-navigate.md)(value: [NavigationValue](index.md))
 
-Handles the actual navigation to a different part of the app defined by the provided [event](on-navigate.md) using the [S](index.md) scope.
+Handles the actual navigation to a different part of the app defined by the provided [value](on-navigate.md) using the [Scope](index.md) scope.

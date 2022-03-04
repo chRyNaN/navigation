@@ -3,4 +3,4 @@
 # onGoTo
 
 [common]\
-open override fun [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md)&lt;[I](index.md)&gt;.[onGoTo](on-go-to.md)(intent: [I](index.md))
+open override fun [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md)&lt;[Context](index.md), [Intent](index.md)&gt;.[onGoTo](on-go-to.md)(value: [Intent](index.md))

@@ -3,4 +3,4 @@
 # onGoBack
 
 [common]\
-open override fun [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md)&lt;[I](index.md)&gt;.[onGoBack](on-go-back.md)()
+open override fun [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md)&lt;[Context](index.md), [Intent](index.md)&gt;.[onGoBack](on-go-back.md)()

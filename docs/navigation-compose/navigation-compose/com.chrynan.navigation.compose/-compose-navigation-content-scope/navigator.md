@@ -3,4 +3,4 @@
 # navigator
 
 [common]\
-abstract val [navigator](navigator.md): [ComposeStackNavigatorByContent](../-compose-stack-navigator-by-content/index.md)&lt;[K](index.md)&gt;
+abstract val [navigator](navigator.md): [ComposeNavigatorByContent](../-compose-navigator-by-content/index.md)&lt;[Context](index.md), [Key](index.md)&gt;

@@ -3,4 +3,4 @@
 # currentKey
 
 [common]\
-abstract val [currentKey](current-key.md): [T](index.md)
+abstract val [currentKey](current-key.md): [Key](index.md)

@@ -3,4 +3,4 @@
 # onGoTo
 
 [common]\
-abstract fun [S](index.md).[onGoTo](on-go-to.md)(intent: [I](index.md))
+abstract fun [Scope](index.md).[onGoTo](on-go-to.md)(value: [NavigationValue](index.md))

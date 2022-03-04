@@ -3,4 +3,4 @@
 # keyChanges
 
 [common]\
-abstract val [keyChanges](key-changes.md): Flow&lt;[T](index.md)&gt;
+abstract val [keyChanges](key-changes.md): Flow&lt;[Key](index.md)&gt;

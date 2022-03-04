@@ -3,9 +3,9 @@
 # ComposeNavigationIntentScope
 
 [common]\
-@[ExperimentalNavigationApi](../-experimental-navigation-api/index.md)
+@[ExperimentalNavigationApi](../../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-interface [ComposeNavigationIntentScope](index.md)&lt;[I](index.md) : [NavigationIntent](../../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-intent/index.md)&gt; : [ComposeNavigationKeyScope](../-compose-navigation-key-scope/index.md)&lt;[I](index.md)&gt;
+interface [ComposeNavigationIntentScope](index.md)&lt;[Context](index.md), [Intent](index.md) : [NavigationIntent](../../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-intent/index.md)&gt; : [ComposeNavigationScope](../-compose-navigation-scope/index.md), [ComposeNavigationKeyScope](../-compose-navigation-key-scope/index.md)&lt;[Context](index.md), [Intent](index.md)&gt;
 
 ## Types
 
@@ -17,4 +17,4 @@ interface [ComposeNavigationIntentScope](index.md)&lt;[I](index.md) : [Navigatio
 
 | Name | Summary |
 |---|---|
-| [navigator](navigator.md) | [common]<br>abstract override val [navigator](navigator.md): [ComposeNavigationIntentStackNavigatorByKey](../-compose-navigation-intent-stack-navigator-by-key/index.md)&lt;[I](index.md)&gt; |
+| [navigator](navigator.md) | [common]<br>abstract override val [navigator](navigator.md): [ComposeNavigationIntentStackNavigatorByKey](../-compose-navigation-intent-stack-navigator-by-key/index.md)&lt;[Context](index.md), [Intent](index.md)&gt; |

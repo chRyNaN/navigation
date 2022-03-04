@@ -3,10 +3,10 @@
 # To
 
 [common]\
-data class [To](index.md)&lt;[I](index.md) : [NavigationIntent](../../-navigation-intent/index.md)&gt;(intent: [I](index.md)) : [NavigationEvent](../index.md)&lt;[I](index.md)&gt;
+data class [To](index.md)&lt;[NavigationValue](index.md)&gt; : [NavigationEvent](../index.md)&lt;[NavigationValue](index.md)&gt;
 
 ## Properties
 
 | Name | Summary |
 |---|---|
-| [intent](intent.md) | [common]<br>val [intent](intent.md): [I](index.md) |
+| [value](value.md) | [common]<br>val [value](value.md): [NavigationValue](index.md) |

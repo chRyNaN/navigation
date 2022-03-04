@@ -3,4 +3,4 @@
 # initialKey
 
 [common]\
-abstract val [initialKey](initial-key.md): [T](index.md)
+abstract val [initialKey](initial-key.md): [Key](index.md)

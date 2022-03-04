@@ -3,9 +3,9 @@
 # ComposeNavigationKeyScope
 
 [common]\
-@[ExperimentalNavigationApi](../-experimental-navigation-api/index.md)
+@[ExperimentalNavigationApi](../../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-interface [ComposeNavigationKeyScope](index.md)&lt;[K](index.md)&gt; : [ComposeNavigationScope](../-compose-navigation-scope/index.md)
+interface [ComposeNavigationKeyScope](index.md)&lt;[Context](index.md), [Key](index.md)&gt; : [ComposeNavigationScope](../-compose-navigation-scope/index.md)
 
 ## Types
 
@@ -17,7 +17,7 @@ interface [ComposeNavigationKeyScope](index.md)&lt;[K](index.md)&gt; : [ComposeN
 
 | Name | Summary |
 |---|---|
-| [navigator](navigator.md) | [common]<br>abstract val [navigator](navigator.md): [ComposeStackNavigatorByKey](../-compose-stack-navigator-by-key/index.md)&lt;[K](index.md)&gt; |
+| [navigator](navigator.md) | [common]<br>abstract val [navigator](navigator.md): [ComposeNavigatorByKey](../-compose-navigator-by-key/index.md)&lt;[Context](index.md), [Key](index.md)&gt; |
 
 ## Inheritors
 

@@ -3,6 +3,6 @@
 # navigate
 
 [common]\
-abstract fun [navigate](navigate.md)(event: [NavigationEvent](../-navigation-event/index.md)&lt;[I](index.md)&gt;)
+abstract fun [navigate](navigate.md)(event: [NavigationEvent](../-navigation-event/index.md)&lt;[NavigationValue](index.md)&gt;)
 
 Navigates to the provided [event](navigate.md).

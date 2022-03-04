@@ -3,7 +3,7 @@
 # ComposeNavigationScope
 
 [common]\
-@[ExperimentalNavigationApi](../-experimental-navigation-api/index.md)
+@[ExperimentalNavigationApi](../../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
 interface [ComposeNavigationScope](index.md) : [NavigationScope](../../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-scope/index.md)
 
@@ -17,6 +17,7 @@ interface [ComposeNavigationScope](index.md) : [NavigationScope](../../../../nav
 
 | Name |
 |---|
-| [ComposeNavigationScope](-companion/index.md) |
+| [Companion](-companion/index.md) |
 | [ComposeNavigationKeyScope](../-compose-navigation-key-scope/index.md) |
+| [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md) |
 | [ComposeNavigationContentScope](../-compose-navigation-content-scope/index.md) |

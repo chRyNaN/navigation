@@ -3,4 +3,4 @@
 # onGoUp
 
 [common]\
-open override fun [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md)&lt;[I](index.md)&gt;.[onGoUp](on-go-up.md)()
+open override fun [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md)&lt;[Context](index.md), [Intent](index.md)&gt;.[onGoUp](on-go-up.md)()

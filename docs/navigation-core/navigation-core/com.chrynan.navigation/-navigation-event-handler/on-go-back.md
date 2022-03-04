@@ -3,4 +3,4 @@
 # onGoBack
 
 [common]\
-abstract fun [S](index.md).[onGoBack](on-go-back.md)()
+abstract fun [Scope](index.md).[onGoBack](on-go-back.md)()

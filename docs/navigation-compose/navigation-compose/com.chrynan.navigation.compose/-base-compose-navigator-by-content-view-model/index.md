@@ -3,30 +3,31 @@
 # BaseComposeNavigatorByContentViewModel
 
 [common]\
-@[ExperimentalNavigationApi](../-experimental-navigation-api/index.md)
+@[ExperimentalNavigationApi](../../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-abstract class [BaseComposeNavigatorByContentViewModel](index.md)&lt;[Scope](index.md), [Key](index.md)&gt; : ViewModel, [ComposeNavigator](../-compose-navigator/index.md)&lt;[Key](index.md)&gt; , [ComposeNavigatorByContent](../-compose-navigator-by-content/index.md)&lt;[Key](index.md)&gt; , [ComposeStackNavigatorByContent](../-compose-stack-navigator-by-content/index.md)&lt;[Key](index.md)&gt; , [ComposeScopedNavigator](../-compose-scoped-navigator/index.md)&lt;[Scope](index.md), [Key](index.md)&gt;
+abstract class [BaseComposeNavigatorByContentViewModel](index.md)&lt;[Context](index.md), [Key](index.md)&gt; : ViewModel, [ComposeNavigatorByContent](../-compose-navigator-by-content/index.md)&lt;[Context](index.md), [Key](index.md)&gt;
 
 ## Functions
 
 | Name | Summary |
 |---|---|
-| [canGoBack](../-compose-stack-navigator/can-go-back.md) | [common]<br>abstract fun [canGoBack](../-compose-stack-navigator/can-go-back.md)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [changeScope](../-compose-scoped-navigator/change-scope.md) | [common]<br>abstract fun [changeScope](../-compose-scoped-navigator/change-scope.md)(to: [Scope](index.md)) |
-| [goBack](../-compose-stack-navigator/go-back.md) | [common]<br>abstract fun [goBack](../-compose-stack-navigator/go-back.md)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [goTo](../-compose-navigator-by-content/go-to.md) | [common]<br>@Composable<br>abstract fun [goTo](../-compose-navigator-by-content/go-to.md)(key: [Key](index.md), strategy: [NavStackDuplicateContentStrategy](../../../../navigation-core/navigation-core/com.chrynan.navigation/-nav-stack-duplicate-content-strategy/index.md), content: @Composable[ComposeNavigationContentScope](../-compose-navigation-content-scope/index.md)&lt;[Key](index.md)&gt;.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |
+| [canGoBack](index.md#1718773359%2FFunctions%2F-1093353005) | [common]<br>abstract fun [canGoBack](index.md#1718773359%2FFunctions%2F-1093353005)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [changeContext](../-compose-context-navigator/change-context.md) | [common]<br>abstract fun [changeContext](../-compose-context-navigator/change-context.md)(to: [Context](index.md)) |
+| [goBack](index.md#1603024541%2FFunctions%2F-1093353005) | [common]<br>abstract fun [goBack](index.md#1603024541%2FFunctions%2F-1093353005)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [goTo](../-compose-navigator-by-content/go-to.md) | [common]<br>@Composable<br>abstract fun [goTo](../-compose-navigator-by-content/go-to.md)(key: [Key](index.md), strategy: [StackDuplicateContentStrategy](../../../../navigation-core/navigation-core/com.chrynan.navigation/-stack-duplicate-content-strategy/index.md), content: @Composable[ComposeNavigationContentScope](../-compose-navigation-content-scope/index.md)&lt;[Context](index.md), [Key](index.md)&gt;.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |
 
 ## Properties
 
 | Name | Summary |
 |---|---|
+| [contextChanges](../-compose-context-navigator/context-changes.md) | [common]<br>abstract val [contextChanges](../-compose-context-navigator/context-changes.md): Flow&lt;[Context](index.md)&gt; |
+| [currentContext](../-compose-context-navigator/current-context.md) | [common]<br>abstract val [currentContext](../-compose-context-navigator/current-context.md): [Context](index.md) |
 | [currentKey](../-compose-navigator/current-key.md) | [common]<br>abstract val [currentKey](../-compose-navigator/current-key.md): [Key](index.md) |
-| [currentScope](../-compose-scoped-navigator/current-scope.md) | [common]<br>abstract val [currentScope](../-compose-scoped-navigator/current-scope.md): [Scope](index.md) |
+| [initialContext](../-compose-context-navigator/initial-context.md) | [common]<br>abstract val [initialContext](../-compose-context-navigator/initial-context.md): [Context](index.md) |
 | [initialKey](../-compose-navigator/initial-key.md) | [common]<br>abstract val [initialKey](../-compose-navigator/initial-key.md): [Key](index.md) |
-| [initialScope](../-compose-scoped-navigator/initial-scope.md) | [common]<br>abstract val [initialScope](../-compose-scoped-navigator/initial-scope.md): [Scope](index.md) |
 | [isInitialized](../-compose-navigator/is-initialized.md) | [common]<br>abstract val [isInitialized](../-compose-navigator/is-initialized.md): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
 | [keyChanges](../-compose-navigator/key-changes.md) | [common]<br>abstract val [keyChanges](../-compose-navigator/key-changes.md): Flow&lt;[Key](index.md)&gt; |
-| [scopeChanges](../-compose-scoped-navigator/scope-changes.md) | [common]<br>abstract val [scopeChanges](../-compose-scoped-navigator/scope-changes.md): Flow&lt;[Scope](index.md)&gt; |
+| [keySaver](../-compose-navigator/key-saver.md) | [common]<br>abstract val [keySaver](../-compose-navigator/key-saver.md): [Saver](../-saver/index.md)&lt;[Key](index.md), [Any](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)&gt; |
 
 ## Inheritors
 
