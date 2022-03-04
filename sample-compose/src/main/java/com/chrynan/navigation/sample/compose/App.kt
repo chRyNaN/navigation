@@ -2,10 +2,7 @@ package com.chrynan.navigation.sample.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,13 +16,7 @@ import com.chrynan.navigation.compose.rememberNavigatorByKey
 @Composable
 fun App() {
     val navigator = rememberNavigatorByKey(
-        initialContext = MainScope.HOME,
-        initialKeys = { scope ->
-            when (scope) {
-                MainScope.HOME -> NavKey.HOME
-                MainScope.SETTINGS -> NavKey.SETTINGS
-            }
-        },
+        initialContext = MainNavigationContext.HOME,
         content = { key ->
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -34,17 +25,20 @@ fun App() {
             ) {
                 when (key) {
                     NavKey.HOME -> {
-                        Text("Home")
+                        Text("Home", style = MaterialTheme.typography.h2)
 
-                        Button(modifier = Modifier.padding(top = 20.dp), onClick = { navigator.goTo(NavKey.DETAILS) }) {
+                        Button(
+                            modifier = Modifier.padding(top = 20.dp),
+                            onClick = { navigator.goTo(NavKey.DETAILS) }
+                        ) {
                             Text("Details")
                         }
                     }
                     NavKey.SETTINGS -> {
-                        Text("Settings")
+                        Text("Settings", style = MaterialTheme.typography.h2)
                     }
                     NavKey.DETAILS -> {
-                        Text("Details")
+                        Text("Details", style = MaterialTheme.typography.h2)
                     }
                 }
             }
@@ -57,12 +51,12 @@ fun App() {
         }
 
         BottomNavigation {
-            MainScope.values().forEach { scope ->
+            MainNavigationContext.values().forEach { context ->
                 BottomNavigationItem(
                     selected = false,
-                    onClick = { navigator.changeContext(scope) },
-                    label = { Text(scope.title) },
-                    icon = { Image(imageVector = scope.icon, contentDescription = null) }
+                    onClick = { navigator.changeContext(context) },
+                    label = { Text(context.title) },
+                    icon = { Image(imageVector = context.icon, contentDescription = null) }
                 )
             }
         }
