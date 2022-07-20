@@ -1,5 +1,8 @@
 package com.chrynan.navigation.compose
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+
 /**
  * A component that can convert the type of the [Original] into the type of [Saveable] so that it can be serialized,
  * saved, restored. This component is meant to represent the androidx.compose.runtime.saveable.Saver interface, but
@@ -17,3 +20,37 @@ expect interface Saver<Original, Saveable : Any>
  * The JavaScript target should provide a default implementation.
  */
 expect fun <T> autoSaver(): Saver<T, Any>
+
+@Composable
+internal expect fun <T> internalRememberSaveable(
+    vararg inputs: Any?,
+    stateSaver: Saver<T, out Any>,
+    key: String? = null,
+    init: () -> MutableState<T>
+): MutableState<T>
+
+@Composable
+internal expect fun <T : Any> internalRememberSaveable(
+    vararg inputs: Any?,
+    saver: Saver<T, out Any> = autoSaver(),
+    key: String? = null,
+    init: () -> T
+): T
+
+@Suppress("unused")
+@Composable
+fun <T> rememberSaveable(
+    vararg inputs: Any?,
+    stateSaver: Saver<T, out Any>,
+    key: String? = null,
+    init: () -> MutableState<T>
+): MutableState<T> = internalRememberSaveable(inputs = inputs, stateSaver = stateSaver, key = key, init = init)
+
+@Suppress("unused")
+@Composable
+fun <T : Any> rememberSaveable(
+    vararg inputs: Any?,
+    saver: Saver<T, out Any> = autoSaver(),
+    key: String? = null,
+    init: () -> T
+): T = internalRememberSaveable(inputs = inputs, saver = saver, key = key, init = init)

@@ -1,6 +1,6 @@
 package com.chrynan.navigation.sample.compose
 
-enum class NavKey {
+enum class Destination {
 
     HOME,
     SETTINGS,

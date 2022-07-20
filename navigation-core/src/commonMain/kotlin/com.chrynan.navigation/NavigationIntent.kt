@@ -6,13 +6,10 @@ package com.chrynan.navigation
  *
  * For example:
  * ```
- * sealed class HomeScreenIntent : NavigationIntent {
+ * sealed class HomeScreenDestination : NavigationDestination() {
  *
- *     object Feed : HomeScreenIntent()
+ *     object Feed : HomeScreenDestination()
  * }
  * ```
  */
-interface NavigationIntent {
-
-    companion object
-}
+typealias NavigationDestination = Any

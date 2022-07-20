@@ -8,13 +8,16 @@ package com.chrynan.navigation
  * @see [Navigator.navigate]
  * @see [NavigationHandler.onNavigate]
  */
-sealed class NavigationEvent<NavigationValue> {
+sealed class NavigationEvent<Destination : NavigationDestination> {
 
-    class Back<NavigationValue> internal constructor() : NavigationEvent<NavigationValue>()
+    class Back<Destination : NavigationDestination> internal constructor() : NavigationEvent<Destination>()
 
-    class Up<NavigationValue> internal constructor() : NavigationEvent<NavigationValue>()
+    class Up<Destination : NavigationDestination> internal constructor() : NavigationEvent<Destination>()
 
-    data class To<NavigationValue> internal constructor(val value: NavigationValue) : NavigationEvent<NavigationValue>()
+    data class To<Destination : NavigationDestination> internal constructor(
+        val destination: Destination,
+        val strategy: StackDuplicateContentStrategy = StackDuplicateContentStrategy.CLEAR_STACK
+    ) : NavigationEvent<Destination>()
 
     companion object
 }

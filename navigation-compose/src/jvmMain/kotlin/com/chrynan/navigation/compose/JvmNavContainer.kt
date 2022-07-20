@@ -2,44 +2,24 @@ package com.chrynan.navigation.compose
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import com.chrynan.navigation.ExperimentalNavigationApi
+import com.chrynan.navigation.NavigationContext
+import com.chrynan.navigation.NavigationDestination
+import com.chrynan.navigation.Navigator
 
+@Suppress("unused")
 @Composable
 @ExperimentalNavigationApi
-internal actual fun <Context, Key> InternalNavContainer(
-    navigator: ComposeNavigatorByContentViewModel<Context, Key>
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> NavContainer(
+    navigator: Navigator<Destination, Context>,
+    modifier: Modifier,
+    content: @Composable ComposeNavigationScope.(context: Context, destination: Destination) -> Unit
 ) {
-    val contentKey = rememberSaveable(navigator.keySaver) { mutableStateOf(navigator.initialKey) }
+    val context = navigator.state.currentContextAsState()
+    val destination = navigator.state.currentDestinationAsState()
 
-    navigator.keyChanges.collectAsStateIn(state = contentKey)
-
-    val scope = object : ComposeNavigationContentScope<Context, Key> {
-
-        override val navigator: ComposeNavigatorByContentViewModel<Context, Key> = navigator
-    }
-
-    Box {
-        navigator.apply {
-            scope.content(contentKey.value)
-        }
-    }
-}
-
-@Composable
-@ExperimentalNavigationApi
-internal actual fun <Context, Key, NavigationScope : ComposeNavigationKeyScope<Context, Key>> InternalNavContainer(
-    navigator: BaseComposeNavigatorByKeyViewModel<Context, Key, NavigationScope>,
-    scope: NavigationScope
-) {
-    val contentKey = rememberSaveable(navigator.keySaver) { mutableStateOf(navigator.initialKey) }
-
-    navigator.keyChanges.collectAsStateIn(state = contentKey)
-
-    Box {
-        navigator.apply {
-            scope.content(contentKey.value)
-        }
+    Box(modifier = modifier) {
+        content(ComposeNavigationScope, context.value, destination.value)
     }
 }

@@ -8,16 +8,11 @@ import com.chrynan.navigation.NavigationContext
 
 enum class MainNavigationContext(
     val title: String,
-    val icon: ImageVector
-) : NavigationContext<NavKey> {
+    val icon: ImageVector,
+    override val initialDestination: Destination
+) : NavigationContext<Destination> {
 
-    HOME(title = "Home", icon = Icons.Default.Home),
+    HOME(title = "Home", icon = Icons.Default.Home, initialDestination = Destination.HOME),
 
-    SETTINGS(title = "Settings", icon = Icons.Default.Settings);
-
-    override val initialKey: NavKey
-        get() = when (this) {
-            HOME -> NavKey.HOME
-            SETTINGS -> NavKey.SETTINGS
-        }
+    SETTINGS(title = "Settings", icon = Icons.Default.Settings, initialDestination = Destination.SETTINGS)
 }
