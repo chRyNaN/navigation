@@ -8,16 +8,12 @@ import com.chrynan.navigation.*
 interface ComposeNavigationDestinationState<Destination : NavigationDestination> :
     NavigationDestinationState<Destination> {
 
-    val destinationSaver: Saver<Destination, Any>
-
     companion object
 }
 
 @ExperimentalNavigationApi
 interface ComposeNavigationContextState<Destination : NavigationDestination, Context : NavigationContext<Destination>> :
     NavigationContextState<Destination, Context> {
-
-    val contextSaver: Saver<Context, Any>
 
     companion object
 }
@@ -32,9 +28,7 @@ interface ComposeNavigatorState<Destination : NavigationDestination, Context : N
 
 @ExperimentalNavigationApi
 internal class ComposeNavigatorStateImpl<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
-    initialContext: Context,
-    override val destinationSaver: Saver<Destination, Any>,
-    override val contextSaver: Saver<Context, Any>
+    initialContext: Context
 ) : BaseNavigatorStateImpl<Destination, Context>(initialContext = initialContext),
     ComposeNavigatorState<Destination, Context> {
 

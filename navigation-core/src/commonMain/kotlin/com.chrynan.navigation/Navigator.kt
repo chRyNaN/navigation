@@ -95,7 +95,8 @@ fun <Destination : Any, Context : NavigationContext<Destination>> Navigator<Dest
 
 abstract class BaseNavigatorImpl<Destination : NavigationDestination, Context : NavigationContext<Destination>, State : BaseNavigatorStateImpl<Destination, Context>>(
     final override val state: State
-) : Navigator<Destination, Context> {
+) : ViewModel(),
+    Navigator<Destination, Context> {
 
     private val contextKeyStack = mutableMapOf(state.initialContext to mutableListOf(state.initialDestination))
 

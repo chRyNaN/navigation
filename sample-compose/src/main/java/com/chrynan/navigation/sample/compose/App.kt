@@ -4,12 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.compose.NavContainer
-import com.chrynan.navigation.compose.goTo
 import com.chrynan.navigation.compose.rememberNavigator
 
 @ExperimentalNavigationApi
@@ -21,11 +18,9 @@ fun App() {
 
     Column {
         Box(modifier = Modifier.weight(1f)) {
-            NavContainer(navigator)
-        }
+            NavContainer(navigator = navigator) { context, destination ->
 
-        NavContainer(navigator = navigator) { context, destination ->
-
+            }
         }
 
         BottomNavigation {

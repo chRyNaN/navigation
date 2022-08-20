@@ -42,15 +42,9 @@ import com.chrynan.navigation.*
 @ExperimentalNavigationApi
 @Composable
 fun <Destination : NavigationDestination> rememberNavigator(
-    initialDestination: Destination,
-    destinationSaver: Saver<Destination, Any> = autoSaver(),
-    contextSaver: Saver<SingleNavigationContext<Destination>, Any> = autoSaver()
+    initialDestination: Destination
 ): Navigator<Destination, SingleNavigationContext<Destination>> = remember {
-    ComposeNavigatorImpl(
-        initialContext = SingleNavigationContext(initialDestination = initialDestination),
-        destinationSaver = destinationSaver,
-        contextSaver = contextSaver
-    )
+    ComposeNavigatorImpl(initialContext = SingleNavigationContext(initialDestination = initialDestination))
 }
 
 /**
@@ -95,13 +89,7 @@ fun <Destination : NavigationDestination> rememberNavigator(
 @ExperimentalNavigationApi
 @Composable
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> rememberNavigator(
-    initialContext: Context,
-    destinationSaver: Saver<Destination, Any> = autoSaver(),
-    contextSaver: Saver<Context, Any> = autoSaver()
+    initialContext: Context
 ): Navigator<Destination, Context> = remember {
-    ComposeNavigatorImpl(
-        initialContext = initialContext,
-        destinationSaver = destinationSaver,
-        contextSaver = contextSaver
-    )
+    ComposeNavigatorImpl(initialContext = initialContext)
 }
