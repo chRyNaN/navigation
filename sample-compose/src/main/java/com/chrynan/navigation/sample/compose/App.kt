@@ -12,14 +12,16 @@ import com.chrynan.navigation.compose.rememberNavigator
 @ExperimentalNavigationApi
 @Composable
 fun App() {
-    val navigator = rememberNavigator(
-        initialContext = MainNavigationContext.HOME
-    )
+    val navigator = rememberNavigator(initialContext = MainNavigationContext.HOME)
 
     Column {
         Box(modifier = Modifier.weight(1f)) {
             NavContainer(navigator = navigator) { context, destination ->
-
+                when (destination) {
+                    Destination.HOME -> Text("Home Screen")
+                    Destination.DETAILS -> Text("Details Screen")
+                    Destination.SETTINGS -> Text("Settings Screen")
+                }
             }
         }
 

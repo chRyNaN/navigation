@@ -4,8 +4,10 @@ Kotlin multi-platform application navigation library. Supports Jetpack Compose. 
 <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/chRyNaN/navigation">
 
 ```kotlin
-val navigator = rememberNavigatorByKey("Greeting") { key ->
-    when (key) {
+val navigator = rememberNavigator("Greeting")
+
+NavContainer(navigator) { _, destination ->
+    when (destination) {
         "Greeting" -> Text("Hello")
         "Farewell" -> Text("Good-bye")
         else -> Text("Unexpected Key: $key")
@@ -17,139 +19,89 @@ navigator.goTo("Farewell")
 
 ### Usage
 
-Navigation is handled differently for each platform and UI framework. This library provides some common navigation
-components that serve as a recommended structure, but each platform and UI framework is independently responsible for
-handling navigation and choosing whether to conform to the provided components.
-
-#### Jetpack Compose
-
-There are three different `ComposeNavigators` that can handle navigation in Jetpack Compose. Which one to use depends on
-the application needs and personal preference.
-
-##### Navigate by content
-
-This approach allows for specifying the `@Composable` content on demand, rather than up-front.
+* Create a `Navigator` for any `NavigationDestination` type that you will use as a destination key. This can be Strings,
+  enums, sealed classes, or any type.
 
 ```kotlin
-val navigator = rememberNavigatorByContent("Greeting") { Text("Hello") }
+enum class Destination {
 
-// The NavContainer will start by displaying the initial content, which in this case is "Hello".
-NavContainer(navigator)
-
-// The above NavContainer will display "Good-bye" after the following call:
-navigator.goTo("Farewell") { Text("Good-bye") }
-
-// Goes back to the initial content: "Hello":
-navigator.goBack()
-```
-
-##### Navigate by key
-
-This approach allows for specifying the `@Composable` content for each key up-front. Then navigation can be done by
-simply providing a key.
-
-```kotlin
-val navigator = rememberNavigatorByKey("Greeting") { key ->
-    when (key) {
-        "Greeting" -> Text("Hello")
-        "Farewell" -> Text("Good-bye")
-        else -> Text("Unexpected Key: $key")
-    }
+    HOME,
+    SETTINGS,
+    DETAILS
 }
 
-// The NavContainer will start by displaying the initial content, which in this case is "Hello"
-NavContainer(navigator)
-
-// The above NavContainer will display "Good Bye" after the following call:
-navigator.goTo("Farewell")
-
-// Goes back to the initial content: "Hello":
-navigator.goBack()
-```
-
-##### Navigate by NavigationIntent
-
-This approach is similar to the key approach, but the key is a `NavigationIntent` and the returned `ComposeNavigator`
-implements the `NavigationEventNavigator` interface from the `core` module.
-
-```kotlin
-val navigator = rememberNavigatorByIntent(HomeNavigationIntent.Greeting) { navigationIntent ->
-    when (navigationIntent) {
-        HomeNavigationIntent.Greeting -> Text("Hello")
-        HomeNavigationIntent.Farewell -> Text("Good-bye")
-    }
+@Composable
+fun App() {
+    val navigator = rememberNavigator(initialDestination = Destination.HOME)
 }
-
-// The NavContainer will start by displaying the initial content, which in this case is "Hello"
-NavContainer(navigator)
-
-// The above NavContainer will display "Good Bye" after the following call:
-navigator.goTo(HomeNavigationIntent.Farewell)
-
-// Goes back to the initial content: "Hello":
-navigator.goBack()
 ```
 
-##### Nested navigation
-
-Within the scope of the content blocks, you can access the `navigator` property which can be used for nested navigation:
+* Create a `NavContainer` to display the current content based off of the latest navigation context and destination
+  values.
 
 ```kotlin
-val navigator = rememberNavigatorByKey("Hello") { key ->
-    when (key) {
-        "Greeting" -> Button("Hello") {
-            navigator.goBack() // Safe access to the navigator property within this scope.
+@Composable
+fun App() {
+    val navigator = rememberNavigator(initialDestination = Destination.HOME)
+
+    NavContainer(navigator = navigator) { _, destination ->
+        when (destination) {
+            Destination.HOME -> HomeScreenComposable()
+            Destination.SETTINGS -> SettingsScreenComposable()
+            Destination.DETAILS -> DetailsScreenComposable()
         }
-        "Farewell" -> Text("Good-bye")
-        else -> Text("Unexpected Key: $key")
     }
 }
 ```
 
-##### Key State changes
-
-The key of the currently displayed `@Composable` can be accessed by the `ComposeNavigator.currentKey` property:
+* Use the `Navigator` instance to navigate between navigation contexts and destinations.
 
 ```kotlin
-navigator.currentKey
+BackHandler { navigator.goBack() }
 ```
 
-To listen to changes to the current key, use the `ComposeNavigator.keyChanges` property along with
-the `Flow<T>.collectAsState` function:
+#### Navigation Contexts
+
+Complex navigation flows require multiple stacks of navigation destinations that may be retained when changing stacks.
+These stacks are referred to as `NavigationContext` in this library. A `NavigationContext` is an interface that defines
+the default navigation destination. For example:
 
 ```kotlin
-val currentKey by navigator.keyChanges.collectAsState(initial = currentKey)
-```
+enum class MainNavigationContext(
+    val title: String,
+    val icon: ImageVector,
+    override val initialDestination: Destination
+) : NavigationContext<Destination> {
 
-For convenience, there is an extension function that performs the above logic: `ComposeNavigator.currentKeyAsState()`
-This is especially useful when a `@Composable` needs to be updated when the key changes, for instance in a Bottom
-Navigation component:
+    HOME(title = "Home", icon = Icons.Default.Home, initialDestination = Destination.HOME),
 
-```kotlin
-val currentKey by navigator.currentKeyAsState()
-
-BottomNavigation {
-    listOf(ScreenIntent.ColorList, ScreenIntent.Palette).forEach {
-        BottomNavigationItem(
-            selected = currentKey == it,
-            onClick = {
-                navigator.goTo(it)
-            }
-        )
-    }
+    SETTINGS(title = "Settings", icon = Icons.Default.Settings, initialDestination = Destination.SETTINGS)
 }
 ```
 
-#### Android
-
-To create a `Navigator` use one the provided `navigator()` functions. For instance:
+Then to change the current context, use the `Navigator.changeContext` function:
 
 ```kotlin
-val navigator = navigator<NavigationIntent>(activity = activity, onGoTo = { navigationIntent ->
-    activity.startActivity(...)
-})
+navigator.changeContext(MainNavigationContext.SETTINGS)
+```
 
-navigator.goBack()
+#### Transitions and animations
+
+You have complete control over the composables that render the UI of the application and can use the Jetpack Compose
+library's transition and animation APIs to change between the navigation context and destination UIs. For more
+fine-grained control, create a custom composable replacing the `NavContainer` that handles transitions properly for your
+application. Then just listen and react to the `Navigator.state` changes.
+
+```kotlin
+@Composable
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> MyNavContainer(
+    navigator: Navigator<Destination, Context>,
+) {
+    val context = navigator.state.currentContextAsState()
+    val destination = navigator.state.currentDestinationAsState()
+
+    // Render UI from context and destination values and apply any transition or animtation desired.
+}
 ```
 
 ## Building the library

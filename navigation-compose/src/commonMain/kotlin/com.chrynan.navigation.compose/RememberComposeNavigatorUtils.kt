@@ -7,22 +7,21 @@ import androidx.compose.runtime.remember
 import com.chrynan.navigation.*
 
 /**
- * Creates and remembers a [ComposeNavigationDestinationState] that can navigate with a key. This allows for specifying the [Composable]
- * content up front when creating this [ComposeNavigatorByKey] and simply navigating with a key from the
- * [ComposeNavigatorByKey.goTo] function.
+ * Creates and remembers a [Navigator]. A [Navigator] can be used to navigate between different UI content in an
+ * application.
  *
  * Example usage:
  * ```kotlin
- * val navigator = rememberNavigatorByKey("Greeting") { key ->
- *     when(key) {
+ * val navigator = rememberNavigator(initialDestination = "Greeting")
+ *
+ * // The NavContainer will start by displaying the initial content, which in this case is "Hello"
+ * NavContainer(navigator) { _, key ->
+ *     when (key) {
  *         "Greeting" -> Text("Hello")
  *         "Farewell" -> Text("Good-bye")
  *         else -> Text("Unexpected Key: $key")
  *     }
  * }
- *
- * // The NavContainer will start by displaying the initial content, which in this case is "Hello"
- * NavContainer(navigator)
  *
  * // The above NavContainer will display "Good Bye" after the following call:
  * navigator.goTo("Farewell")
@@ -31,8 +30,7 @@ import com.chrynan.navigation.*
  * navigator.goBack()
  * ```
  *
- * **Note:** That it is typical to use a [ComposeNavigationDestinationState] with a [NavContainer] to display the [Composable] content
- * and listen to changes.
+ * **Note:** Use the [NavContainer] to display the [Composable] content for the current navigation context and keys.
  *
  * **Note:** This function differs slightly from the [rememberNavigator] function in that it only uses a single
  * scope of type [Nothing]. This means that scopes cannot be changed on the returned [ComposeNavigatorImpl].
@@ -48,25 +46,21 @@ fun <Destination : NavigationDestination> rememberNavigator(
 }
 
 /**
- * Creates and remembers a [ComposeNavigationDestinationState] that can navigate with a key. This allows for specifying the [Composable]
- * content up front when creating this [ComposeNavigatorByKey] and simply navigating with a key from the
- * [ComposeNavigatorByKey.goTo] function.
+ * Creates and remembers a [Navigator]. A [Navigator] can be used to navigate between different UI content in an
+ * application.
  *
  * Example usage:
  * ```kotlin
- * val navigator = rememberNavigatorByKey(
- *     initialContext = BottomNavBarItem.HELLO,
- *     content = { key ->
- *         when(key) {
+ * val navigator = rememberNavigator(initialContext = BottomNavBarItem.HELLO)
+ *
+ * // The NavContainer will start by displaying the initial content, which in this case is "Hello"
+ * NavContainer(navigator) { context, key ->
+ *         when (key) {
  *             "Greeting" -> Text("Hello")
  *             "Farewell" -> Text("Good-bye")
  *             else -> Text("Unexpected Key: $key")
  *         }
  *     }
- * )
- *
- * // The NavContainer will start by displaying the initial content, which in this case is "Hello"
- * NavContainer(navigator)
  *
  * // The above NavContainer will display "Good Bye" after the following call:
  * navigator.goTo("Farewell")
@@ -78,8 +72,7 @@ fun <Destination : NavigationDestination> rememberNavigator(
  * navigator.changeContext(BottomNavBarItem.GOODBYE)
  * ```
  *
- * **Note:** That it is typical to use a [ComposeNavigationDestinationState] with a [NavContainer] to display the [Composable] content
- * and listen to changes.
+ * **Note:** Use the [NavContainer] to display the [Composable] content for the current navigation context and keys.
  *
  * **Note:** That this function differs slightly from the [rememberNavigator] function in that this function allows
  * changing of scopes, which is useful for more complex navigation.

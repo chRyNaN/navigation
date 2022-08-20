@@ -6,6 +6,17 @@ import com.chrynan.navigation.NavigationContext
 import com.chrynan.navigation.NavigationDestination
 import com.chrynan.navigation.Navigator
 
+/**
+ * A [Composable] that listens to navigation context and destination changes from the provided [navigator] and calls
+ * the provided [content] [Composable] function with the latest values.
+ *
+ * Example usage:
+ * ```kotlin
+ * NavContainer(navigator) { context, destination ->
+ *     Text("context = $context; destination = $destination")
+ * }
+ * ```
+ */
 @Composable
 @ExperimentalNavigationApi
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> NavContainer(
