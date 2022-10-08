@@ -12,10 +12,10 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.2.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.7.0")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.7.0")
-        classpath("org.jetbrains.compose:compose-gradle-plugin:1.2.0-alpha01-dev755")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:1.7.10")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.7.10")
+        classpath("org.jetbrains.compose:compose-gradle-plugin:1.2.0-beta02")
     }
 }
 
