@@ -35,24 +35,8 @@ kotlin {
                 api(project(":navigation-core"))
 
                 implementation(compose.runtime)
-            }
-        }
-        val jvmMain by getting {
-            dependencies {
                 implementation(compose.ui)
-                implementation(compose.material)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(compose.ui)
-                implementation(compose.material)
-                implementation("androidx.activity:activity-compose:1.6.0")
-            }
-        }
-        val jsMain by getting {
-            dependencies {
-                implementation(compose.web.core)
+                implementation(compose.foundation)
             }
         }
     }
