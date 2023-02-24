@@ -16,7 +16,7 @@ object LibraryConstants {
     object Android {
 
         const val compileSdkVersion = 33
-        const val minSdkVersion = 25
+        const val minSdkVersion = 23
         const val targetSdkVersion = 33
     }
 }
