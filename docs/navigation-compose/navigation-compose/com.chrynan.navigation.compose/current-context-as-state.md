@@ -6,27 +6,28 @@
 
 @[ExperimentalNavigationApi](../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-@Composable
+@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)
 
-fun &lt;[Context](current-context-as-state.md), [Key](current-context-as-state.md)&gt; [ComposeContextNavigator](-compose-context-navigator/index.md)&lt;[Context](current-context-as-state.md), [Key](current-context-as-state.md)&gt;.[currentContextAsState](current-context-as-state.md)(initialCurrentContext: [Context](current-context-as-state.md)): State&lt;[Context](current-context-as-state.md)&gt;
+fun &lt;[Destination](current-context-as-state.md) : [NavigationDestination](../../../navigation-core/com.chrynan.navigation/-navigation-destination/index.md), [Context](current-context-as-state.md) : [NavigationContext](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-context/index.md)&lt;[Destination](current-context-as-state.md)&gt;&gt; [NavigationContextState](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-context-state/index.md)&lt;[Destination](current-context-as-state.md), [Context](current-context-as-state.md)&gt;.[currentContextAsState](current-context-as-state.md)(initialCurrentContext: [Context](current-context-as-state.md)): [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html)&lt;[Context](current-context-as-state.md)&gt;
 
 @[ExperimentalNavigationApi](../../../navigation-core/navigation-core/com.chrynan.navigation/-experimental-navigation-api/index.md)
 
-@Composable
+@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)
 
-fun &lt;[Context](current-context-as-state.md), [Key](current-context-as-state.md)&gt; [ComposeContextNavigator](-compose-context-navigator/index.md)&lt;[Context](current-context-as-state.md), [Key](current-context-as-state.md)&gt;.[currentContextAsState](current-context-as-state.md)(): State&lt;[Context](current-context-as-state.md)&gt;
+fun &lt;[Destination](current-context-as-state.md) : [NavigationDestination](../../../navigation-core/com.chrynan.navigation/-navigation-destination/index.md), [Context](current-context-as-state.md) : [NavigationContext](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-context/index.md)&lt;[Destination](current-context-as-state.md)&gt;&gt; [NavigationContextState](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-context-state/index.md)&lt;[Destination](current-context-as-state.md), [Context](current-context-as-state.md)&gt;.[currentContextAsState](current-context-as-state.md)(): [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html)&lt;[Context](current-context-as-state.md)&gt;
 
-Obtains the changes to the [ComposeContextNavigator.currentContext](-compose-context-navigator/current-context.md) value and returns it as a State. This allows it to be used in a Composable and cause recomposition when the value changes.
+Obtains the changes to the [ComposeNavigationContextState.currentContext](../../../navigation-compose/com.chrynan.navigation.compose/-compose-navigation-context-state/current-context.md) value and returns it as a [State](https://developer.android.com/reference/kotlin/androidx/compose/runtime/State.html). This allows it to be used in a [Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html) and cause recomposition when the value changes.
 
-If you just need to get the current scope value and do not need to cause recomposition when the value changes, simply use the [ComposeContextNavigator.currentContext](-compose-context-navigator/current-context.md) property.
+If you just need to get the current scope value and do not need to cause recomposition when the value changes, simply use the [ComposeNavigationContextState.currentContext](../../../navigation-compose/com.chrynan.navigation.compose/-compose-navigation-context-state/current-context.md) property.
 
-**Note:** Internally this function uses the [ComposeContextNavigator.contextChanges](-compose-context-navigator/context-changes.md) Flow and the collectAsState function using the [ComposeContextNavigator.currentContext](-compose-context-navigator/current-context.md) as the initial value.
+**Note:** Internally this function uses the [ComposeNavigationContextState.contextChanges](../../../navigation-compose/com.chrynan.navigation.compose/-compose-navigation-context-state/context-changes.md) Flow and the [collectAsState](https://developer.android.com/reference/kotlin/androidx/compose/runtime/package-summary.html) function using the [ComposeNavigationContextState.currentContext](../../../navigation-compose/com.chrynan.navigation.compose/-compose-navigation-context-state/current-context.md) as the initial value.
 
-## See also
+#### See also
 
 common
 
-| | |
-|---|---|
-| [com.chrynan.navigation.compose.ComposeContextNavigator](-compose-context-navigator/context-changes.md) |  |
-| collectAsState |  |
+| |
+|---|
+| [ComposeNavigationContextState.currentContext](../../../navigation-compose/com.chrynan.navigation.compose/-compose-navigation-context-state/current-context.md) |
+| [ComposeNavigationContextState.contextChanges](../../../navigation-compose/com.chrynan.navigation.compose/-compose-navigation-context-state/context-changes.md) |
+| [collectAsState](https://developer.android.com/reference/kotlin/androidx/compose/runtime/package-summary.html) |

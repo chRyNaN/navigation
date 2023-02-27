@@ -1,0 +1,6 @@
+//[navigation-core](../../index.md)/[com.chrynan.navigation](index.md)/[registerNavigationHandler](register-navigation-handler.md)
+
+# registerNavigationHandler
+
+[android]\
+fun &lt;[Destination](register-navigation-handler.md) : [NavigationDestination](../../../navigation-core/com.chrynan.navigation/-navigation-destination/index.md), [Context](register-navigation-handler.md) : [NavigationContext](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-context/index.md)&lt;[Destination](register-navigation-handler.md)&gt;&gt; [AppCompatActivity](https://developer.android.com/reference/kotlin/androidx/appcompat/app/AppCompatActivity.html).[registerNavigationHandler](register-navigation-handler.md)(navigator: [Navigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigator/index.md)&lt;[Destination](register-navigation-handler.md), [Context](register-navigation-handler.md)&gt;, eventDispatcher: CoroutineDispatcher = Dispatchers.IO, handlerDispatcher: CoroutineDispatcher = Dispatchers.Main, handler: [AndroidNavigationHandler](-android-navigation-handler/index.md)&lt;[Destination](register-navigation-handler.md), [Context](register-navigation-handler.md)&gt;)

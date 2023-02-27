@@ -3,31 +3,27 @@
 # navigator
 
 [android]\
-fun &lt;[Intent](navigator.md) : [NavigationIntent](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-intent/index.md)&gt; [navigator](navigator.md)(activity: [Activity](https://developer.android.com/reference/kotlin/android/app/Activity.html), handler: [AndroidNavigationHandler](-android-navigation-handler/index.md)&lt;[Intent](navigator.md)&gt;): [NavigationEventNavigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-event-navigator/index.md)&lt;[Intent](navigator.md)&gt;
+fun &lt;[Destination](navigator.md) : [NavigationDestination](../../../navigation-core/com.chrynan.navigation/-navigation-destination/index.md), [Context](navigator.md) : [NavigationContext](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-context/index.md)&lt;[Destination](navigator.md)&gt;&gt; [navigator](navigator.md)(initialContext: [Context](navigator.md)): [Navigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigator/index.md)&lt;[Destination](navigator.md), [Context](navigator.md)&gt;
 
-Creates a [Navigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigator/index.md) using the provided [Activity](https://developer.android.com/reference/kotlin/android/app/Activity.html) in the [AndroidNavigationScope](-android-navigation-scope/index.md) and the provided [handler](navigator.md).
+Creates a [Navigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigator/index.md) using the provided [initialContext](navigator.md).
 
 Example usage:
 
-val navigator = navigator(activity, AndroidNavigationHandler { event -&gt;\
-    when (event) {\
-        is NavigationEvent.Back -&gt; activity.onBackPressed()\
-        is NavigationEvent.Up -&gt; activity.onBackPressed()\
-        is NavigationEvent.To -&gt; { ... }\
-    }\
-})\
-\
-navigator.goBack()
+```kotlin
+val navigator = navigator(initialContext = AppContext.Home)
+
+navigator.goTo(destination)
+```
 
 [android]\
-fun &lt;[Intent](navigator.md) : [NavigationIntent](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-intent/index.md)&gt; [navigator](navigator.md)(activity: [Activity](https://developer.android.com/reference/kotlin/android/app/Activity.html), canGoBack: () -&gt; [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = { false }, onGoBack: () -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = { activity.onBackPressed() }, onGoUp: () -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = { activity.onBackPressed() }, onGoTo: ([Intent](navigator.md)) -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [NavigationEventNavigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigation-event-navigator/index.md)&lt;[Intent](navigator.md)&gt;
+fun &lt;[Destination](navigator.md) : [NavigationDestination](../../../navigation-core/com.chrynan.navigation/-navigation-destination/index.md)&gt; [navigator](navigator.md)(initialDestination: [Destination](navigator.md)): [Navigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigator/index.md)&lt;[Destination](navigator.md), [SingleNavigationContext](../../../navigation-core/navigation-core/com.chrynan.navigation/-single-navigation-context/index.md)&lt;[Destination](navigator.md)&gt;&gt;
 
-Creates a [Navigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigator/index.md) using the provided [Activity](https://developer.android.com/reference/kotlin/android/app/Activity.html) in the [AndroidNavigationScope](-android-navigation-scope/index.md) and the provided [onGoBack](navigator.md), [onGoUp](navigator.md), and [onGoTo](navigator.md) functions to construct an [AndroidNavigationHandler](-android-navigation-handler/index.md).
+Creates a [Navigator](../../../navigation-core/navigation-core/com.chrynan.navigation/-navigator/index.md) with a [SingleNavigationContext](../../../navigation-core/navigation-core/com.chrynan.navigation/-single-navigation-context/index.md) using the provided [initialDestination](navigator.md).
 
 Example usage:
 
-val navigator = navigator&lt;NavigationIntent&gt;(activity = activity, onGoTo = { navigationIntent -&gt;\
-    activity.startActivity(...)\
-})\
-\
-navigator.goBack()
+```kotlin
+val navigator = navigator(initialDestination = destination)
+
+navigator.goTo(otherDestination)
+```

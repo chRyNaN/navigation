@@ -8,9 +8,3 @@
 annotation class [ExperimentalNavigationApi](index.md)
 
 Indicates that the component annotated with this annotation is experimental and could change or be removed in the future.
-
-## Constructors
-
-| | |
-|---|---|
-| [ExperimentalNavigationApi](-experimental-navigation-api.md) | [common]<br>fun [ExperimentalNavigationApi](-experimental-navigation-api.md)() |
