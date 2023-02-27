@@ -49,21 +49,21 @@ android {
 tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.6.1")
+    implementation(AndroidX.core.ktx)
+    implementation(AndroidX.appCompat)
+    implementation(Google.android.material)
 
     implementation(compose.runtime)
     implementation(compose.ui)
     implementation(compose.material)
+    implementation(compose.materialIconsExtended)
 
-    implementation("androidx.compose.compiler:compiler:1.4.3")
-    implementation("androidx.compose.ui:ui-tooling:1.4.0-beta02")
-    implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.material:material-icons-extended:1.4.0-beta02")
+    implementation(AndroidX.compose.compiler)
+    implementation(AndroidX.compose.ui.tooling)
+    implementation(AndroidX.activity.compose)
 
-    implementation("com.chrynan.presentation:presentation-compose:0.7.1")
-    implementation("com.chrynan.colors:colors-compose:0.7.2")
+    implementation("com.chrynan.presentation:presentation-compose:_")
+    implementation("com.chrynan.colors:colors-compose:_")
 
     implementation(project(":navigation-compose"))
 }

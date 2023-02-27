@@ -91,7 +91,7 @@ android {
 tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
 
 dependencies {
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+    implementation(AndroidX.lifecycle.viewModelCompose)
 }
 
 afterEvaluate {
