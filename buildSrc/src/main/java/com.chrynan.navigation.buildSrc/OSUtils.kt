@@ -2,6 +2,9 @@ package com.chrynan.navigation.buildSrc
 
 import java.lang.System
 
+/**
+ * Determines if this Gradle build is running on a Mac OSX Operating System.
+ */
 fun isBuildingOnOSX(): Boolean {
     val osName = System.getProperty("os.name").toLowerCase()
 

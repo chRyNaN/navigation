@@ -35,9 +35,9 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
+                implementation(Kotlin.stdlib.common)
 
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                api(KotlinX.coroutines.core)
             }
         }
         if (isBuildingOnOSX()) {
@@ -90,12 +90,12 @@ tasks.withType<Jar> { duplicatesStrategy = DuplicatesStrategy.INHERIT }
 
 // Android Specific Dependencies
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.6.1")
-    implementation("androidx.fragment:fragment-ktx:1.5.5")
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation(AndroidX.activity.ktx)
+    implementation(AndroidX.fragment.ktx)
+    implementation(AndroidX.core.ktx)
+    implementation(AndroidX.appCompat)
 
-    api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    api(AndroidX.lifecycle.viewModelKtx)
 }
 
 afterEvaluate {
