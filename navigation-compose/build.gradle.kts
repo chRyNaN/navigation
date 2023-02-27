@@ -1,4 +1,5 @@
 import com.chrynan.navigation.buildSrc.LibraryConstants
+import com.chrynan.navigation.buildSrc.isBuildingOnOSX
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -23,8 +24,10 @@ kotlin {
         js(IR) {
             browser()
         }
-        ios()
-        iosSimulatorArm64()
+        if (isBuildingOnOSX()) {
+            ios()
+            iosSimulatorArm64()
+        }
     }
     sourceSets {
         all {
@@ -38,6 +41,11 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.foundation)
             }
+        }
+        if (isBuildingOnOSX()) {
+            val iosMain by sourceSets.getting
+            val iosSimulatorArm64Main by sourceSets.getting
+            iosSimulatorArm64Main.dependsOn(iosMain)
         }
     }
 }
