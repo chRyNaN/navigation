@@ -18,6 +18,3 @@ interface [ComposeNavigationScope](index.md) : [NavigationScope](../../../../nav
 | Name |
 |---|
 | [Companion](-companion/index.md) |
-| [ComposeNavigationKeyScope](../-compose-navigation-key-scope/index.md) |
-| [ComposeNavigationIntentScope](../-compose-navigation-intent-scope/index.md) |
-| [ComposeNavigationContentScope](../-compose-navigation-content-scope/index.md) |

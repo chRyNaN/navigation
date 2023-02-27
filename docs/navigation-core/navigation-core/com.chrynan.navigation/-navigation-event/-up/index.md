@@ -3,4 +3,4 @@
 # Up
 
 [common]\
-class [Up](index.md)&lt;[NavigationValue](index.md)&gt; : [NavigationEvent](../index.md)&lt;[NavigationValue](index.md)&gt;
+class [Up](index.md)&lt;[Destination](index.md) : [NavigationDestination](../../index.md#1223765350%2FClasslikes%2F-215881696)&gt; : [NavigationEvent](../index.md)&lt;[Destination](index.md)&gt;

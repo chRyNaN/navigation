@@ -3,10 +3,11 @@
 # To
 
 [common]\
-data class [To](index.md)&lt;[NavigationValue](index.md)&gt; : [NavigationEvent](../index.md)&lt;[NavigationValue](index.md)&gt;
+data class [To](index.md)&lt;[Destination](index.md) : [NavigationDestination](../../index.md#1223765350%2FClasslikes%2F-215881696)&gt; : [NavigationEvent](../index.md)&lt;[Destination](index.md)&gt;
 
 ## Properties
 
 | Name | Summary |
 |---|---|
-| [value](value.md) | [common]<br>val [value](value.md): [NavigationValue](index.md) |
+| [destination](destination.md) | [common]<br>val [destination](destination.md): [Destination](index.md) |
+| [strategy](strategy.md) | [common]<br>val [strategy](strategy.md): [StackDuplicateContentStrategy](../../-stack-duplicate-content-strategy/index.md) |
