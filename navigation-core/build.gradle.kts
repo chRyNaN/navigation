@@ -7,6 +7,7 @@ plugins {
     id("com.android.library")
     id("maven-publish")
     id("org.jetbrains.dokka")
+    kotlin("plugin.serialization")
 }
 
 group = LibraryConstants.group
@@ -19,11 +20,14 @@ kotlin {
     }
     targets {
         android()
+
         jvm()
+
         js(IR) {
             browser()
             nodejs()
         }
+
         if (isBuildingOnOSX()) {
             ios()
             iosSimulatorArm64()
@@ -33,12 +37,13 @@ kotlin {
         all {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
-        
+
         val commonMain by getting {
             dependencies {
                 implementation(Kotlin.stdlib.common)
 
-                api(KotlinX.coroutines.core)
+                implementation(KotlinX.coroutines.core)
+                implementation(KotlinX.serialization.core)
             }
         }
 

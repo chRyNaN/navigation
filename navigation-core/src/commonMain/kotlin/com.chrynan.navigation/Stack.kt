@@ -2,9 +2,17 @@
 
 package com.chrynan.navigation
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+
 /**
  * Represents a LIFO (last in, first out) Queue [Collection].
  */
+@Serializable(with = StackSerializer::class)
 interface Stack<E> : Collection<E> {
 
     /**
@@ -13,6 +21,8 @@ interface Stack<E> : Collection<E> {
      * @throws [NoSuchElementException] - if the list is empty.
      */
     fun peek(): E
+
+    companion object
 }
 
 /**
@@ -28,6 +38,7 @@ fun <E> Stack<E>.peekOrNull(): E? =
 /**
  * Represents a mutable LIFO (last in, first out) Queue [MutableCollection]
  */
+@Serializable(with = MutableStackSerializer::class)
 interface MutableStack<E> : Stack<E>,
     MutableCollection<E> {
 
@@ -42,6 +53,8 @@ interface MutableStack<E> : Stack<E>,
      * Adds the provided [element] to the end of this queue [MutableList].
      */
     fun push(element: E)
+
+    companion object
 }
 
 /**
@@ -194,4 +207,72 @@ internal class ArrayListMutableStack<E>(elements: Collection<E>) : MutableStack<
 
     override fun toString(): String =
         "ArrayListMutableStack(size=$size, elements=[${list.joinToString(separator = ",")}])"
+}
+
+/**
+ * A [KSerializer] for a [Stack].
+ */
+internal class StackSerializer<E>(
+    elementSerializer: KSerializer<E>
+) : KSerializer<Stack<E>> {
+
+    private val delegateSerializer = ListSerializer(elementSerializer = elementSerializer)
+
+    override val descriptor: SerialDescriptor
+        get() = delegateSerializer.descriptor
+
+    override fun serialize(encoder: Encoder, value: Stack<E>) {
+        delegateSerializer.serialize(encoder = encoder, value = value.toList())
+    }
+
+    override fun deserialize(decoder: Decoder): Stack<E> =
+        delegateSerializer.deserialize(decoder = decoder).toStack()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is StackSerializer<*>) return false
+
+        return delegateSerializer == other.delegateSerializer
+    }
+
+    override fun hashCode(): Int {
+        return delegateSerializer.hashCode()
+    }
+
+    override fun toString(): String =
+        "StackSerializer(delegateSerializer=$delegateSerializer)"
+}
+
+/**
+ * A [KSerializer] for a [MutableStack].
+ */
+internal class MutableStackSerializer<E>(
+    elementSerializer: KSerializer<E>
+) : KSerializer<MutableStack<E>> {
+
+    private val delegateSerializer = ListSerializer(elementSerializer = elementSerializer)
+
+    override val descriptor: SerialDescriptor
+        get() = delegateSerializer.descriptor
+
+    override fun serialize(encoder: Encoder, value: MutableStack<E>) {
+        delegateSerializer.serialize(encoder = encoder, value = value.toList())
+    }
+
+    override fun deserialize(decoder: Decoder): MutableStack<E> =
+        delegateSerializer.deserialize(decoder = decoder).toMutableStack()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MutableStackSerializer<*>) return false
+
+        return delegateSerializer == other.delegateSerializer
+    }
+
+    override fun hashCode(): Int {
+        return delegateSerializer.hashCode()
+    }
+
+    override fun toString(): String =
+        "MutableStackSerializer(delegateSerializer=$delegateSerializer)"
 }
