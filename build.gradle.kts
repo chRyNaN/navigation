@@ -4,13 +4,13 @@ group = LibraryConstants.group
 version = LibraryConstants.versionName
 
 plugins {
-    kotlin("jvm") version "1.8.0" apply false
-    kotlin("multiplatform") version "1.8.0" apply false
-    kotlin("android") version "1.8.0" apply false
+    kotlin("jvm") version "1.8.20" apply false
+    kotlin("multiplatform") version "1.8.20" apply false
+    kotlin("android") version "1.8.20" apply false
     id("com.android.library") version "7.3.1" apply false
     id("com.android.application") version "7.3.1" apply false
-    id("org.jetbrains.dokka") version "1.7.20"
-    id("org.jetbrains.compose") version "1.3.0" apply false
+    id("org.jetbrains.dokka") version "1.8.10"
+    id("org.jetbrains.compose") version "1.4.0" apply false
 }
 
 allprojects {
