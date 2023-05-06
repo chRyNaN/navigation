@@ -33,6 +33,7 @@ kotlin {
         all {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
+        
         val commonMain by getting {
             dependencies {
                 implementation(Kotlin.stdlib.common)
@@ -40,6 +41,13 @@ kotlin {
                 api(KotlinX.coroutines.core)
             }
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+
         if (isBuildingOnOSX()) {
             val iosMain by sourceSets.getting
             val iosSimulatorArm64Main by sourceSets.getting
