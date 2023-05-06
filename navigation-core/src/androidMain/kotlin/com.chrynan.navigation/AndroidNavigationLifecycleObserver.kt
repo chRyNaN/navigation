@@ -13,7 +13,6 @@ fun interface AndroidNavigationHandler<Destination : NavigationDestination, Cont
     operator fun AndroidNavigationScope.invoke(context: Context, destination: Destination)
 }
 
-@OptIn(FlowPreview::class)
 internal class AndroidNavigationLifecycleObserver<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
     activity: Activity,
     private val navigator: Navigator<Destination, Context>,

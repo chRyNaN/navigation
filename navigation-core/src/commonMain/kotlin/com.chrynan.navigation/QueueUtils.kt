@@ -29,7 +29,7 @@ enum class QueueOrder {
  *
  * @throws [NoSuchElementException] - if the list is empty.
  */
-fun <T> List<T>.peek(order: QueueOrder = QueueOrder.LIFO): T =
+fun <E> List<E>.peek(order: QueueOrder = QueueOrder.LIFO): E =
     when (order) {
         QueueOrder.LIFO -> this.last()
         QueueOrder.FIFO -> this.first()
@@ -43,7 +43,7 @@ fun <T> List<T>.peek(order: QueueOrder = QueueOrder.LIFO): T =
  * Note that while this function respects the provided [order] for this retrieval operation, there can be no guarantee
  * that the items were added to this [List] using the same provided [order].
  */
-fun <T> List<T>.peekOrNull(order: QueueOrder = QueueOrder.LIFO): T? =
+fun <E> List<E>.peekOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
     try {
         this.peek(order = order)
     } catch (_: NoSuchElementException) {
@@ -60,7 +60,7 @@ fun <T> List<T>.peekOrNull(order: QueueOrder = QueueOrder.LIFO): T? =
  *
  * @throws [NoSuchElementException] - if the list is empty.
  */
-fun <T> MutableList<T>.pop(order: QueueOrder = QueueOrder.LIFO): T =
+fun <E> MutableList<E>.pop(order: QueueOrder = QueueOrder.LIFO): E =
     when (order) {
         QueueOrder.LIFO -> this.removeLast()
         QueueOrder.FIFO -> this.removeFirst()
@@ -74,7 +74,7 @@ fun <T> MutableList<T>.pop(order: QueueOrder = QueueOrder.LIFO): T =
  * Note that while this function respects the provided [order] for this removal operation, there can be no guarantee
  * that the items were added to this [MutableList] using the same provided [order].
  */
-fun <T> MutableList<T>.popOrNull(order: QueueOrder = QueueOrder.LIFO): T? =
+fun <E> MutableList<E>.popOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
     try {
         this.pop(order = order)
     } catch (_: NoSuchElementException) {
@@ -82,11 +82,11 @@ fun <T> MutableList<T>.popOrNull(order: QueueOrder = QueueOrder.LIFO): T? =
     }
 
 /**
- * Adds the provided [item] to the end of this queue [MutableList].
+ * Adds the provided [element] to the end of this queue [MutableList].
  *
  * Note that while this function always adds the items to the end of the list (which works for both [QueueOrder.LIFO]
  * and [QueueOrder.FIFO] queues), the retrieval of the items cannot be guaranteed to match any specific [QueueOrder].
  */
-fun <T> MutableList<T>.push(item: T) {
-    this.add(element = item)
+fun <E> MutableList<E>.push(element: E) {
+    this.add(element = element)
 }

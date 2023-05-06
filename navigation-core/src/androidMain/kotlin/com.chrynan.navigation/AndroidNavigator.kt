@@ -14,8 +14,7 @@ package com.chrynan.navigation
  */
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> navigator(
     initialContext: Context
-): Navigator<Destination, Context> =
-    NavigatorImpl(initialContext = initialContext)
+): Navigator<Destination, Context> = NavigatorImpl(initialContext = initialContext)
 
 /**
  * Creates a [Navigator] with a [SingleNavigationContext] using the provided [initialDestination].
