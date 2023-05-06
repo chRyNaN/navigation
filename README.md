@@ -1,6 +1,8 @@
+![navigation](assets/navigation_logo.png)
+
 # navigation
 
-Kotlin multi-platform application navigation library. Supports Jetpack Compose. <br/>
+Kotlin multi-platform application navigation library. Supports Jetpack Compose. <br/><br/>
 <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/chRyNaN/navigation">
 
 ```kotlin
@@ -17,7 +19,37 @@ NavContainer(navigator) { _, destination ->
 navigator.goTo("Farewell")
 ```
 
-### Usage
+## Getting Started 🏁
+
+The library is provided through [Repsy.io](https://repsy.io/). Checkout
+the [releases page](https://github.com/chRyNaN/navigation/releases) to get the latest version. <br/>
+<img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/chRyNaN/navigation">
+
+### Repository
+
+```groovy
+repositories {
+    maven {
+        url = uri("https://repo.repsy.io/mvn/chrynan/public")
+    }
+}
+```
+
+### Dependencies
+
+#### core
+
+```groovy
+implementation("com.chrynan.navigation:navigation-core:VERSION")
+```
+
+#### compose
+
+```groovy
+implementation("com.chrynan.navigation:navigation-compose:VERSION")
+```
+
+### Usage 👨‍💻
 
 * Create a `Navigator` for any `NavigationDestination` type that you will use as a destination key. This can be Strings,
   enums, sealed classes, or any type.
@@ -104,42 +136,28 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
 }
 ```
 
-## Building the library
-
-The library is provided through [Repsy.io](https://repsy.io/). Checkout
-the [releases page](https://github.com/chRyNaN/navigation/releases) to get the latest version. <br/>
-<img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/chRyNaN/navigation">
-
-### Repository
-
-```groovy
-repositories {
-    maven {
-        url = uri("https://repo.repsy.io/mvn/chrynan/public")
-    }
-}
-```
-
-### Dependencies
-
-#### core
-
-```groovy
-implementation("com.chrynan.navigation:navigation-core:VERSION")
-```
-
-#### compose
-
-```groovy
-implementation("com.chrynan.navigation:navigation-compose:VERSION")
-```
-
-## Documentation
+## Documentation 📃
 
 More detailed documentation is available in the [docs](docs/) folder. The entry point to the documentation can be
 found [here](docs/index.md).
 
-## License
+## Security 🛡️
+
+For security vulnerabilities, concerns, or issues, please responsibly disclose the information either by opening a
+public GitHub Issue or reaching out to the project owner.
+
+## Contributing ✍️
+
+Outside contributions are welcome for this project. Please follow the [code of conduct](CODE_OF_CONDUCT.md)
+and [coding conventions](CODING_CONVENTIONS.md) when contributing. If contributing code, please add thorough documents.
+and tests. Thank you!
+
+## Sponsorship ❤️
+
+Support this project by [becoming a sponsor](https://www.buymeacoffee.com/chrynan) of my work! And make sure to give the
+repository a ⭐
+
+## License ⚖️
 
 ```
 Copyright 2021 chRyNaN

@@ -1,4 +1,4 @@
-name: Publish
+name: Build
 
 on:
   release:
@@ -18,9 +18,7 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
-      - name: Gradle Publish
+      - name: Gradle Build
         env:
           KEY: ${{ secrets.GITHUB_TOKEN }}
-          BINTRAY_USER: ${{ secrets.repsyUsername }}
-          BINTRAY_KEY: ${{ secrets.repsyToken }}
-        run: ./gradlew publish
+        run: ./gradlew build
