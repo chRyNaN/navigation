@@ -22,7 +22,7 @@ interface Navigator<Destination : NavigationDestination, Context : NavigationCon
      *
      * @param [event] The [DestinationEvent] that represents the navigation action to be performed.
      */
-    fun navigate(event: DestinationEvent<Destination>): Boolean
+    //fun navigate(event: DestinationEvent<Destination>): Boolean
 
     /**
      * Determines whether the [Navigator] can navigate back in the stack in the current [Context].
@@ -51,7 +51,7 @@ interface Navigator<Destination : NavigationDestination, Context : NavigationCon
  * @return `true` if the back navigation operation was successful, `false` otherwise.
  */
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goBack(): Boolean =
-    navigate(event = DestinationEvent.Back())
+    false // navigate(event = DestinationEvent.Back())
 
 /**
  * Performs an "up" navigation. An "up" navigation is similar to a "back" navigation but may be slightly different.
@@ -63,7 +63,7 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  * @return `true` if the back navigation operation was successful, `false` otherwise.
  */
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goUp(): Boolean =
-    navigate(event = DestinationEvent.Up())
+    false // navigate(event = DestinationEvent.Up())
 
 /**
  * Goes to the provided [destination] using the provided stack duplicate content [strategy]. Depending on the
@@ -81,7 +81,7 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goTo(
     destination: Destination,
     strategy: StackDuplicateContentStrategy
-): Boolean = navigate(event = DestinationEvent.To(destination = destination, strategy = strategy))
+): Boolean = false // navigate(event = DestinationEvent.To(destination = destination, strategy = strategy))
 
 /**
  * Goes to the provided [destination] using the provided stack duplicate content [strategy]. Depending on the current
@@ -102,12 +102,13 @@ abstract class BaseNavigatorImpl<Destination : NavigationDestination, Context : 
 
     private val contextKeyStack = mutableMapOf(state.initialContext to mutableListOf(state.initialDestination))
 
+    /*
     final override fun navigate(event: DestinationEvent<Destination>): Boolean =
         when (event) {
             is DestinationEvent.Back -> goBack()
             is DestinationEvent.Up -> goUp()
             is DestinationEvent.To -> goTo(destination = event.destination, strategy = event.strategy)
-        }
+        }*/
 
     final override fun canGoBack(): Boolean {
         val currentKeyStack = contextKeyStack[state.currentContext] ?: mutableListOf()

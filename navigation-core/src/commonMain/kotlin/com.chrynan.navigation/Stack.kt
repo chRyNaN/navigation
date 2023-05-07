@@ -253,7 +253,7 @@ internal class ArrayListMutableStack<E>(elements: Collection<E>) : MutableListSt
         list.set(index = index, element = element)
 
     override fun removeAt(index: Int): E =
-        list.removeAt(index = index)
+        list.removeAt(index)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
