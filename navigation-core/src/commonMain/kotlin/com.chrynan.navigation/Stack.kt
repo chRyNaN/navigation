@@ -68,6 +68,18 @@ fun <E> MutableStack<E>.popOrNull(): E? =
     }
 
 /**
+ * A [Collection] that is both a [List] and a [Stack].
+ */
+interface ListStack<E> : List<E>,
+    Stack<E>
+
+/**
+ * A [Collection] that is both a [MutableList] and a [MutableStack].
+ */
+interface MutableListStack<E> : MutableList<E>,
+    MutableStack<E>
+
+/**
  * Returns a new read-only [Stack] using the provided ordered [elements]. The first provided element is the bottom of
  * the resulting [Stack] and the last provided element is the top of the provided [Stack].
  */
@@ -109,7 +121,7 @@ fun <E> Collection<E>.toMutableStack(): MutableStack<E> =
  * A read-only version of a [Stack]. This takes the elements provided in the constructor and makes a copy of that
  * collection, so further mutations to that elements collection will not affect this [Stack].
  */
-internal class ReadOnlyStack<E>(elements: Collection<E>) : Stack<E> {
+internal class ReadOnlyStack<E>(elements: Collection<E>) : ListStack<E> {
 
     override val size: Int
         get() = list.size
@@ -131,6 +143,24 @@ internal class ReadOnlyStack<E>(elements: Collection<E>) : Stack<E> {
     override fun contains(element: E): Boolean =
         list.contains(element)
 
+    override fun get(index: Int): E =
+        list.get(index = index)
+
+    override fun indexOf(element: E): Int =
+        list.indexOf(element = element)
+
+    override fun subList(fromIndex: Int, toIndex: Int): List<E> =
+        list.subList(fromIndex = fromIndex, toIndex = toIndex)
+
+    override fun lastIndexOf(element: E): Int =
+        list.lastIndexOf(element = element)
+
+    override fun listIterator(): ListIterator<E> =
+        list.listIterator()
+
+    override fun listIterator(index: Int): ListIterator<E> =
+        list.listIterator(index = index)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Stack<*>) return false
@@ -149,7 +179,7 @@ internal class ReadOnlyStack<E>(elements: Collection<E>) : Stack<E> {
  * A mutable version of a [Stack] that is backed by an [ArrayList]. This takes the elements provided in the constructor
  * and makes a copy of that collection, so further mutations to that elements collection will not affect this [Stack].
  */
-internal class ArrayListMutableStack<E>(elements: Collection<E>) : MutableStack<E> {
+internal class ArrayListMutableStack<E>(elements: Collection<E>) : MutableListStack<E> {
 
     override val size: Int
         get() = list.size
@@ -194,6 +224,36 @@ internal class ArrayListMutableStack<E>(elements: Collection<E>) : MutableStack<
 
     override fun contains(element: E): Boolean =
         list.contains(element)
+
+    override fun get(index: Int): E =
+        list.get(index = index)
+
+    override fun indexOf(element: E): Int =
+        list.indexOf(element = element)
+
+    override fun subList(fromIndex: Int, toIndex: Int): MutableList<E> =
+        list.subList(fromIndex = fromIndex, toIndex = toIndex)
+
+    override fun lastIndexOf(element: E): Int =
+        list.lastIndexOf(element = element)
+
+    override fun listIterator(): MutableListIterator<E> =
+        list.listIterator()
+
+    override fun listIterator(index: Int): MutableListIterator<E> =
+        list.listIterator(index = index)
+
+    override fun add(index: Int, element: E) =
+        list.add(index = index, element = element)
+
+    override fun addAll(index: Int, elements: Collection<E>): Boolean =
+        list.addAll(index = index, elements = elements)
+
+    override fun set(index: Int, element: E): E =
+        list.set(index = index, element = element)
+
+    override fun removeAt(index: Int): E =
+        list.removeAt(index = index)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
