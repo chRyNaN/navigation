@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  * @see [Navigator.navigate]
  */
 @Serializable
-sealed class NavigationEvent private constructor() {
+sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>> private constructor() {
 
     /**
      * The [Instant] that the event occurred.
@@ -35,14 +35,14 @@ sealed class NavigationEvent private constructor() {
      */
     @Serializable
     @SerialName(value = "back")
-    class Back internal constructor(
+    class Back<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
         @SerialName(value = "instant") override val instant: Instant = Clock.System.now(),
         @SerialName(value = "kind") val kind: Kind
-    ) : NavigationEvent() {
+    ) : NavigationEvent<D, C>() {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is Back) return false
+            if (other !is Back<*, *>) return false
 
             if (instant != other.instant) return false
 
@@ -96,14 +96,14 @@ sealed class NavigationEvent private constructor() {
      */
     @Serializable
     @SerialName(value = "destination")
-    class Destination<D : NavigationDestination> internal constructor(
+    class Destination<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
         @SerialName(value = "instant") override val instant: Instant = Clock.System.now(),
         @SerialName(value = "destination") val destination: D
-    ) : NavigationEvent() {
+    ) : NavigationEvent<D, C>() {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is Destination<*>) return false
+            if (other !is Destination<*, *>) return false
 
             if (instant != other.instant) return false
 
@@ -131,7 +131,7 @@ sealed class NavigationEvent private constructor() {
     class Context<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
         @SerialName(value = "instant") override val instant: Instant = Clock.System.now(),
         @SerialName(value = "context") val context: C
-    ) : NavigationEvent() {
+    ) : NavigationEvent<D, C>() {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

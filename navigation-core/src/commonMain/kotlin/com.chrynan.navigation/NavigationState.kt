@@ -34,6 +34,8 @@ sealed interface NavigationState<T> {
      * purposes of listening to state changes.
      */
     val changes: Flow<T>
+
+    companion object
 }
 
 /**
@@ -51,12 +53,14 @@ internal sealed interface MutableNavigationState<T> : NavigationState<T> {
      * Resets the state back to its [initial] value. This will cause the [initial] value to be emitted to [changes].
      */
     fun reset()
+
+    companion object
 }
 
 /**
  * Creates a [MutableNavigationState] instance.
  */
-internal fun <T> mutableNavigationStateOf(initial: T): NavigationState<T> =
+internal fun <T> mutableNavigationStateOf(initial: T): MutableNavigationState<T> =
     StateFlowMutableNavigationState(initial = initial)
 
 /**
