@@ -12,17 +12,19 @@ package com.chrynan.navigation
 interface Navigator<Destination : NavigationDestination, Context : NavigationContext<Destination>> {
 
     /**
-     * The [NavigatorState] for this [Navigator] instance. This can be used to subscribe to destination or context
-     * changes, or get the current state values.
+     * The [NavigationStateStore] containing the latest [NavigationState]s for each navigation value. This is useful to
+     * get the initial, current, or subscribe to the changes in value of the different navigation components.
      */
-    val state: NavigatorState<Destination, Context>
+    val store: NavigationStateStore<Destination, Context>
 
     /**
      * Navigates to the provided [event].
      *
-     * @param [event] The [DestinationEvent] that represents the navigation action to be performed.
+     * @param [event] The [NavigationEvent] that represents the navigation action to be performed.
+     *
+     * @return `true` if the navigation event was successful and the state was altered, or `false` otherwise.
      */
-    //fun navigate(event: DestinationEvent<Destination>): Boolean
+    fun navigate(event: NavigationEvent<Destination, Context>): Boolean
 
     /**
      * Determines whether the [Navigator] can navigate back in the stack in the current [Context].
@@ -30,15 +32,6 @@ interface Navigator<Destination : NavigationDestination, Context : NavigationCon
      * @return `true` if this [Navigator] can navigate back, `false` otherwise.
      */
     fun canGoBack(): Boolean
-
-    /**
-     * Changes the current [Context] to the provided [context] value. The displayed [Destination] will top destination
-     * value in the stack associated with the provided [context], or the provided context's
-     * [NavigationContext.initialDestination] if there is currently no existing stack for the provided [context].
-     *
-     * @param [context] The [NavigationContext] to change to.
-     */
-    fun changeContext(context: Context)
 
     companion object
 }
@@ -73,14 +66,14 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  *
  * @param [destination] The [NavigationDestination] that is to be navigated to and added to the current [Context]
  * stack.
- * @param [strategy] The [StackDuplicateContentStrategy] defining what to do when there are duplicate [Destination]
+ * @param [strategy] The [StackDuplicateDestinationStrategy] defining what to do when there are duplicate [Destination]
  * values within the current [Context] stack.
  *
  * @return `true` if the back navigation operation was successful, `false` otherwise.
  */
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goTo(
     destination: Destination,
-    strategy: StackDuplicateContentStrategy
+    strategy: StackDuplicateDestinationStrategy
 ): Boolean = false // navigate(event = DestinationEvent.To(destination = destination, strategy = strategy))
 
 /**
@@ -93,120 +86,14 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  */
 // Note: This is needed because defaults aren't working for @Composable functions for interfaces.
 fun <Destination : Any, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goTo(destination: Destination) =
-    goTo(destination = destination, strategy = StackDuplicateContentStrategy.CLEAR_STACK)
+    goTo(destination = destination, strategy = StackDuplicateDestinationStrategy.CLEAR_TO_ORIGINAL)
 
-abstract class BaseNavigatorImpl<Destination : NavigationDestination, Context : NavigationContext<Destination>, State : BaseNavigatorStateImpl<Destination, Context>>(
-    final override val state: State
-) : ViewModel(),
-    Navigator<Destination, Context> {
-
-    private val contextKeyStack = mutableMapOf(state.initialContext to mutableListOf(state.initialDestination))
-
-    /*
-    final override fun navigate(event: DestinationEvent<Destination>): Boolean =
-        when (event) {
-            is DestinationEvent.Back -> goBack()
-            is DestinationEvent.Up -> goUp()
-            is DestinationEvent.To -> goTo(destination = event.destination, strategy = event.strategy)
-        }*/
-
-    final override fun canGoBack(): Boolean {
-        val currentKeyStack = contextKeyStack[state.currentContext] ?: mutableListOf()
-
-        return currentKeyStack.size > 1
-    }
-
-    final override fun changeContext(context: Context) {
-        if (context == state.currentContext) return
-
-        val keyStack = contextKeyStack[context]
-
-        if (keyStack.isNullOrEmpty()) {
-            val key = context.initialDestination
-            val newKeyStack = mutableListOf(key)
-            contextKeyStack[context] = newKeyStack
-            state.change(destination = key, context = context)
-        } else {
-            val key = keyStack.last()
-            state.change(destination = key, context = context)
-        }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || other !is BaseNavigatorImpl<*, *, *>) return false
-
-        if (state != other.state) return false
-        if (contextKeyStack != other.contextKeyStack) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = state.hashCode()
-
-        result = 31 * result + contextKeyStack.hashCode()
-
-        return result
-    }
-
-    override fun toString(): String =
-        "BaseNavigatorImpl(" +
-                "state=$state, " +
-                "contextKeyStack=$contextKeyStack)"
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun goTo(destination: Destination, strategy: StackDuplicateContentStrategy): Boolean {
-        val currentScope = state.currentContext
-        val currentKeyStack = contextKeyStack[currentScope] ?: mutableListOf()
-
-        // If we are already displaying this key on the current scoped stack, then return.
-        if (destination == currentKeyStack.lastOrNull()) return false
-
-        if (strategy == StackDuplicateContentStrategy.CLEAR_STACK && currentKeyStack.contains(destination)) {
-            // Go Back to the content with the provided key using the updated content
-            var lastKey = currentKeyStack.lastOrNull()
-
-            while (lastKey != null && lastKey != destination) {
-                currentKeyStack.removeLast()
-                lastKey = currentKeyStack.lastOrNull()
-            }
-
-            // Replace the content with the updated content
-            contextKeyStack[currentScope] = currentKeyStack
-            state.change(destination = destination)
-        } else {
-            // Go to the provided content
-            currentKeyStack.add(destination)
-            contextKeyStack[currentScope] = currentKeyStack
-            state.change(destination = destination)
-        }
-
-        return true
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun goBack(): Boolean {
-        val wentBack = canGoBack()
-
-        if (wentBack) {
-            val currentScope = state.currentContext
-            val currentKeyStack = contextKeyStack[currentScope] ?: mutableListOf()
-            currentKeyStack.removeLast()
-            contextKeyStack[currentScope] = currentKeyStack
-            state.change(destination = currentKeyStack.last())
-        }
-
-        return wentBack
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun goUp(): Boolean =
-        goBack()
-}
-
-internal class NavigatorImpl<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
-    initialContext: Context
-) : BaseNavigatorImpl<Destination, Context, NavigatorStateImpl<Destination, Context>>(
-    state = NavigatorStateImpl(initialContext = initialContext)
-)
+/**
+ * Changes the current [Context] to the provided [context] value. The displayed [Destination] will top destination
+ * value in the stack associated with the provided [context], or the provided context's
+ * [NavigationContext.initialDestination] if there is currently no existing stack for the provided [context].
+ *
+ * @param [context] The [NavigationContext] to change to.
+ */
+fun <Destination : Any, Context : NavigationContext<Destination>> Navigator<Destination, Context>.changeContext(context: Context): Boolean =
+    false // TODO

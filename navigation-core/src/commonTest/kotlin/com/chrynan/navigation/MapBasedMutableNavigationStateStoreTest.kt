@@ -7,7 +7,10 @@ internal class MapBasedMutableNavigationStateStoreTest {
 
     @Test
     fun backAcrossContextsReturnsFalseForInitialState() {
-        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(initialContext = TestContext.Home)
+        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            duplicateStrategy = StackDuplicateDestinationStrategy.ALLOW_DUPLICATES
+        )
 
         store.assertInitialState(
             event = null,
@@ -42,7 +45,10 @@ internal class MapBasedMutableNavigationStateStoreTest {
 
     @Test
     fun backInContextsReturnsNullForInitialState() {
-        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(initialContext = TestContext.Home)
+        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            duplicateStrategy = StackDuplicateDestinationStrategy.ALLOW_DUPLICATES
+        )
 
         store.assertInitialState(
             event = null,
@@ -77,7 +83,10 @@ internal class MapBasedMutableNavigationStateStoreTest {
 
     @Test
     fun destinationChangeWorksCorrectly() {
-        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(initialContext = TestContext.Home)
+        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            duplicateStrategy = StackDuplicateDestinationStrategy.ALLOW_DUPLICATES
+        )
 
         store.assertInitialState(
             event = null,
@@ -112,7 +121,10 @@ internal class MapBasedMutableNavigationStateStoreTest {
 
     @Test
     fun contextChangeWorksCorrectly() {
-        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(initialContext = TestContext.Home)
+        val store = MapBasedMutableNavigationStateStore<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            duplicateStrategy = StackDuplicateDestinationStrategy.ALLOW_DUPLICATES
+        )
 
         store.assertInitialState(
             event = null,

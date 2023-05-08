@@ -21,6 +21,8 @@ interface NavigationStateStore<Destination : NavigationDestination, Context : Na
      * A [NavigationState] of [NavigationContext]s.
      */
     val context: NavigationState<Context>
+
+    companion object
 }
 
 /**
@@ -48,21 +50,30 @@ internal interface MutableNavigationStateStore<Destination : NavigationDestinati
  * Creates a [MutableNavigationStateStore] instance with the provided [initialContext] value.
  */
 internal fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> mutableNavigationStateStoreOf(
-    initialContext: Context
+    initialContext: Context,
+    duplicateStrategy: StackDuplicateDestinationStrategy = StackDuplicateDestinationStrategy.ALLOW_DUPLICATES
 ): MutableNavigationStateStore<Destination, Context> =
-    MapBasedMutableNavigationStateStore(initialContext = initialContext)
+    MapBasedMutableNavigationStateStore(initialContext = initialContext, duplicateStrategy = duplicateStrategy)
 
 /**
  * A [MutableNavigationStateStore] implementation that stores [NavigationContext]s and their associated
  * [NavigationDestination] [Stack]s in an in-memory [Map].
  */
 internal class MapBasedMutableNavigationStateStore<Destination : NavigationDestination, Context : NavigationContext<Destination>> internal constructor(
-    private val initialContext: Context
+    private val initialContext: Context,
+    private val duplicateStrategy: StackDuplicateDestinationStrategy = StackDuplicateDestinationStrategy.ALLOW_DUPLICATES // TODO
 ) : MutableNavigationStateStore<Destination, Context> {
 
-    override val event = mutableNavigationStateOf<NavigationEvent<Destination, Context>?>(initial = null)
-    override val destination = mutableNavigationStateOf(initial = initialContext.initialDestination)
-    override val context = mutableNavigationStateOf(initial = initialContext)
+    override val event: NavigationState<NavigationEvent<Destination, Context>?>
+        get() = mutableEvent
+    override val destination: NavigationState<Destination>
+        get() = mutableDestination
+    override val context: NavigationState<Context>
+        get() = mutableContext
+
+    private val mutableEvent = mutableNavigationStateOf<NavigationEvent<Destination, Context>?>(initial = null)
+    private val mutableDestination = mutableNavigationStateOf(initial = initialContext.initialDestination)
+    private val mutableContext = mutableNavigationStateOf(initial = initialContext)
 
     private val navigationStacks = NavigationContextStacks(initialContext = initialContext)
     private val forwardNavigationEventStack = mutableStackOf<NavigationEvent.Forward<Destination, Context>>()
@@ -101,13 +112,37 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
         }
 
     override fun reset() {
-        event.reset()
-        destination.reset()
-        context.reset()
+        mutableContext.reset()
+        mutableDestination.reset()
+        mutableContext.reset()
 
         navigationStacks.clear()
         forwardNavigationEventStack.clear()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MapBasedMutableNavigationStateStore<*, *>) return false
+
+        if (initialContext != other.initialContext) return false
+        if (duplicateStrategy != other.duplicateStrategy) return false
+        if (event != other.event) return false
+        if (destination != other.destination) return false
+
+        return context == other.context
+    }
+
+    override fun hashCode(): Int {
+        var result = initialContext.hashCode()
+        result = 31 * result + duplicateStrategy.hashCode()
+        result = 31 * result + event.hashCode()
+        result = 31 * result + destination.hashCode()
+        result = 31 * result + context.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "MapBasedMutableNavigationStateStore(initialContext=$initialContext, duplicateStrategy=$duplicateStrategy, event=$event, destination=$destination, context=$context)"
 
     private fun goBack(event: NavigationEvent.Backward<Destination, Context>): Boolean {
         if (forwardNavigationEventStack.isEmpty()) return false
@@ -155,9 +190,9 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
         context: Context,
         destination: Destination
     ) {
-        this.context.update(state = context)
-        this.destination.update(state = destination)
-        this.event.update(state = event)
+        this.mutableContext.update(state = context)
+        this.mutableDestination.update(state = destination)
+        this.mutableEvent.update(state = event)
     }
 
     private fun peekCurrentContext(): Context =
@@ -174,4 +209,8 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
 
         return navigationStacks.peek(context)
     }
+
+    internal class PersistableState<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
+
+    )
 }
