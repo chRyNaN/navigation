@@ -3,7 +3,7 @@ package com.chrynan.navigation
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class NavigationContextStacksTest {
+internal class NavigationContextStacksTest {
 
     @Test
     fun initialContextIsReturnedCorrectly() {

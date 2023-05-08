@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
-class ReadOnlyStackTest {
+internal class ReadOnlyStackTest {
 
     @Test
     fun peekReturnsTheLastItem() {

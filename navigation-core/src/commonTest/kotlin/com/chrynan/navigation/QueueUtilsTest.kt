@@ -5,7 +5,7 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class QueueUtilsTest {
+internal class QueueUtilsTest {
 
     @Test
     fun peekLifoOrderTakesTheLastItem() {
