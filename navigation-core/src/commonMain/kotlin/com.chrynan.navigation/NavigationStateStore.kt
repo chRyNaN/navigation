@@ -64,8 +64,7 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
     override val destination = mutableNavigationStateOf(initial = initialContext.initialDestination)
     override val context = mutableNavigationStateOf(initial = initialContext)
 
-    private val destinationStacksByContext =
-        mutableMapOf(initialContext to mutableStackOf(initialContext.initialDestination))
+    private val navigationStacks = NavigationContextStacks(initialContext = initialContext)
     private val forwardNavigationEventStack = mutableStackOf<NavigationEvent.Forward<Destination, Context>>()
 
     override fun dispatch(event: NavigationEvent<Destination, Context>): Boolean =
@@ -77,7 +76,7 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
 
                 val context = peekCurrentContext()
 
-                pushDestinationToContextStack(context = context, destination = event.destination)
+                navigationStacks.push(context = context, destination = event.destination)
 
                 updateState(
                     event = event,
@@ -94,7 +93,7 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
                 updateState(
                     event = event,
                     context = event.context,
-                    destination = peekCurrentDestinationForContext(context = event.context)
+                    destination = navigationStacks.peek(context = event.context)
                 )
 
                 true
@@ -106,8 +105,8 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
         destination.reset()
         context.reset()
 
-        destinationStacksByContext.clear()
-        destinationStacksByContext[context.initial] = mutableStackOf(context.initial.initialDestination)
+        navigationStacks.clear()
+        forwardNavigationEventStack.clear()
     }
 
     private fun goBack(event: NavigationEvent.Backward<Destination, Context>): Boolean {
@@ -130,7 +129,7 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
                 updateState(
                     event = event,
                     context = newContext,
-                    destination = peekCurrentDestinationForContext(context = newContext)
+                    destination = navigationStacks.peek(context = newContext)
                 )
 
                 return true
@@ -166,39 +165,13 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
             .filterIsInstance<NavigationEvent.Forward.Context<Destination, Context>>()
             .lastOrNull()?.context ?: initialContext
 
-    private fun peekCurrentDestinationForContext(context: Context): Destination {
-        val destination = destinationStacksByContext[context]?.peekOrNull()
-
-        return if (destination == null) {
-            destinationStacksByContext[context] = mutableStackOf(context.initialDestination)
-
-            context.initialDestination
-        } else {
-            destination
-        }
-    }
-
     /**
      * Pops the top destination off the provided [context] stack and returns the new top destination, or `null` if the
      * provided [context] stack could not be popped (there must be at least one item in the stack at all times).
      */
     private fun popToPreviousDestinationForContext(context: Context): Destination? {
-        val stack = destinationStacksByContext[context] ?: return null
+        navigationStacks.pop(context) ?: return null
 
-        if (stack.size <= 1) return null
-
-        stack.pop()
-
-        destinationStacksByContext[context] = stack
-
-        return stack.peek()
-    }
-
-    private fun pushDestinationToContextStack(context: Context, destination: Destination) {
-        val stack = destinationStacksByContext[context] ?: mutableStackOf(context.initialDestination)
-
-        stack.push(destination)
-
-        destinationStacksByContext[context] = stack
+        return navigationStacks.peek(context)
     }
 }
