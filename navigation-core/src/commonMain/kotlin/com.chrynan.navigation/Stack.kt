@@ -121,7 +121,7 @@ internal fun <E> Collection<E>.toMutableStack(): MutableStack<E> =
  * A read-only version of a [Stack]. This takes the elements provided in the constructor and makes a copy of that
  * collection, so further mutations to that elements collection will not affect this [Stack].
  */
-internal class ReadOnlyStack<E>(elements: Collection<E>) : ListStack<E> {
+internal class ReadOnlyStack<E> internal constructor(elements: Collection<E>) : ListStack<E> {
 
     override val size: Int
         get() = list.size
@@ -179,7 +179,7 @@ internal class ReadOnlyStack<E>(elements: Collection<E>) : ListStack<E> {
  * A mutable version of a [Stack] that is backed by an [ArrayList]. This takes the elements provided in the constructor
  * and makes a copy of that collection, so further mutations to that elements collection will not affect this [Stack].
  */
-internal class ArrayListMutableStack<E>(elements: Collection<E>) : MutableListStack<E> {
+internal class ArrayListMutableStack<E> internal constructor(elements: Collection<E>) : MutableListStack<E> {
 
     override val size: Int
         get() = list.size
@@ -272,7 +272,7 @@ internal class ArrayListMutableStack<E>(elements: Collection<E>) : MutableListSt
 /**
  * A [KSerializer] for a [Stack].
  */
-internal class StackSerializer<E>(
+internal class StackSerializer<E> internal constructor(
     elementSerializer: KSerializer<E>
 ) : KSerializer<Stack<E>> {
 
@@ -306,7 +306,7 @@ internal class StackSerializer<E>(
 /**
  * A [KSerializer] for a [MutableStack].
  */
-internal class MutableStackSerializer<E>(
+internal class MutableStackSerializer<E> internal constructor(
     elementSerializer: KSerializer<E>
 ) : KSerializer<MutableStack<E>> {
 

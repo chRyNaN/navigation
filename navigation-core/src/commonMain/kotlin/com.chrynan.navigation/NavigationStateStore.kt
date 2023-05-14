@@ -5,7 +5,7 @@ package com.chrynan.navigation
 /**
  * Represents a store of navigation state information that is useful for a [Navigator].
  */
-interface NavigationStateStore<Destination : NavigationDestination, Context : NavigationContext<Destination>> {
+sealed interface NavigationStateStore<Destination : NavigationDestination, Context : NavigationContext<Destination>> {
 
     /**
      * A [NavigationState] of [NavigationEvent]s.
@@ -28,7 +28,7 @@ interface NavigationStateStore<Destination : NavigationDestination, Context : Na
 /**
  * A mutable version of a [NavigationStateStore].
  */
-internal interface MutableNavigationStateStore<Destination : NavigationDestination, Context : NavigationContext<Destination>> :
+internal sealed interface MutableNavigationStateStore<Destination : NavigationDestination, Context : NavigationContext<Destination>> :
     NavigationStateStore<Destination, Context> {
 
     /**
@@ -209,8 +209,4 @@ internal class MapBasedMutableNavigationStateStore<Destination : NavigationDesti
 
         return navigationStacks.peek(context)
     }
-
-    internal class PersistableState<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
-
-    )
 }

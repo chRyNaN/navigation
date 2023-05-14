@@ -4,6 +4,11 @@ package com.chrynan.navigation
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * A generic wrapper around the state of a navigation component. This provides a way to access the retained [initial]
@@ -15,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * and creation of the component is internal. If you need something like this component externally, consider using a
  * state management library like [cycle](https://github.com/chRyNaN/cycle).
  */
+@Serializable(with = NavigationStateSerializer::class)
 sealed interface NavigationState<T> {
 
     /**
@@ -103,4 +109,73 @@ internal class StateFlowMutableNavigationState<T> internal constructor(
 
     override fun toString(): String =
         "StateFlowMutableNavigationState(initial=$initial, current=$current, changes=$changes)"
+}
+
+/**
+ * Represents a snapshot of a [NavigationState] that can be persisted and obtained later to create a [NavigationState]
+ * with the same values of this snapshot.
+ */
+@Serializable
+internal class PersistedNavigationStateSnapshot<T>(
+    val initial: T,
+    val current: T
+) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PersistedNavigationStateSnapshot<*>) return false
+
+        if (initial != other.initial) return false
+        return current == other.current
+    }
+
+    override fun hashCode(): Int {
+        var result = initial?.hashCode() ?: 0
+        result = 31 * result + (current?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String =
+        "PersistedNavigationStateSnapshot(initial=$initial, current=$current)"
+}
+
+/**
+ * A [KSerializer] for a [NavigationState].
+ */
+internal class NavigationStateSerializer<T> internal constructor(
+    elementSerializer: KSerializer<T>
+) : KSerializer<NavigationState<T>> {
+
+    private val delegateSerializer = PersistedNavigationStateSnapshot.serializer(elementSerializer)
+
+    override val descriptor: SerialDescriptor
+        get() = delegateSerializer.descriptor
+
+    override fun serialize(encoder: Encoder, value: NavigationState<T>) {
+        val snapshot = PersistedNavigationStateSnapshot(initial = value.initial, current = value.current)
+
+        delegateSerializer.serialize(encoder = encoder, value = snapshot)
+    }
+
+    override fun deserialize(decoder: Decoder): NavigationState<T> {
+        val snapshot = delegateSerializer.deserialize(decoder = decoder)
+
+        return mutableNavigationStateOf(initial = snapshot.initial).apply {
+            this.update(state = snapshot.current)
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+
+        if (other !is NavigationStateSerializer<*>) return false
+
+        return delegateSerializer == other.delegateSerializer
+    }
+
+    override fun hashCode(): Int =
+        delegateSerializer.hashCode()
+
+    override fun toString(): String =
+        "NavigationStateSerializer(delegateSerializer=$delegateSerializer)"
 }

@@ -6,7 +6,7 @@ package com.chrynan.navigation
  * Represents the order for queue like operations on existing Kotlin collections. For instance, a queue "pop" function
  * may remove the first or last item from a list depending on the [QueueOrder] specified.
  */
-enum class QueueOrder {
+internal enum class QueueOrder {
 
     /**
      * Represents a "Last In First Out" Queue order. This is typically known as a "Stack".
@@ -29,7 +29,7 @@ enum class QueueOrder {
  *
  * @throws [NoSuchElementException] - if the list is empty.
  */
-fun <E> List<E>.peek(order: QueueOrder = QueueOrder.LIFO): E =
+internal fun <E> List<E>.peek(order: QueueOrder = QueueOrder.LIFO): E =
     when (order) {
         QueueOrder.LIFO -> this.last()
         QueueOrder.FIFO -> this.first()
@@ -43,7 +43,7 @@ fun <E> List<E>.peek(order: QueueOrder = QueueOrder.LIFO): E =
  * Note that while this function respects the provided [order] for this retrieval operation, there can be no guarantee
  * that the items were added to this [List] using the same provided [order].
  */
-fun <E> List<E>.peekOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
+internal fun <E> List<E>.peekOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
     try {
         this.peek(order = order)
     } catch (_: NoSuchElementException) {
@@ -60,7 +60,7 @@ fun <E> List<E>.peekOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
  *
  * @throws [NoSuchElementException] - if the list is empty.
  */
-fun <E> MutableList<E>.pop(order: QueueOrder = QueueOrder.LIFO): E =
+internal fun <E> MutableList<E>.pop(order: QueueOrder = QueueOrder.LIFO): E =
     when (order) {
         QueueOrder.LIFO -> this.removeLast()
         QueueOrder.FIFO -> this.removeFirst()
@@ -74,7 +74,7 @@ fun <E> MutableList<E>.pop(order: QueueOrder = QueueOrder.LIFO): E =
  * Note that while this function respects the provided [order] for this removal operation, there can be no guarantee
  * that the items were added to this [MutableList] using the same provided [order].
  */
-fun <E> MutableList<E>.popOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
+internal fun <E> MutableList<E>.popOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
     try {
         this.pop(order = order)
     } catch (_: NoSuchElementException) {
@@ -87,6 +87,6 @@ fun <E> MutableList<E>.popOrNull(order: QueueOrder = QueueOrder.LIFO): E? =
  * Note that while this function always adds the items to the end of the list (which works for both [QueueOrder.LIFO]
  * and [QueueOrder.FIFO] queues), the retrieval of the items cannot be guaranteed to match any specific [QueueOrder].
  */
-fun <E> MutableList<E>.push(element: E) {
+internal fun <E> MutableList<E>.push(element: E) {
     this.add(element = element)
 }
