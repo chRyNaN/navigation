@@ -47,6 +47,7 @@ sealed interface NavigationState<T> {
 /**
  * A mutable version of [NavigationState] that allows changing of the underlying wrapped state value.
  */
+@Serializable(with = MutableNavigationStateSerializer::class)
 internal sealed interface MutableNavigationState<T> : NavigationState<T> {
 
     /**
@@ -178,4 +179,45 @@ internal class NavigationStateSerializer<T> internal constructor(
 
     override fun toString(): String =
         "NavigationStateSerializer(delegateSerializer=$delegateSerializer)"
+}
+
+/**
+ * A [KSerializer] for a [MutableNavigationState].
+ */
+internal class MutableNavigationStateSerializer<T> internal constructor(
+    elementSerializer: KSerializer<T>
+) : KSerializer<MutableNavigationState<T>> {
+
+    private val delegateSerializer = PersistedNavigationStateSnapshot.serializer(elementSerializer)
+
+    override val descriptor: SerialDescriptor
+        get() = delegateSerializer.descriptor
+
+    override fun serialize(encoder: Encoder, value: MutableNavigationState<T>) {
+        val snapshot = PersistedNavigationStateSnapshot(initial = value.initial, current = value.current)
+
+        delegateSerializer.serialize(encoder = encoder, value = snapshot)
+    }
+
+    override fun deserialize(decoder: Decoder): MutableNavigationState<T> {
+        val snapshot = delegateSerializer.deserialize(decoder = decoder)
+
+        return mutableNavigationStateOf(initial = snapshot.initial).apply {
+            this.update(state = snapshot.current)
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+
+        if (other !is MutableNavigationStateSerializer<*>) return false
+
+        return delegateSerializer == other.delegateSerializer
+    }
+
+    override fun hashCode(): Int =
+        delegateSerializer.hashCode()
+
+    override fun toString(): String =
+        "MutableNavigationStateSerializer(delegateSerializer=$delegateSerializer)"
 }

@@ -295,9 +295,8 @@ internal class StackSerializer<E> internal constructor(
         return delegateSerializer == other.delegateSerializer
     }
 
-    override fun hashCode(): Int {
-        return delegateSerializer.hashCode()
-    }
+    override fun hashCode(): Int =
+        delegateSerializer.hashCode()
 
     override fun toString(): String =
         "StackSerializer(delegateSerializer=$delegateSerializer)"
@@ -329,9 +328,8 @@ internal class MutableStackSerializer<E> internal constructor(
         return delegateSerializer == other.delegateSerializer
     }
 
-    override fun hashCode(): Int {
-        return delegateSerializer.hashCode()
-    }
+    override fun hashCode(): Int =
+        delegateSerializer.hashCode()
 
     override fun toString(): String =
         "MutableStackSerializer(delegateSerializer=$delegateSerializer)"
