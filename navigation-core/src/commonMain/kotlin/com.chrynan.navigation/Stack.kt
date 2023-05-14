@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.Encoder
  * Represents a LIFO (last in, first out) Queue [Collection].
  */
 @Serializable(with = StackSerializer::class)
-interface Stack<E> : Collection<E> {
+internal interface Stack<E> : Collection<E> {
 
     /**
      * Retrieves the top element from this [Stack] without removing it.
@@ -28,7 +28,7 @@ interface Stack<E> : Collection<E> {
 /**
  * Retrieves the top element from this [Stack] without removing it, or `null` if this [Stack] is empty.
  */
-fun <E> Stack<E>.peekOrNull(): E? =
+internal fun <E> Stack<E>.peekOrNull(): E? =
     try {
         peek()
     } catch (_: NoSuchElementException) {
@@ -39,7 +39,7 @@ fun <E> Stack<E>.peekOrNull(): E? =
  * Represents a mutable LIFO (last in, first out) Queue [MutableCollection]
  */
 @Serializable(with = MutableStackSerializer::class)
-interface MutableStack<E> : Stack<E>,
+internal interface MutableStack<E> : Stack<E>,
     MutableCollection<E> {
 
     /**
@@ -60,7 +60,7 @@ interface MutableStack<E> : Stack<E>,
 /**
  * Removes and returns the top element from this [Stack], or `null` if this [Stack] is empty.
  */
-fun <E> MutableStack<E>.popOrNull(): E? =
+internal fun <E> MutableStack<E>.popOrNull(): E? =
     try {
         pop()
     } catch (_: NoSuchElementException) {
@@ -70,27 +70,27 @@ fun <E> MutableStack<E>.popOrNull(): E? =
 /**
  * A [Collection] that is both a [List] and a [Stack].
  */
-interface ListStack<E> : List<E>,
+internal interface ListStack<E> : List<E>,
     Stack<E>
 
 /**
  * A [Collection] that is both a [MutableList] and a [MutableStack].
  */
-interface MutableListStack<E> : MutableList<E>,
+internal interface MutableListStack<E> : MutableList<E>,
     MutableStack<E>
 
 /**
  * Returns a new read-only [Stack] using the provided ordered [elements]. The first provided element is the bottom of
  * the resulting [Stack] and the last provided element is the top of the provided [Stack].
  */
-fun <E> stackOf(vararg elements: E): Stack<E> =
+internal fun <E> stackOf(vararg elements: E): Stack<E> =
     ReadOnlyStack(elements = elements.toList())
 
 /**
  * Returns a [MutableStack] using the provided ordered [elements]. The first provided element is the bottom of the
  * resulting [Stack] and the last provided element is the top of the provided [Stack].
  */
-fun <E> mutableStackOf(vararg elements: E): MutableStack<E> =
+internal fun <E> mutableStackOf(vararg elements: E): MutableStack<E> =
     ArrayListMutableStack(elements = elements.toList())
 
 /**
@@ -102,7 +102,7 @@ fun <E> mutableStackOf(vararg elements: E): MutableStack<E> =
  * Note that a copy of this [Collection] will be wrapped in the returned [Stack], so that mutations to this
  * [Collection] will not affect the resulting [Stack].
  */
-fun <E> Collection<E>.toStack(): Stack<E> =
+internal fun <E> Collection<E>.toStack(): Stack<E> =
     ReadOnlyStack(elements = this)
 
 /**
@@ -114,7 +114,7 @@ fun <E> Collection<E>.toStack(): Stack<E> =
  * Note that a copy of this [Collection] will be wrapped in the returned [Stack], so that mutations to this
  * [Collection] will not affect the resulting [Stack].
  */
-fun <E> Collection<E>.toMutableStack(): MutableStack<E> =
+internal fun <E> Collection<E>.toMutableStack(): MutableStack<E> =
     ArrayListMutableStack(elements = this)
 
 /**
