@@ -5,6 +5,7 @@ package com.chrynan.navigation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -117,9 +118,9 @@ internal class StateFlowMutableNavigationState<T> internal constructor(
  * with the same values of this snapshot.
  */
 @Serializable
-internal class PersistedNavigationStateSnapshot<T>(
-    val initial: T,
-    val current: T
+internal class PersistedNavigationStateSnapshot<T> internal constructor(
+    @SerialName(value = "initial") val initial: T,
+    @SerialName(value = "current") val current: T
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -127,6 +128,7 @@ internal class PersistedNavigationStateSnapshot<T>(
         if (other !is PersistedNavigationStateSnapshot<*>) return false
 
         if (initial != other.initial) return false
+
         return current == other.current
     }
 

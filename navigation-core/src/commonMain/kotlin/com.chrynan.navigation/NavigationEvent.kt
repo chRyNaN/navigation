@@ -9,14 +9,15 @@ import kotlinx.serialization.Serializable
 
 /**
  * Represents a navigation event that is sent to a [Navigator] to coordinate the navigation between UI components, such
- * as "screens" within an application. A [NavigationEvent] can be a [NavigationEvent.Destination] representing a change
- * in a [NavigationDestination] in the current context, a [NavigationEvent.Context] representing a change in
- * [NavigationContext], or a [NavigationEvent.Backward] representing a back tracking of a previous [NavigationEvent].
+ * as "screens" within an application. A [NavigationEvent] can be a [NavigationEvent.Forward.Destination] representing
+ * a change in a [NavigationDestination] in the current context, a [NavigationEvent.Forward.Context] representing a
+ * change in [NavigationContext], or a [NavigationEvent.Backward] representing a back tracking of a previous
+ * [NavigationEvent].
  *
  * @see [Navigator.navigate]
  */
 @Serializable
-sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>> {
+sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>> private constructor() {
 
     /**
      * The [Instant] that the event occurred.
@@ -91,8 +92,8 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
          * previous [NavigationDestination] in the current [NavigationContext] should occur. An [ACROSS_CONTEXTS] value
          * indicates that navigation across [NavigationContext]s is allowed, meaning that navigation can either be to
          * the previous [NavigationDestination] within the current [NavigationContext] or to the previous
-         * [NavigationContext] depending on whether the previous [NavigationEvent] was a [NavigationEvent.Destination]
-         * or [NavigationEvent.Forward.Context] event.
+         * [NavigationContext] depending on whether the previous [NavigationEvent] was a
+         * [NavigationEvent.Forward.Destination] or [NavigationEvent.Forward.Context] event.
          */
         @Serializable
         enum class Kind(val serialName: String) {

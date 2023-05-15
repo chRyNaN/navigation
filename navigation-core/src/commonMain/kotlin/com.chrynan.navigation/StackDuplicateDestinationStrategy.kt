@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @Suppress("unused")
 @Serializable
+@ExperimentalNavigationApi
 enum class StackDuplicateDestinationStrategy(val serialName: String) {
 
     /**

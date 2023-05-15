@@ -115,6 +115,20 @@ internal class NavigationContextStacksTest {
     }
 
     @Test
+    fun pushAllAddsItemsToTopOfStack(){
+        val stacks = NavigationContextStacks<TestDestination, TestContext>(initialContext = TestContext.Home)
+
+        stacks.pushAll(context = TestContext.Home, destinations = stackOf(TestDestination.ITEM_DETAILS, TestDestination.FAVORITES))
+
+        val stack = stacks[TestContext.Home].toMutableStack()
+
+        assertEquals(expected = 3, actual = stack.size)
+        assertEquals(expected = TestDestination.FAVORITES, actual = stack.pop())
+        assertEquals(expected = TestDestination.ITEM_DETAILS, actual = stack.pop())
+        assertEquals(expected = TestDestination.HOME, actual = stack.peek())
+    }
+
+    @Test
     fun clearResetsStacksToInitialState() {
         val stacks = NavigationContextStacks<TestDestination, TestContext>(initialContext = TestContext.Home)
 
