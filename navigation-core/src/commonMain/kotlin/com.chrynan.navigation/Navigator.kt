@@ -9,7 +9,7 @@ package com.chrynan.navigation
  * A [Navigator] is platform and UI framework dependent, so each implementation depends on the particular UI framework
  * used, for example, Jetpack Compose.
  */
-interface Navigator<Destination : NavigationDestination, Context : NavigationContext<Destination>> {
+sealed interface Navigator<Destination : NavigationDestination, Context : NavigationContext<Destination>> {
 
     /**
      * The [NavigationStateStore] containing the latest [NavigationState]s for each navigation value. This is useful to
@@ -37,63 +37,43 @@ interface Navigator<Destination : NavigationDestination, Context : NavigationCon
 }
 
 /**
- * Performs a back navigation operation by removing the top destination from the stack in the current [Context] and
- * displaying the next destination in the list. If this [Navigator] cannot navigate back, then this function will
- * do nothing.
+ * Performs a back navigation operation, if possible, by removing the top [NavigationEvent.Forward] event from the
+ * internal navigation stack. If this [Navigator] cannot navigate back, then this function will do nothing and return
+ * `false`.
+ *
+ * @param [kind] The kind of supported back navigation (across different navigation stacks or in the current navigation
+ * stack). Read the documentation on [NavigationEvent.Backward.Kind] for more information about the operations that are
+ * supported. Defaults to [NavigationEvent.Backward.Kind.IN_CONTEXT]
  *
  * @return `true` if the back navigation operation was successful, `false` otherwise.
  */
-fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goBack(): Boolean =
-    false // navigate(event = DestinationEvent.Back())
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goBack(
+    kind: NavigationEvent.Backward.Kind = NavigationEvent.Backward.Kind.IN_CONTEXT
+): Boolean = navigate(event = NavigationEvent.Backward(kind = kind))
 
 /**
- * Performs an "up" navigation. An "up" navigation is similar to a "back" navigation but may be slightly different.
- * For instance, on Android, the "left arrow" button in the toolbar component of an application, performs the "up"
- * operation, which is slightly different from the phones back button which performs a "back" operation.
- *
- * Currently, this defaults to the same operation as the [goBack] function.
- *
- * @return `true` if the back navigation operation was successful, `false` otherwise.
- */
-fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goUp(): Boolean =
-    false // navigate(event = DestinationEvent.Up())
-
-/**
- * Goes to the provided [destination] using the provided stack duplicate content [strategy]. Depending on the
- * provided [strategy] and the current [Context] stack, this will either clear the current [Context] stack to the
- * last value that equals the provided [destination], or add the provided [destination] to the top of the current
- * [Context] stack.
+ * Navigates to the provided [destination] in the current [NavigationContext]. Depending on the
+ * provided [StackDuplicateDestinationStrategy] when creating this [Navigator], and the current [Context] stack, this
+ * will either clear the current [Context] stack to the last value that equals the provided [destination], or add the
+ * provided [destination] to the top of the current [Context] stack.
  *
  * @param [destination] The [NavigationDestination] that is to be navigated to and added to the current [Context]
  * stack.
- * @param [strategy] The [StackDuplicateDestinationStrategy] defining what to do when there are duplicate [Destination]
- * values within the current [Context] stack.
  *
- * @return `true` if the back navigation operation was successful, `false` otherwise.
+ * @return `true` if the navigation operation was successful, `false` otherwise.
  */
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goTo(
-    destination: Destination,
-    strategy: StackDuplicateDestinationStrategy
-): Boolean = false // navigate(event = DestinationEvent.To(destination = destination, strategy = strategy))
+    destination: Destination
+): Boolean = navigate(event = NavigationEvent.Forward.Destination(destination = destination))
 
 /**
- * Goes to the provided [destination] using the provided stack duplicate content [strategy]. Depending on the current
- * [Context] stack, this will either clear the current [Context] stack to the last value that equals the provided
- * [destination], or add the provided [destination] to the top of the current [Context] stack.
- *
- * @param [destination] The [NavigationDestination] that is to be navigated to and added to the current [Context]
- * stack.
- */
-// Note: This is needed because defaults aren't working for @Composable functions for interfaces.
-fun <Destination : Any, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goTo(destination: Destination) =
-    goTo(destination = destination, strategy = StackDuplicateDestinationStrategy.CLEAR_TO_ORIGINAL)
-
-/**
- * Changes the current [Context] to the provided [context] value. The displayed [Destination] will top destination
- * value in the stack associated with the provided [context], or the provided context's
+ * Changes the current [Context] to the provided [context] value. The displayed [Destination] will be the top
+ * destination value in the stack associated with the provided [context], or the provided context's
  * [NavigationContext.initialDestination] if there is currently no existing stack for the provided [context].
  *
  * @param [context] The [NavigationContext] to change to.
+ *
+ * @return `true` if the navigation operation was successful, `false` otherwise.
  */
 fun <Destination : Any, Context : NavigationContext<Destination>> Navigator<Destination, Context>.changeContext(context: Context): Boolean =
-    false // TODO
+    navigate(event = NavigationEvent.Forward.Context(context = context))
