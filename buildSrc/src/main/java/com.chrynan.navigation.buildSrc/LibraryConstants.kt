@@ -7,8 +7,8 @@ object LibraryConstants {
     const val group = "com.chrynan.navigation"
     const val owner = "chrynan"
     const val repoName = "navigation"
-    const val versionName = "0.7.0"
-    const val versionCode = 9
+    const val versionName = "0.7.1"
+    const val versionCode = 10
     const val versionDescription = "Release $versionName ($versionCode)"
     const val license = "Apache-2.0"
     const val vcsUrl = "https://github.com/chRyNaN/navigation.git"
@@ -16,7 +16,7 @@ object LibraryConstants {
     object Android {
 
         const val compileSdkVersion = 33
-        const val minSdkVersion = 23
+        const val minSdkVersion = 21
         const val targetSdkVersion = 33
     }
 }

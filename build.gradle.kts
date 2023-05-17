@@ -10,7 +10,7 @@ plugins {
     id("com.android.library") version "7.3.1" apply false
     id("com.android.application") version "7.3.1" apply false
     id("org.jetbrains.dokka") version "1.7.20"
-    id("org.jetbrains.compose") version "1.3.0" apply false
+    id("org.jetbrains.compose") version "1.4.0" apply false
 }
 
 allprojects {
@@ -20,10 +20,6 @@ allprojects {
         maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
     }
-}
-
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
-    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
 }
 
 // Documentation
