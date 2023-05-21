@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  * change in [NavigationContext], or a [NavigationEvent.Backward] representing a back tracking of a previous
  * [NavigationEvent].
  *
- * @see [Navigator.navigate]
+ * @see [Navigator.dispatch]
  */
 @Serializable
 sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>> private constructor() {
@@ -57,14 +57,11 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
      * defined by the provided [kind] property.
      *
      * @property [instant] The [Instant] that the event occurred.
-     * @property [kind] The [Kind] of supported back navigation (across contexts or just destinations within the
-     * current context).
      */
     @Serializable
     @SerialName(value = "back")
     class Backward<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
-        @SerialName(value = "instant") override val instant: Instant = Clock.System.now(),
-        @SerialName(value = "kind") val kind: Kind
+        @SerialName(value = "instant") override val instant: Instant = Clock.System.now()
     ) : NavigationEvent<D, C>() {
 
         override val direction: Direction = Direction.BACKWARDS
@@ -73,47 +70,14 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
             if (this === other) return true
             if (other !is Backward<*, *>) return false
 
-            if (instant != other.instant) return false
-
-            return kind == other.kind
+            return instant == other.instant
         }
 
-        override fun hashCode(): Int {
-            var result = instant.hashCode()
-            result = 31 * result + kind.hashCode()
-            return result
-        }
+        override fun hashCode(): Int =
+            instant.hashCode()
 
         override fun toString(): String =
-            "NavigationEvent.Backward(instant=$instant, type=$kind, direction=$direction)"
-
-        /**
-         * Represents the type of supported back navigation. An [IN_CONTEXT] value indicates that navigation to the
-         * previous [NavigationDestination] in the current [NavigationContext] should occur. An [ACROSS_CONTEXTS] value
-         * indicates that navigation across [NavigationContext]s is allowed, meaning that navigation can either be to
-         * the previous [NavigationDestination] within the current [NavigationContext] or to the previous
-         * [NavigationContext] depending on whether the previous [NavigationEvent] was a
-         * [NavigationEvent.Forward.Destination] or [NavigationEvent.Forward.Context] event.
-         */
-        @Serializable
-        enum class Kind(val serialName: String) {
-
-            /**
-             * Indicates that navigation to the previous [NavigationDestination] in the current [NavigationContext]
-             * should occur
-             */
-            @SerialName(value = "in_context")
-            IN_CONTEXT(serialName = "in_context"),
-
-            /**
-             * Indicates that navigation across [NavigationContext]s is allowed, meaning that navigation can either be
-             * to the previous [NavigationDestination] within the current [NavigationContext] or to the previous
-             * [NavigationContext] depending on whether the previous [NavigationEvent] was a
-             * [NavigationEvent.Forward.Destination] or [NavigationEvent.Forward.Context] event
-             */
-            @SerialName(value = "across_context")
-            ACROSS_CONTEXTS(serialName = "across_context")
-        }
+            "NavigationEvent.Backward(instant=$instant, direction=$direction)"
     }
 
     /**

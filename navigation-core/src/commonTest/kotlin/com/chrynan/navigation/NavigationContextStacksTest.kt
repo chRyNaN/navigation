@@ -136,7 +136,7 @@ internal class NavigationContextStacksTest {
 
         stacks.push(context = TestContext.Favorites, destination = TestDestination.CHANNEL_DETAILS)
 
-        stacks.clear()
+        stacks.clearAll()
 
         val homeStack = stacks[TestContext.Home]
         val favoritesStack = stacks[TestContext.Favorites]

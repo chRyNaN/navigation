@@ -68,36 +68,24 @@ internal fun <E> MutableStack<E>.popOrNull(): E? =
     }
 
 /**
- * A [Collection] that is both a [List] and a [Stack].
- */
-internal interface ListStack<E> : List<E>,
-    Stack<E>
-
-/**
- * A [Collection] that is both a [MutableList] and a [MutableStack].
- */
-internal interface MutableListStack<E> : MutableList<E>,
-    MutableStack<E>
-
-/**
- * Returns a new read-only [Stack] using the provided ordered [elements]. The first provided element is the bottom of
- * the resulting [Stack] and the last provided element is the top of the provided [Stack].
+ * Returns a new read-only [Stack] using the provided ordered [elements]. The first provided element is the top of the
+ * resulting [Stack] and the last provided element is the bottom of the resulting [Stack].
  */
 internal fun <E> stackOf(vararg elements: E): Stack<E> =
     ReadOnlyStack(elements = elements.toList())
 
 /**
- * Returns a [MutableStack] using the provided ordered [elements]. The first provided element is the bottom of the
- * resulting [Stack] and the last provided element is the top of the provided [Stack].
+ * Returns a [MutableStack] using the provided ordered [elements]. The first provided element is the top of the
+ * resulting [Stack] and the last provided element is the bottom of the resulting [Stack].
  */
 internal fun <E> mutableStackOf(vararg elements: E): MutableStack<E> =
     ArrayListMutableStack(elements = elements.toList())
 
 /**
  * Returns a [Stack] containing all the elements in this [Collection]. Note that iterator order of the elements of this
- * [Collection] matters; the first item in this collection will be the bottom of the resulting [Stack] and the last
- * item in this collection will be the top of the resulting [Stack]. This will make a copy of this collection using
- * [Collection.toList] to obtain the order of the items.
+ * [Collection] matters; the first item in this collection will be the top of the resulting [Stack] and the last item
+ * in this collection will be the bottom of the resulting [Stack], which matches the [Stack.iterator] order. This will
+ * make a copy of this collection using [Collection.toList] to obtain the order of the items.
  *
  * Note that a copy of this [Collection] will be wrapped in the returned [Stack], so that mutations to this
  * [Collection] will not affect the resulting [Stack].
@@ -107,9 +95,9 @@ internal fun <E> Collection<E>.toStack(): Stack<E> =
 
 /**
  * Returns a [MutableStack] containing all the elements in this [Collection]. Note that iterator order of the elements
- * of this [Collection] matters; the first item in this collection will be the bottom of the resulting [Stack] and the
- * last item in this collection will be the top of the resulting [Stack]. This will make a copy of this collection
- * using [Collection.toList] to obtain the order of the items.
+ * of this [Collection] matters; the first item in this collection will be the top of the resulting [Stack] and the
+ * last item in this collection will be the bottom of the resulting [Stack], which matches the [Stack.iterator] order.
+ * This will make a copy of this collection using [Collection.toList] to obtain the order of the items.
  *
  * Note that a copy of this [Collection] will be wrapped in the returned [Stack], so that mutations to this
  * [Collection] will not affect the resulting [Stack].
@@ -121,7 +109,7 @@ internal fun <E> Collection<E>.toMutableStack(): MutableStack<E> =
  * A read-only version of a [Stack]. This takes the elements provided in the constructor and makes a copy of that
  * collection, so further mutations to that elements collection will not affect this [Stack].
  */
-internal class ReadOnlyStack<E> internal constructor(elements: Collection<E>) : ListStack<E> {
+internal class ReadOnlyStack<E> internal constructor(elements: Collection<E>) : Stack<E> {
 
     override val size: Int
         get() = list.size
@@ -129,7 +117,7 @@ internal class ReadOnlyStack<E> internal constructor(elements: Collection<E>) : 
     private val list = elements.toList()
 
     override fun peek(): E =
-        list.peek(order = QueueOrder.LIFO)
+        list.get(index = 0)
 
     override fun isEmpty(): Boolean =
         list.isEmpty()
@@ -142,24 +130,6 @@ internal class ReadOnlyStack<E> internal constructor(elements: Collection<E>) : 
 
     override fun contains(element: E): Boolean =
         list.contains(element)
-
-    override fun get(index: Int): E =
-        list.get(index = index)
-
-    override fun indexOf(element: E): Int =
-        list.indexOf(element = element)
-
-    override fun subList(fromIndex: Int, toIndex: Int): List<E> =
-        list.subList(fromIndex = fromIndex, toIndex = toIndex)
-
-    override fun lastIndexOf(element: E): Int =
-        list.lastIndexOf(element = element)
-
-    override fun listIterator(): ListIterator<E> =
-        list.listIterator()
-
-    override fun listIterator(index: Int): ListIterator<E> =
-        list.listIterator(index = index)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -179,7 +149,7 @@ internal class ReadOnlyStack<E> internal constructor(elements: Collection<E>) : 
  * A mutable version of a [Stack] that is backed by an [ArrayList]. This takes the elements provided in the constructor
  * and makes a copy of that collection, so further mutations to that elements collection will not affect this [Stack].
  */
-internal class ArrayListMutableStack<E> internal constructor(elements: Collection<E>) : MutableListStack<E> {
+internal class ArrayListMutableStack<E> internal constructor(elements: Collection<E>) : MutableStack<E> {
 
     override val size: Int
         get() = list.size
@@ -187,13 +157,13 @@ internal class ArrayListMutableStack<E> internal constructor(elements: Collectio
     private val list = ArrayList(elements.toList())
 
     override fun pop(): E =
-        list.pop(order = QueueOrder.LIFO)
+        list.removeFirst()
 
     override fun push(element: E) =
-        list.push(element)
+        list.add(index = 0, element = element)
 
     override fun peek(): E =
-        list.peek(order = QueueOrder.LIFO)
+        list.get(index = 0)
 
     override fun isEmpty(): Boolean =
         list.isEmpty()
@@ -224,36 +194,6 @@ internal class ArrayListMutableStack<E> internal constructor(elements: Collectio
 
     override fun contains(element: E): Boolean =
         list.contains(element)
-
-    override fun get(index: Int): E =
-        list.get(index = index)
-
-    override fun indexOf(element: E): Int =
-        list.indexOf(element = element)
-
-    override fun subList(fromIndex: Int, toIndex: Int): MutableList<E> =
-        list.subList(fromIndex = fromIndex, toIndex = toIndex)
-
-    override fun lastIndexOf(element: E): Int =
-        list.lastIndexOf(element = element)
-
-    override fun listIterator(): MutableListIterator<E> =
-        list.listIterator()
-
-    override fun listIterator(index: Int): MutableListIterator<E> =
-        list.listIterator(index = index)
-
-    override fun add(index: Int, element: E) =
-        list.add(index = index, element = element)
-
-    override fun addAll(index: Int, elements: Collection<E>): Boolean =
-        list.addAll(index = index, elements = elements)
-
-    override fun set(index: Int, element: E): E =
-        list.set(index = index, element = element)
-
-    override fun removeAt(index: Int): E =
-        list.removeAt(index)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

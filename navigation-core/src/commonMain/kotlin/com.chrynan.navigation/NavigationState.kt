@@ -4,10 +4,11 @@ package com.chrynan.navigation
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
@@ -66,25 +67,36 @@ internal sealed interface MutableNavigationState<T> : NavigationState<T> {
 }
 
 /**
- * Creates a [MutableNavigationState] instance.
+ * Creates a [MutableNavigationState] instance with the provided [initial] and [current] values.
  */
-internal fun <T> mutableNavigationStateOf(initial: T): MutableNavigationState<T> =
-    StateFlowMutableNavigationState(initial = initial)
+internal fun <T> mutableNavigationStateOf(initial: T, current: T = initial): MutableNavigationState<T> =
+    StateFlowMutableNavigationState(initial = initial, current = current)
+
+/**
+ * Converts this [NavigationState] into a [MutableNavigationState] instance.
+ */
+internal fun <T> NavigationState<T>.toMutableNavigationState(): MutableNavigationState<T> =
+    if (this is MutableNavigationState) {
+        this
+    } else {
+        StateFlowMutableNavigationState(initial = this.initial, current = this.current)
+    }
 
 /**
  * An implementation of a [NavigationState] and [MutableNavigationState] backed by a provided [MutableStateFlow].
  */
 internal class StateFlowMutableNavigationState<T> internal constructor(
-    override val initial: T
+    override val initial: T,
+    current: T = initial
 ) : MutableNavigationState<T> {
 
-    private val stateFlow: MutableStateFlow<T> = MutableStateFlow(value = initial)
+    private val stateFlow: MutableStateFlow<T> = MutableStateFlow(value = current)
 
     override val current: T
         get() = stateFlow.value
 
     override val changes: Flow<T>
-        get() = stateFlow
+        get() = stateFlow.asStateFlow()
 
     override fun update(state: T) {
         stateFlow.value = state
@@ -114,58 +126,27 @@ internal class StateFlowMutableNavigationState<T> internal constructor(
 }
 
 /**
- * Represents a snapshot of a [NavigationState] that can be persisted and obtained later to create a [NavigationState]
- * with the same values of this snapshot.
- */
-@Serializable
-internal class PersistedNavigationStateSnapshot<T> internal constructor(
-    @SerialName(value = "initial") val initial: T,
-    @SerialName(value = "current") val current: T
-) {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PersistedNavigationStateSnapshot<*>) return false
-
-        if (initial != other.initial) return false
-
-        return current == other.current
-    }
-
-    override fun hashCode(): Int {
-        var result = initial?.hashCode() ?: 0
-        result = 31 * result + (current?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String =
-        "PersistedNavigationStateSnapshot(initial=$initial, current=$current)"
-}
-
-/**
  * A [KSerializer] for a [NavigationState].
  */
 internal class NavigationStateSerializer<T> internal constructor(
-    elementSerializer: KSerializer<T>
+    private val elementSerializer: KSerializer<T>
 ) : KSerializer<NavigationState<T>> {
 
-    private val delegateSerializer = PersistedNavigationStateSnapshot.serializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor
-        get() = delegateSerializer.descriptor
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(serialName = "NavigationState") {
+        element(elementName = "initial", descriptor = elementSerializer.descriptor)
+        element(elementName = "current", descriptor = elementSerializer.descriptor)
+    }
 
     override fun serialize(encoder: Encoder, value: NavigationState<T>) {
-        val snapshot = PersistedNavigationStateSnapshot(initial = value.initial, current = value.current)
-
-        delegateSerializer.serialize(encoder = encoder, value = snapshot)
+        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.initial)
+        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.current)
     }
 
     override fun deserialize(decoder: Decoder): NavigationState<T> {
-        val snapshot = delegateSerializer.deserialize(decoder = decoder)
+        val initial = decoder.decodeSerializableValue(deserializer = elementSerializer)
+        val current = decoder.decodeSerializableValue(deserializer = elementSerializer)
 
-        return mutableNavigationStateOf(initial = snapshot.initial).apply {
-            this.update(state = snapshot.current)
-        }
+        return mutableNavigationStateOf(initial = initial, current = current)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -173,40 +154,38 @@ internal class NavigationStateSerializer<T> internal constructor(
 
         if (other !is NavigationStateSerializer<*>) return false
 
-        return delegateSerializer == other.delegateSerializer
+        return elementSerializer == other.elementSerializer
     }
 
     override fun hashCode(): Int =
-        delegateSerializer.hashCode()
+        elementSerializer.hashCode()
 
     override fun toString(): String =
-        "NavigationStateSerializer(delegateSerializer=$delegateSerializer)"
+        "NavigationStateSerializer(elementSerializer=$elementSerializer)"
 }
 
 /**
- * A [KSerializer] for a [MutableNavigationState].
+ * A [KSerializer] for a [NavigationState].
  */
 internal class MutableNavigationStateSerializer<T> internal constructor(
-    elementSerializer: KSerializer<T>
+    private val elementSerializer: KSerializer<T>
 ) : KSerializer<MutableNavigationState<T>> {
 
-    private val delegateSerializer = PersistedNavigationStateSnapshot.serializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor
-        get() = delegateSerializer.descriptor
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(serialName = "MutableNavigationState") {
+        element(elementName = "initial", descriptor = elementSerializer.descriptor)
+        element(elementName = "current", descriptor = elementSerializer.descriptor)
+    }
 
     override fun serialize(encoder: Encoder, value: MutableNavigationState<T>) {
-        val snapshot = PersistedNavigationStateSnapshot(initial = value.initial, current = value.current)
-
-        delegateSerializer.serialize(encoder = encoder, value = snapshot)
+        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.initial)
+        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.current)
     }
 
     override fun deserialize(decoder: Decoder): MutableNavigationState<T> {
-        val snapshot = delegateSerializer.deserialize(decoder = decoder)
+        val initial = decoder.decodeSerializableValue(deserializer = elementSerializer)
+        val current = decoder.decodeSerializableValue(deserializer = elementSerializer)
 
-        return mutableNavigationStateOf(initial = snapshot.initial).apply {
-            this.update(state = snapshot.current)
-        }
+        return mutableNavigationStateOf(initial = initial, current = current)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -214,12 +193,12 @@ internal class MutableNavigationStateSerializer<T> internal constructor(
 
         if (other !is MutableNavigationStateSerializer<*>) return false
 
-        return delegateSerializer == other.delegateSerializer
+        return elementSerializer == other.elementSerializer
     }
 
     override fun hashCode(): Int =
-        delegateSerializer.hashCode()
+        elementSerializer.hashCode()
 
     override fun toString(): String =
-        "MutableNavigationStateSerializer(delegateSerializer=$delegateSerializer)"
+        "MutableNavigationStateSerializer(elementSerializer=$elementSerializer)"
 }

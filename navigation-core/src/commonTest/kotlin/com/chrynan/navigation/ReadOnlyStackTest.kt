@@ -7,12 +7,12 @@ import kotlin.test.assertEquals
 internal class ReadOnlyStackTest {
 
     @Test
-    fun peekReturnsTheLastItem() {
+    fun peekReturnsTheFirstItem() {
         val elements = listOf(1, 2, 3)
 
         val stack = ReadOnlyStack(elements)
 
-        assertEquals(expected = 3, actual = stack.peek())
+        assertEquals(expected = 1, actual = stack.peek())
         assertEquals(expected = 3, actual = stack.size)
     }
 
@@ -77,5 +77,17 @@ internal class ReadOnlyStackTest {
         val arrayListMutableStack = ArrayListMutableStack(listOf(1, 2, 3))
 
         assertEquals(expected = true, actual = readOnlyStack == arrayListMutableStack)
+    }
+
+    @Test
+    fun iteratorStartsWithTheTopOfTheStack(){
+        val stack = ReadOnlyStack(listOf(3, 2, 1))
+
+        val iterator = stack.iterator()
+
+        assertEquals(expected = 3, actual = iterator.next())
+        assertEquals(expected = 2, actual = iterator.next())
+        assertEquals(expected = 1, actual = iterator.next())
+        assertEquals(expected = false, actual = iterator.hasNext())
     }
 }

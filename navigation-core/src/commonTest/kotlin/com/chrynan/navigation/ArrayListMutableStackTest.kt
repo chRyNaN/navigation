@@ -7,29 +7,29 @@ import kotlin.test.assertEquals
 internal class ArrayListMutableStackTest {
 
     @Test
-    fun peekReturnsTheLastItem() {
+    fun peekReturnsTheFirstItem() {
         val elements = listOf(1, 2, 3)
 
         val stack = ArrayListMutableStack(elements)
 
         assertEquals(expected = 3, actual = stack.size)
-        assertEquals(expected = 3, actual = stack.peek())
+        assertEquals(expected = 1, actual = stack.peek())
         assertEquals(expected = 3, actual = stack.size)
     }
 
     @Test
-    fun popReturnsTheLastItem() {
+    fun popReturnsTheFirstItem() {
         val elements = listOf(1, 2, 3)
 
         val stack = ArrayListMutableStack(elements)
 
         assertEquals(expected = 3, actual = stack.size)
-        assertEquals(expected = 3, actual = stack.pop())
+        assertEquals(expected = 1, actual = stack.pop())
         assertEquals(expected = 2, actual = stack.size)
     }
 
     @Test
-    fun pushAddsItemToTheEnd() {
+    fun pushAddsItemToTheTopOfStack() {
         val elements = listOf(1, 2, 3)
 
         val stack = ArrayListMutableStack(elements)
@@ -40,7 +40,7 @@ internal class ArrayListMutableStackTest {
 
         assertEquals(expected = 4, actual = stack.size)
         assertEquals(expected = 4, actual = stack.peek())
-        assertEquals(expected = 4, actual = stack.last())
+        assertEquals(expected = 4, actual = stack.first())
     }
 
     @Test
@@ -104,5 +104,17 @@ internal class ArrayListMutableStackTest {
         val arrayListMutableStack = ArrayListMutableStack(listOf(1, 2, 3))
 
         assertEquals(expected = true, actual = readOnlyStack == arrayListMutableStack)
+    }
+
+    @Test
+    fun iteratorStartsWithTheTopOfTheStack(){
+        val stack = ArrayListMutableStack(listOf(3, 2, 1))
+
+        val iterator = stack.iterator()
+
+        assertEquals(expected = 3, actual = iterator.next())
+        assertEquals(expected = 2, actual = iterator.next())
+        assertEquals(expected = 1, actual = iterator.next())
+        assertEquals(expected = false, actual = iterator.hasNext())
     }
 }
