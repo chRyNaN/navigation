@@ -105,9 +105,9 @@ internal class MutableNavigationStateStoreImpl<Destination : NavigationDestinati
     initialEvent: NavigationEvent<Destination, Context>?,
     initialDestination: Destination,
     initialContext: Context,
-    currentContext: Context = initialContext,
-    currentEvent: NavigationEvent<Destination, Context>? = initialEvent,
-    currentDestination: Destination = initialDestination
+    currentContext: Context,
+    currentEvent: NavigationEvent<Destination, Context>?,
+    currentDestination: Destination
 ) : MutableNavigationStateStore<Destination, Context> {
 
     override val event: NavigationState<NavigationEvent<Destination, Context>?>
@@ -133,7 +133,7 @@ internal class MutableNavigationStateStoreImpl<Destination : NavigationDestinati
     override fun reset() {
         mutableContext.reset()
         mutableDestination.reset()
-        mutableContext.reset()
+        mutableEvent.reset()
     }
 
     override fun equals(other: Any?): Boolean {
