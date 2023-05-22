@@ -1,180 +1,222 @@
+@file:OptIn(ExperimentalNavigationApi::class)
+
 package com.chrynan.navigation
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
-internal class MapBasedMutableNavigationStateStoreTest {
+internal class NavigatorImplTest {
 
-    /*
     @Test
-    fun backAcrossContextsReturnsFalseForInitialState() {
-        val store = MutableNavigationStateStoreImpl<TestDestination, TestContext>(
-            initialContext = TestContext.Home,
-            duplicateStrategy = DuplicateDestination.ALLOW_DUPLICATES
-        )
+    fun navigatorStartsAtInitialContextValue() {
+        val navigator = Navigator(initialContext = TestContext.Home)
 
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-
-        val event = NavigationEvent.Backward<TestDestination, TestContext>(
-            kind = NavigationEvent.Backward.Kind.ACROSS_CONTEXTS
-        )
-
-        val result = store.dispatch(event = event)
-
-        assertEquals(expected = false, actual = result)
-
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertEquals(expected = null, actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack())
     }
 
     @Test
-    fun backInContextsReturnsNullForInitialState() {
-        val store = MutableNavigationStateStoreImpl<TestDestination, TestContext>(
-            initialContext = TestContext.Home,
-            duplicateStrategy = DuplicateDestination.ALLOW_DUPLICATES
-        )
+    fun goToChangesDestination() {
+        val navigator = Navigator(initialContext = TestContext.Home)
 
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
+        navigator.goTo(TestDestination.ITEM_DETAILS)
 
-        val event = NavigationEvent.Backward<TestDestination, TestContext>(
-            kind = NavigationEvent.Backward.Kind.IN_CONTEXT
-        )
-
-        val result = store.dispatch(event = event)
-
-        assertEquals(expected = false, actual = result)
-
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.ITEM_DETAILS, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Forward.Destination<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = true, actual = navigator.canGoBack())
     }
 
     @Test
-    fun destinationChangeWorksCorrectly() {
-        val store = MutableNavigationStateStoreImpl<TestDestination, TestContext>(
-            initialContext = TestContext.Home,
-            duplicateStrategy = DuplicateDestination.ALLOW_DUPLICATES
-        )
+    fun goBackChangesDestinationBack() {
+        val navigator = Navigator(initialContext = TestContext.Home)
 
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
+        navigator.goTo(TestDestination.ITEM_DETAILS)
 
-        val event = NavigationEvent.Forward.Destination<TestDestination, TestContext>(
-            destination = TestDestination.FAVORITES
-        )
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.ITEM_DETAILS, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Forward.Destination<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = true, actual = navigator.canGoBack())
 
-        val result = store.dispatch(event = event)
+        val result = navigator.goBack()
 
         assertEquals(expected = true, actual = result)
-
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = event,
-            context = TestContext.Home,
-            destination = TestDestination.FAVORITES
-        )
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Backward<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack())
     }
 
     @Test
-    fun contextChangeWorksCorrectly() {
-        val store = MutableNavigationStateStoreImpl<TestDestination, TestContext>(
+    fun changeContextUpdatesContextValue() {
+        val navigator = Navigator<TestDestination, TestContext>(initialContext = TestContext.Home)
+
+        navigator.changeContext(TestContext.Settings)
+
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Settings, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.SETTINGS, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Forward.Context<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack()) // Have to allow going back across contexts
+    }
+
+    @Test
+    fun goBackChangesContextBackWithAcrossContextsStrategy() {
+        val navigator = Navigator<TestDestination, TestContext>(
             initialContext = TestContext.Home,
-            duplicateStrategy = DuplicateDestination.ALLOW_DUPLICATES
+            backwardsNavigationStrategy = NavigationStrategy.BackwardsNavigation.ACROSS_CONTEXTS
         )
 
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
+        navigator.changeContext(TestContext.Settings)
 
-        val event = NavigationEvent.Forward.Context<TestDestination, TestContext>(
-            context = TestContext.Settings
-        )
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Settings, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.SETTINGS, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Forward.Context<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = true, actual = navigator.canGoBack())
 
-        val result = store.dispatch(event = event)
+        val result = navigator.goBack()
 
         assertEquals(expected = true, actual = result)
-
-        store.assertInitialState(
-            event = null,
-            context = TestContext.Home,
-            destination = TestDestination.HOME
-        )
-        store.assertCurrentState(
-            event = event,
-            context = TestContext.Settings,
-            destination = TestDestination.SETTINGS
-        )
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Backward<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack())
     }
 
-    private fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> NavigationStateStore<Destination, Context>.assertInitialState(
-        event: NavigationEvent<Destination, Context>?,
-        context: Context,
-        destination: Destination
-    ) {
-        assertEquals(expected = event, actual = this.event.initial)
-        assertEquals(expected = context, actual = this.context.initial)
-        assertEquals(expected = destination, actual = this.destination.initial)
+    @Test
+    fun goBackDoesNotChangeContextBackWithInContextsStrategy() {
+        val navigator = Navigator<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            backwardsNavigationStrategy = NavigationStrategy.BackwardsNavigation.IN_CONTEXT
+        )
+
+        navigator.changeContext(TestContext.Settings)
+
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Settings, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.SETTINGS, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Forward.Context<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack())
+
+        val result = navigator.goBack()
+
+        assertEquals(expected = false, actual = result)
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Settings, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.SETTINGS, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Forward.Context<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack())
     }
 
-    private fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> NavigationStateStore<Destination, Context>.assertCurrentState(
-        event: NavigationEvent<Destination, Context>?,
-        context: Context,
-        destination: Destination
-    ) {
-        assertEquals(expected = event, actual = this.event.current)
-        assertEquals(expected = context, actual = this.context.current)
-        assertEquals(expected = destination, actual = this.destination.current)
-    }*/
+    @Test
+    fun canGoBackReturnsFalseForContextChangeWithInContextStrategy() {
+        val navigator = Navigator<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            backwardsNavigationStrategy = NavigationStrategy.BackwardsNavigation.IN_CONTEXT
+        )
+
+        navigator.changeContext(TestContext.Settings)
+
+        assertEquals(expected = false, actual = navigator.canGoBack())
+    }
+
+    @Test
+    fun canGoBackReturnsTrueForContextChangeWithAcrossContextStrategy() {
+        val navigator = Navigator<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            backwardsNavigationStrategy = NavigationStrategy.BackwardsNavigation.ACROSS_CONTEXTS
+        )
+
+        navigator.changeContext(TestContext.Settings)
+
+        assertEquals(expected = true, actual = navigator.canGoBack())
+    }
+
+    @Test
+    fun canGoBackReturnsFalseForInitialDestination() {
+        val navigator = Navigator<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            backwardsNavigationStrategy = NavigationStrategy.BackwardsNavigation.IN_CONTEXT
+        )
+
+        assertEquals(expected = false, actual = navigator.canGoBack())
+    }
+
+    @Test
+    fun canGoBackReturnsTrueForDestinationStack() {
+        val navigator = Navigator<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            backwardsNavigationStrategy = NavigationStrategy.BackwardsNavigation.IN_CONTEXT
+        )
+
+        navigator.goTo(TestDestination.ITEM_DETAILS)
+
+        assertEquals(expected = true, actual = navigator.canGoBack())
+    }
+
+    @Test
+    fun resetRestoresTheInitialState() {
+        val navigator = Navigator<TestDestination, TestContext>(
+            initialContext = TestContext.Home,
+            backwardsNavigationStrategy = NavigationStrategy.BackwardsNavigation.IN_CONTEXT
+        )
+
+        navigator.goTo(TestDestination.ITEM_DETAILS)
+        navigator.changeContext(TestContext.Favorites)
+
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Favorites, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.FAVORITES, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertIs<NavigationEvent.Forward.Context<TestDestination, TestContext>>(value = navigator.store.event.current)
+        assertNotNull(actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack())
+
+        navigator.reset()
+
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.initial)
+        assertEquals(expected = TestContext.Home, actual = navigator.store.context.current)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.initial)
+        assertEquals(expected = TestDestination.HOME, actual = navigator.store.destination.current)
+        assertEquals(expected = null, actual = navigator.store.event.initial)
+        assertEquals(expected = null, actual = navigator.store.event.current)
+        assertEquals(expected = false, actual = navigator.canGoBack())
+    }
 }

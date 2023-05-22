@@ -408,24 +408,17 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
                     return false
                 }
 
-                val lastContextEvent = forwardNavigationEventStack.pop()
+                forwardNavigationEventStack.pop()
 
                 // Get the current context after we popped the last context change from the top of the stack.
                 val newCurrentContextEvent =
                     (forwardNavigationEventStack.firstOrNull { it is NavigationEvent.Forward.Context } as? NavigationEvent.Forward.Context)
 
-                // If there was no previous context event, add back the context event we just popped off the stack, and
-                // return `false` because we can't perform the operation.
-                if (newCurrentContextEvent == null) {
-                    forwardNavigationEventStack.push(lastContextEvent)
-
-                    return false
-                }
-
                 mutableStore.update(
                     event = event,
-                    context = newCurrentContextEvent.context,
-                    destination = navigationStacks.peek(context = newCurrentContextEvent.context)
+                    context = newCurrentContextEvent?.context ?: initialContext,
+                    destination = newCurrentContextEvent?.context?.let { navigationStacks.peek(context = it) }
+                        ?: initialContext.initialDestination
                 )
 
                 return true
