@@ -276,6 +276,36 @@ internal class NavigatorImpl<Destination : Any, Context : NavigationContext<Dest
         forwardNavigationEventStack.clear()
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NavigatorImpl<*, *>) return false
+
+        if (initialContext != other.initialContext) return false
+        if (duplicateDestinationStrategy != other.duplicateDestinationStrategy) return false
+        if (backwardsNavigationStrategy != other.backwardsNavigationStrategy) return false
+        if (destinationRetentionStrategy != other.destinationRetentionStrategy) return false
+        if (mutableStore != other.mutableStore) return false
+        if (navigationStacks != other.navigationStacks) return false
+        if (forwardNavigationEventStack != other.forwardNavigationEventStack) return false
+
+        return store == other.store
+    }
+
+    override fun hashCode(): Int {
+        var result = initialContext.hashCode()
+        result = 31 * result + duplicateDestinationStrategy.hashCode()
+        result = 31 * result + backwardsNavigationStrategy.hashCode()
+        result = 31 * result + destinationRetentionStrategy.hashCode()
+        result = 31 * result + mutableStore.hashCode()
+        result = 31 * result + navigationStacks.hashCode()
+        result = 31 * result + forwardNavigationEventStack.hashCode()
+        result = 31 * result + store.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "NavigatorImpl(initialContext=$initialContext, duplicateDestinationStrategy=$duplicateDestinationStrategy, backwardsNavigationStrategy=$backwardsNavigationStrategy, destinationRetentionStrategy=$destinationRetentionStrategy, store=$store)"
+
     /**
      * Creates a [NavigatorSnapshot] from the current state of this [Navigator] instance. This can be used to later
      * create a [Navigator] instance with the same values.
@@ -413,4 +443,17 @@ internal class NavigatorSerializer<Destination : Any, Context : NavigationContex
 
         return NavigatorImpl(snapshot = snapshot)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NavigatorSerializer<*, *>) return false
+
+        return delegateSerializer == other.delegateSerializer
+    }
+
+    override fun hashCode(): Int =
+        delegateSerializer.hashCode()
+
+    override fun toString(): String =
+        "NavigatorSerializer(delegateSerializer=$delegateSerializer)"
 }
