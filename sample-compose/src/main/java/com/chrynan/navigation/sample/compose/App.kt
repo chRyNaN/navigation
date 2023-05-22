@@ -6,7 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.chrynan.navigation.ExperimentalNavigationApi
-import com.chrynan.navigation.compose.NavContainer
+import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberNavigator
 
 @ExperimentalNavigationApi
@@ -16,7 +16,7 @@ fun App() {
 
     Column {
         Box(modifier = Modifier.weight(1f)) {
-            NavContainer(navigator = navigator) { context, destination ->
+            NavigationContainer(navigator = navigator) { context, destination ->
                 when (destination) {
                     Destination.HOME -> Text("Home Screen")
                     Destination.DETAILS -> Text("Details Screen")

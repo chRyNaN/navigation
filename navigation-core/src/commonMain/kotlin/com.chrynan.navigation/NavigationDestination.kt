@@ -6,7 +6,7 @@ package com.chrynan.navigation
  *
  * For example:
  * ```
- * sealed class HomeScreenDestination : NavigationDestination() {
+ * sealed class HomeScreenDestination {
  *
  *     object Feed : HomeScreenDestination()
  * }

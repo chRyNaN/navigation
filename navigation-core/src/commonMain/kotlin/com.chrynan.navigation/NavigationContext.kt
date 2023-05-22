@@ -1,5 +1,8 @@
 package com.chrynan.navigation
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a navigation context, or a container of a back stack of [Destination]s. Navigation can take place within
  * a [NavigationContext] typically by changing [Destination] values. But an application may have multiple
@@ -39,25 +42,31 @@ interface NavigationContext<Destination : NavigationDestination> {
  * the [Navigator]. However, sometimes it may be preferable to have only a single context for navigation, and in this
  * case, this class can be used.
  *
+ * **Note:** That this class has an internal constructor and therefore can only be constructed from within this
+ * library. This is by design to prevent providing numerous instances of the [SingleNavigationContext] in the
+ * [Navigator.changeContext] function.
+ *
  * Example usage:
  *
  * ```kotlin
  * SingleNavigationContext(initialDestination = "Home")
  * ```
  */
-class SingleNavigationContext<Destination : NavigationDestination>(override val initialDestination: Destination) :
-    NavigationContext<Destination> {
+@Serializable
+class SingleNavigationContext<Destination : NavigationDestination> internal constructor(
+    @SerialName(value = "initial_destination") override val initialDestination: Destination
+) : NavigationContext<Destination> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || other !is SingleNavigationContext<*>) return false
+        if (other !is SingleNavigationContext<*>) return false
 
-        if (initialDestination != other.initialDestination) return false
-
-        return true
+        return initialDestination == other.initialDestination
     }
 
-    override fun hashCode(): Int = initialDestination.hashCode()
+    override fun hashCode(): Int =
+        initialDestination.hashCode()
 
-    override fun toString(): String = "SingleNavigationContext(initialDestination=$initialDestination)"
+    override fun toString(): String =
+        "SingleNavigationContext(initialDestination=$initialDestination)"
 }

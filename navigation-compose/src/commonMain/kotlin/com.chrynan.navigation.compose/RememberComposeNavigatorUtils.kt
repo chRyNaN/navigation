@@ -5,84 +5,228 @@ package com.chrynan.navigation.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.chrynan.navigation.*
+import com.chrynan.parcelable.compose.rememberSavable
+import com.chrynan.parcelable.core.Parcelable
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
 /**
- * Creates and remembers a [Navigator]. A [Navigator] can be used to navigate between different UI content in an
- * application.
+ * Creates and remembers a [Navigator] with a [SingleNavigationContext]. A [Navigator] can be used to navigate between
+ * different UI content in an application.
  *
  * Example usage:
  * ```kotlin
  * val navigator = rememberNavigator(initialDestination = "Greeting")
- *
- * // The NavContainer will start by displaying the initial content, which in this case is "Hello"
- * NavContainer(navigator) { _, key ->
- *     when (key) {
- *         "Greeting" -> Text("Hello")
- *         "Farewell" -> Text("Good-bye")
- *         else -> Text("Unexpected Key: $key")
- *     }
- * }
- *
- * // The above NavContainer will display "Good Bye" after the following call:
- * navigator.goTo("Farewell")
- *
- * // Goes back to the initial content: "Hello":
- * navigator.goBack()
  * ```
  *
- * **Note:** Use the [NavContainer] to display the [Composable] content for the current navigation context and keys.
+ * @param [initialDestination] The initial [NavigationDestination] value to start at for this [Navigator].
+ * @param [duplicateDestinationStrategy] The [NavigationStrategy.DuplicateDestination] strategy for handling of
+ * duplicate destination content within a [NavigationContext] stack. Read the documentation on
+ * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
+ * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
+ * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
+ * navigation (across contexts or just destinations within the current context). Read the documentation on
+ * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
+ * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
+ * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
+ * destination stacks within a [NavigationContext] when navigating between different [NavigationContext]s. Read the
+ * documentation on [NavigationStrategy.DestinationRetention] for more information about the supported operations.
+ * Defaults to [NavigationStrategy.DestinationRetention.RETAIN].
  *
- * **Note:** This function differs slightly from the [rememberNavigator] function in that it only uses a single
- * scope of type [Nothing]. This means that scopes cannot be changed on the returned [ComposeNavigatorImpl].
+ * @return A remembered [Navigator] instance constructed using the provided values.
  *
- * @see [rememberNavigator]
+ * @see [rememberNavigator] For a version of this function that supports multiple [NavigationContext]s.
+ * @see [rememberSavableNavigator] For a version of this function that saves the navigator across configuration
+ * changes.
+ * @see [NavigationContainer] To display the [Composable] content for the current navigation context and keys.
+ * @see [Navigator] For constructor functions that can be invoked outside [Composable] functions.
  */
 @ExperimentalNavigationApi
 @Composable
 fun <Destination : NavigationDestination> rememberNavigator(
-    initialDestination: Destination
+    initialDestination: Destination,
+    duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
+    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
+    destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, SingleNavigationContext<Destination>> = remember {
-    ComposeNavigatorImpl(initialContext = SingleNavigationContext(initialDestination = initialDestination))
+    Navigator(
+        initialDestination = initialDestination,
+        duplicateDestinationStrategy = duplicateDestinationStrategy,
+        backwardsNavigationStrategy = backwardsNavigationStrategy,
+        destinationRetentionStrategy = destinationRetentionStrategy
+    )
 }
 
 /**
- * Creates and remembers a [Navigator]. A [Navigator] can be used to navigate between different UI content in an
- * application.
+ * Creates and remembers a [Navigator] with a [SingleNavigationContext]. A [Navigator] can be used to navigate between
+ * different UI content in an application.
  *
  * Example usage:
  * ```kotlin
- * val navigator = rememberNavigator(initialContext = BottomNavBarItem.HELLO)
- *
- * // The NavContainer will start by displaying the initial content, which in this case is "Hello"
- * NavContainer(navigator) { context, key ->
- *         when (key) {
- *             "Greeting" -> Text("Hello")
- *             "Farewell" -> Text("Good-bye")
- *             else -> Text("Unexpected Key: $key")
- *         }
- *     }
- *
- * // The above NavContainer will display "Good Bye" after the following call:
- * navigator.goTo("Farewell")
- *
- * // Goes back to the initial content: "Hello":
- * navigator.goBack()
- *
- * // Changes the scope to BottomNavBarItem.GOODBYE and displays its initial key, which in this case is "Farewell"
- * navigator.changeContext(BottomNavBarItem.GOODBYE)
+ * val navigator = rememberNavigator(initialContext = MainContext.HOME)
  * ```
  *
- * **Note:** Use the [NavContainer] to display the [Composable] content for the current navigation context and keys.
+ * @param [initialContext] The initial [NavigationContext] value to start at for this [Navigator].
+ * @param [duplicateDestinationStrategy] The [NavigationStrategy.DuplicateDestination] strategy for handling of
+ * duplicate destination content within a [Context] stack. Read the documentation on
+ * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
+ * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
+ * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
+ * navigation (across contexts or just destinations within the current context). Read the documentation on
+ * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
+ * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
+ * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
+ * destination stacks within a [Context] when navigating between different [NavigationContext]s. Read the documentation
+ * on [NavigationStrategy.DestinationRetention] for more information about the supported operations. Defaults to
+ * [NavigationStrategy.DestinationRetention.RETAIN].
  *
- * **Note:** That this function differs slightly from the [rememberNavigator] function in that this function allows
- * changing of scopes, which is useful for more complex navigation.
+ * @return A remembered [Navigator] instance constructed using the provided values.
  *
- * @see [rememberNavigator]
+ * @see [rememberNavigator] For a version of this function with only a single [NavigationContext].
+ * @see [rememberSavableNavigator] For a version of this function that saves the navigator across configuration
+ * changes.
+ * @see [NavigationContainer] To display the [Composable] content for the current navigation context and keys.
+ * @see [Navigator] For constructor functions that can be invoked outside [Composable] functions.
  */
 @ExperimentalNavigationApi
 @Composable
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> rememberNavigator(
-    initialContext: Context
+    initialContext: Context,
+    duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
+    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
+    destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, Context> = remember {
-    ComposeNavigatorImpl(initialContext = initialContext)
+    Navigator(
+        initialContext = initialContext,
+        duplicateDestinationStrategy = duplicateDestinationStrategy,
+        backwardsNavigationStrategy = backwardsNavigationStrategy,
+        destinationRetentionStrategy = destinationRetentionStrategy
+    )
 }
+
+/**
+ * Creates, remembers and saves a [Navigator] with a [SingleNavigationContext]. A [Navigator] can be used to navigate
+ * between different UI content in an application. This differs from the [rememberNavigator] function in that it allows
+ * restoring the [Navigator] state between configuration changes via the [rememberSavable] function and using the
+ * provided [KSerializer]s.
+ *
+ * Example usage:
+ * ```kotlin
+ * val navigator = rememberNavigator(initialDestination = "Greeting")
+ * ```
+ *
+ * @param [initialDestination] The initial [NavigationDestination] value to start at for this [Navigator].
+ * @param [parcelable] The [Parcelable] instance that is used to store and retrieve the [Navigator] instance between
+ * configuration changes.
+ * @param [destinationSerializer] The [KSerializer] for the [Destination] type.
+ * @param [duplicateDestinationStrategy] The [NavigationStrategy.DuplicateDestination] strategy for handling of
+ * duplicate destination content within a [NavigationContext] stack. Read the documentation on
+ * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
+ * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
+ * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
+ * navigation (across contexts or just destinations within the current context). Read the documentation on
+ * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
+ * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
+ * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
+ * destination stacks within a [NavigationContext] when navigating between different [NavigationContext]s. Read the
+ * documentation on [NavigationStrategy.DestinationRetention] for more information about the supported operations.
+ * Defaults to [NavigationStrategy.DestinationRetention.RETAIN].
+ *
+ * @return A remembered [Navigator] instance constructed using the provided values.
+ *
+ * @see [rememberNavigator] For a version of this function that supports multiple [NavigationContext]s.
+ * @see [rememberSavableNavigator] For a version of this function that saves the navigator across configuration
+ * changes.
+ * @see [NavigationContainer] To display the [Composable] content for the current navigation context and keys.
+ * @see [Navigator] For constructor functions that can be invoked outside [Composable] functions.
+ */
+@ExperimentalSerializationApi
+@ExperimentalNavigationApi
+@Composable
+inline fun <reified Destination : NavigationDestination> rememberSavableNavigator(
+    initialDestination: Destination,
+    parcelable: Parcelable = Parcelable.Default,
+    destinationSerializer: KSerializer<Destination> = Parcelable.serializersModule.serializer(),
+    duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
+    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
+    destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
+): Navigator<Destination, SingleNavigationContext<Destination>> =
+    rememberSavable(
+        parcelable = parcelable,
+        serializer = Navigator.serializer(
+            destinationSerializer,
+            SingleNavigationContext.serializer(destinationSerializer)
+        )
+    ) {
+        Navigator(
+            initialDestination = initialDestination,
+            duplicateDestinationStrategy = duplicateDestinationStrategy,
+            backwardsNavigationStrategy = backwardsNavigationStrategy,
+            destinationRetentionStrategy = destinationRetentionStrategy
+        )
+    }
+
+/**
+ * Creates, remembers and saves a [Navigator] with a [SingleNavigationContext]. A [Navigator] can be used to navigate
+ * between different UI content in an application. This differs from the [rememberNavigator] function in that it allows
+ * restoring the [Navigator] state between configuration changes via the [rememberSavable] function and using the
+ * provided [KSerializer]s.
+ *
+ * Example usage:
+ * ```kotlin
+ * val navigator = rememberNavigator(initialDestination = "Greeting")
+ * ```
+ *
+ * @param [initialContext] The initial [NavigationContext] value to start at for this [Navigator].
+ * @param [parcelable] The [Parcelable] instance that is used to store and retrieve the [Navigator] instance between
+ * configuration changes.
+ * @param [destinationSerializer] The [KSerializer] for the [Destination] type.
+ * @param [contextSerializer] The [KSerializer] for the [Context] type.
+ * @param [duplicateDestinationStrategy] The [NavigationStrategy.DuplicateDestination] strategy for handling of
+ * duplicate destination content within a [NavigationContext] stack. Read the documentation on
+ * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
+ * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
+ * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
+ * navigation (across contexts or just destinations within the current context). Read the documentation on
+ * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
+ * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
+ * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
+ * destination stacks within a [NavigationContext] when navigating between different [NavigationContext]s. Read the
+ * documentation on [NavigationStrategy.DestinationRetention] for more information about the supported operations.
+ * Defaults to [NavigationStrategy.DestinationRetention.RETAIN].
+ *
+ * @return A remembered [Navigator] instance constructed using the provided values.
+ *
+ * @see [rememberNavigator] For a version of this function that supports multiple [NavigationContext]s.
+ * @see [rememberSavableNavigator] For a version of this function that saves the navigator across configuration
+ * changes.
+ * @see [NavigationContainer] To display the [Composable] content for the current navigation context and keys.
+ * @see [Navigator] For constructor functions that can be invoked outside [Composable] functions.
+ */
+@ExperimentalSerializationApi
+@ExperimentalNavigationApi
+@Composable
+inline fun <reified Destination : NavigationDestination, reified Context : NavigationContext<Destination>> rememberSavableNavigator(
+    initialContext: Context,
+    parcelable: Parcelable = Parcelable.Default,
+    destinationSerializer: KSerializer<Destination> = Parcelable.serializersModule.serializer(),
+    contextSerializer: KSerializer<Context> = Parcelable.serializersModule.serializer(),
+    duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
+    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
+    destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
+): Navigator<Destination, Context> =
+    rememberSavable(
+        parcelable = parcelable,
+        serializer = Navigator.serializer(
+            destinationSerializer,
+            contextSerializer
+        )
+    ) {
+        Navigator(
+            initialContext = initialContext,
+            duplicateDestinationStrategy = duplicateDestinationStrategy,
+            backwardsNavigationStrategy = backwardsNavigationStrategy,
+            destinationRetentionStrategy = destinationRetentionStrategy
+        )
+    }

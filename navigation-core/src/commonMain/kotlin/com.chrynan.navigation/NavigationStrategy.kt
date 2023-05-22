@@ -70,7 +70,9 @@ sealed interface NavigationStrategy {
          * [NavigationEvent.Forward.Destination] or [NavigationEvent.Forward.Context] event
          */
         @SerialName(value = "across_context")
-        ACROSS_CONTEXTS(serialName = "across_context")
+        ACROSS_CONTEXTS(serialName = "across_context");
+
+        companion object
     }
 
     /**
@@ -85,10 +87,24 @@ sealed interface NavigationStrategy {
     @Serializable
     enum class DestinationRetention(val serialName: String) {
 
+        /**
+         * Indicates that the [NavigationDestination] data structure associated with a [NavigationContext] should be
+         * kept when navigation to a different [NavigationContext], so that the state can be restored when navigating
+         * back.
+         */
         @SerialName(value = "retain")
         RETAIN(serialName = "retain"),
 
+        /**
+         * Indicates that the [NavigationDestination] data structure associated with a [NavigationContext] should be
+         * cleared before navigating to a different [NavigationContext], so that the
+         * [NavigationContext.initialDestination] value will be displayed when navigating back.
+         */
         @SerialName(value = "clear")
-        CLEAR(serialName = "clear")
+        CLEAR(serialName = "clear");
+
+        companion object
     }
+
+    companion object
 }
