@@ -32,14 +32,6 @@ internal class NavigationContextStacks<Destination : NavigationDestination, Cont
         destinationStacksByContext[context]?.toStack() ?: stackOf(context.initialDestination)
 
     /**
-     * Sets the [Stack] for the provided [Context]. Note that this does not perform a check to make sure that the
-     * initial destination is correct.
-     */
-    operator fun set(context: Context, destinations: Stack<Destination>) {
-        destinationStacksByContext[context] = destinations.toMutableStack()
-    }
-
-    /**
      * Retrieves the current [Destination] on top of the [Stack] for the provided [Context] without removing it.
      */
     fun peek(context: Context): Destination =
@@ -85,15 +77,17 @@ internal class NavigationContextStacks<Destination : NavigationDestination, Cont
 
         if (index == -1) {
             stack.push(destination)
+
+            destinationStacksByContext[context] = stack
         } else {
             val dropCount = (stack.size - (stack.size - index)) + 1
 
-            stack.drop(dropCount)
+            val newStack = stack.toList().drop(dropCount).toMutableStack()
 
-            stack.push(destination)
+            newStack.push(destination)
+
+            destinationStacksByContext[context] = newStack
         }
-
-        destinationStacksByContext[context] = stack
     }
 
     /**
