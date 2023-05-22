@@ -12,7 +12,7 @@ import kotlinx.serialization.encoding.Encoder
 /**
  * A [Navigator] is responsible for coordinating the navigation between the different UI component groupings in an
  * application. It is a stateful component that reacts to [NavigationEvent]s that are emitted via calls to the
- * navigation functions ([goTo], [handleBack], and [changeContext]) and updates its stored state values which can be
+ * navigation functions ([goTo], [goBack], and [changeContext]) and updates its stored state values which can be
  * accessed via its state [store]. It is up to the user of a [Navigator] to subscribe to the state changes of this
  * component and update the associated UI accordingly.
  *
@@ -35,7 +35,7 @@ import kotlinx.serialization.encoding.Encoder
  *
  * @see [Navigator] The [Navigator] constructor function for creating an instance of this interface.
  * @see [goTo] For navigating to a new [NavigationDestination] within the current [NavigationContext].
- * @see [handleBack] For navigating backwards, either within the current [NavigationContext] or across
+ * @see [goBack] For navigating backwards, either within the current [NavigationContext] or across
  * [NavigationContext]s, depending on the [NavigationStrategy.BackwardsNavigation] strategy supplied to the [Navigator]
  * function when creating an instance of this [Navigator].
  * @see [changeContext] For navigating to a different [NavigationContext].
@@ -53,7 +53,7 @@ sealed interface Navigator<Destination : NavigationDestination, Context : Naviga
     /**
      * Dispatches the provided navigation [event] which mutates the underlying state values if the navigation event can
      * be performed. The creation of [NavigationEvent]s is handled internally within this library's components,
-     * therefore, instead of invoking this function explicitly, use the [handleBack], [goTo], and [changeContext]
+     * therefore, instead of invoking this function explicitly, use the [goBack], [goTo], and [changeContext]
      * functions.
      *
      * @param [event] The [NavigationEvent] that represents the navigation action to be performed.
@@ -87,7 +87,7 @@ sealed interface Navigator<Destination : NavigationDestination, Context : Naviga
  * @return `true` if the back navigation operation was successful, `false` otherwise.
  */
 @ExperimentalNavigationApi
-fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.handleBack(): Boolean =
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goBack(): Boolean =
     dispatch(event = NavigationEvent.Backward())
 
 /**
@@ -246,7 +246,7 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
 
     internal constructor(
         initialContext: Context,
-        duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES, // TODO
+        duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
         backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
         destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
     ) {
