@@ -85,7 +85,8 @@ internal class NavigationContextStacksTest {
 
         assertEquals(expected = 2, actual = stack.size)
         assertEquals(expected = TestDestination.CHANNEL_DETAILS, actual = stack.peek())
-        assertEquals(expected = TestDestination.FAVORITES, actual = stack.first())
+        assertEquals(expected = TestDestination.CHANNEL_DETAILS, actual = stack.first())
+        assertEquals(expected = TestDestination.FAVORITES, actual = stack.last())
     }
 
     @Test
@@ -111,14 +112,18 @@ internal class NavigationContextStacksTest {
 
         assertEquals(expected = 2, actual = stack.size)
         assertEquals(expected = TestDestination.ITEM_DETAILS, actual = stack.peek())
-        assertEquals(expected = TestDestination.HOME, actual = stack.first())
+        assertEquals(expected = TestDestination.ITEM_DETAILS, actual = stack.first())
+        assertEquals(expected = TestDestination.HOME, actual = stack.last())
     }
 
     @Test
-    fun pushAllAddsItemsToTopOfStack(){
+    fun pushAllAddsItemsToTopOfStack() {
         val stacks = NavigationContextStacks<TestDestination, TestContext>(initialContext = TestContext.Home)
 
-        stacks.pushAll(context = TestContext.Home, destinations = stackOf(TestDestination.ITEM_DETAILS, TestDestination.FAVORITES))
+        stacks.pushAll(
+            context = TestContext.Home,
+            destinations = stackOf(TestDestination.ITEM_DETAILS, TestDestination.FAVORITES)
+        )
 
         val stack = stacks[TestContext.Home].toMutableStack()
 

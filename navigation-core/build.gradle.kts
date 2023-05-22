@@ -24,7 +24,13 @@ kotlin {
         jvm()
 
         js(IR) {
-            browser()
+            browser {
+                testTask {
+                    useKarma {
+                        useFirefox()
+                    }
+                }
+            }
             nodejs()
         }
 
