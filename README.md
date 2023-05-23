@@ -224,6 +224,17 @@ NavigationContainer(navigator) { destination ->
 }
 ```
 
+* Utilize [kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) and
+  the [serialization-parcelable](https://github.com/chRyNaN/serialization-parcelable) library to transfer a `Navigator`
+  between components.
+
+```kotlin
+val navigatorSerializer = Navigator.serializer(destinationSerializer, contextSerializer)
+
+parcelable.encodeToParcel(serializer = navigatorSerializer, value = navigator)
+json.encodeToString(serializer = navigatorSerializer, value = navigator)
+```
+
 ## Documentation 📃
 
 More detailed documentation is available in the [docs](docs/) folder. The entry point to the documentation can be
