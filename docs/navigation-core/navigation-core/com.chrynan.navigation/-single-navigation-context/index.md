@@ -3,21 +3,19 @@
 # SingleNavigationContext
 
 [common]\
-class [SingleNavigationContext](index.md)&lt;[Destination](index.md) : [NavigationDestination](../index.md#1223765350%2FClasslikes%2F-215881696)&gt;(val initialDestination: [Destination](index.md)) : [NavigationContext](../-navigation-context/index.md)&lt;[Destination](index.md)&gt; 
+@Serializable
+
+class [SingleNavigationContext](index.md)&lt;[Destination](index.md) : [NavigationDestination](../index.md#1223765350%2FClasslikes%2F-215881696)&gt; : [NavigationContext](../-navigation-context/index.md)&lt;[Destination](index.md)&gt; 
 
 An implementation of the [NavigationContext](../-navigation-context/index.md) interface that doesn't have multiple contexts. Typically, a [NavigationContext](../-navigation-context/index.md) will either be a sealed class or an enum representing the different contexts for navigation. This is common, for instance, for a UI with a bottom navigation bar, where each navigation item in that bottom navigation bar component would be a different context. Each context would retain its own stack of destinations in the [Navigator](../-navigator/index.md). However, sometimes it may be preferable to have only a single context for navigation, and in this case, this class can be used.
+
+**Note:** That this class has an internal constructor and therefore can only be constructed from within this library. This is by design to prevent providing numerous instances of the [SingleNavigationContext](index.md) in the [Navigator.changeContext](../change-context.md) function.
 
 Example usage:
 
 ```kotlin
 SingleNavigationContext(initialDestination = "Home")
 ```
-
-## Constructors
-
-| | |
-|---|---|
-| [SingleNavigationContext](-single-navigation-context.md) | [common]<br>fun &lt;[Destination](index.md) : [NavigationDestination](../index.md#1223765350%2FClasslikes%2F-215881696)&gt; [SingleNavigationContext](-single-navigation-context.md)(initialDestination: [Destination](index.md)) |
 
 ## Functions
 
