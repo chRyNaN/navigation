@@ -55,7 +55,7 @@ implementation("com.chrynan.navigation:navigation-compose:VERSION")
 
 ## Usage 👨‍💻
 
-#### Destinations
+### Destinations
 
 `NavigationDestinations` represent the locations within an application that a `Navigator` can coordinate. They can be of
 any type and can contain any data that is useful to render the destination UI. A common approach is to use enums or
@@ -71,7 +71,7 @@ enum class AppDestination {
 }
 ```
 
-#### Contexts
+### Contexts
 
 A `NavigationContext` is a way of representing complex or nested navigation destinations. A `NavigationContext` defines
 its `initialDestination` and has its own stack of `NavigationDestinations` associated with it within the internal
@@ -93,7 +93,7 @@ enum class MainContext(
 }
 ```
 
-#### Navigator
+### Navigator
 
 A `Navigator` is used to navigate between navigation contexts and destinations via the
 convenient `goTo`, `changeContext`, and `goBack` functions. A `Navigator` can be obtained via one of the constructor
@@ -107,7 +107,7 @@ BackHandler { navigator.goBack() }
 ListItem(modifier = Modifier.clickable { navigator.goTo(AppDestination.DETAILS) })
 ```
 
-#### NavigationContainer
+### NavigationContainer
 
 The `NavigationContainer` composable provides a convenient way to listening to destination and context state changes and
 recomposing its content accordingly. Just provide a `Navigator` instance and a content composable.
@@ -128,7 +128,7 @@ fun App() {
 }
 ```
 
-#### Transitions and animations
+### Transitions and animations
 
 You have complete control over the composable functions that render the UI of the application and can use the Jetpack
 Compose library's transition and animation APIs to change between the navigation context and destination UIs. For more
@@ -144,6 +144,83 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
     val destination = navigator.store.destination.collectAsState()
 
     // Render UI from context and destination values and apply any transition or animation desired.
+}
+```
+
+### Best Practices
+
+* Avoid passing a `Navigator` to `@Composable` functions and
+  instead [hoist the state](https://developer.android.com/jetpack/compose/state-hoisting).
+
+```kotlin
+@Composable
+fun App() {
+    val navigator = rememberNavigator(...)
+
+    ...
+
+    MyScreen(
+        onBackPressed = { navigator.goBack() },
+        onGoToDetails = { navigator.goTo(AppDestination.Details(it)) }
+    )
+}
+```
+
+* Use different `Navigators` for deep nested navigation. This way each component can retain its own navigation hierarchy
+  and delegate to its encapsulating component via state hoisting if it cannot handle the navigation.
+
+```kotlin
+@Composable
+fun ParentComponent() {
+    val parentNavigator = rememberNavigator(...)
+
+    ...
+
+    ChildComponent(onBack = { parentNavigator.goBack() })
+}
+
+@Composable
+fun ChildComponent(
+    onBack: () -> Unit
+) {
+    val childNavigator = rememberNavigator(...)
+
+    BackHandler {
+        if (!childNavigator.goBack()) {
+            onBack.invoke()
+        }
+    }
+}
+```
+
+* Use the `rememberSavableNavigator` function along with serializable navigation destinations and contexts to retain the
+  navigation state between configuration changes.
+
+```kotlin
+val navigator = rememberSavableNavigator(
+    initialContext = MainContext.HOME,
+    destinationSerializer = AppDestination.serializer(),
+    contextSerializer = MainContext.serializer()
+)
+```
+
+* Create the `Navigator` instance outside of `@Composable` functions to handle navigation outside the user interface
+  flow, such as in Activity lifecycle callbacks.
+
+```kotlin
+val navigator = Navigator(initialContext = MainContext.HOME)
+```
+
+* Utilize [side-effects](https://developer.android.com/jetpack/compose/side-effects) in Jetpack Compose for handling
+  navigation to non-composable UI components, such as starting new Activities or changing Fragments.
+
+```kotlin
+NavigationContainer(navigator) { destination ->
+    when (destination) {
+        is AppDestination.Details -> LaunchedEffect(destination) {
+            context.startActivity(DetailsActivity.newIntent(context, destinatin.id))
+        }
+    }
 }
 ```
 
