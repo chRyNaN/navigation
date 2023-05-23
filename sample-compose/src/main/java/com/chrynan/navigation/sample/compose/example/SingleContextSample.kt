@@ -13,16 +13,20 @@ import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberNavigator
 import com.chrynan.navigation.goBack
 import com.chrynan.navigation.goTo
-import com.chrynan.navigation.sample.compose.AppDestination
 import com.chrynan.navigation.sample.compose.composable.Items
 
 @Composable
 @ExperimentalNavigationApi
-fun SingleContextSample() {
+fun SingleContextSample(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit
+) {
     val navigator = rememberNavigator<AppDestination>(initialDestination = AppDestination.Home)
 
     BackHandler {
-        navigator.goBack()
+        if (!navigator.goBack()) {
+            onClose()
+        }
     }
 
     NavigationContainer(

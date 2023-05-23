@@ -1,5 +1,6 @@
 package com.chrynan.navigation.sample.compose.example
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -9,15 +10,23 @@ import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.changeContext
 import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberNavigator
+import com.chrynan.navigation.goBack
 import com.chrynan.navigation.goTo
-import com.chrynan.navigation.sample.compose.AppContext
-import com.chrynan.navigation.sample.compose.AppDestination
 import com.chrynan.navigation.sample.compose.composable.Items
 
 @ExperimentalNavigationApi
 @Composable
-fun MultipleContextSample() {
+fun MultipleContextSample(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit
+) {
     val navigator = rememberNavigator(initialContext = AppContext.HOME)
+
+    BackHandler {
+        if (!navigator.goBack()) {
+            onClose()
+        }
+    }
 
     Column {
         Box(modifier = Modifier.weight(1f)) {

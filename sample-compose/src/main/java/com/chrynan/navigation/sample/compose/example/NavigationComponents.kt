@@ -1,4 +1,4 @@
-package com.chrynan.navigation.sample.compose
+package com.chrynan.navigation.sample.compose.example
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
