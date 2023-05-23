@@ -53,7 +53,7 @@ implementation("com.chrynan.navigation:navigation-core:VERSION")
 implementation("com.chrynan.navigation:navigation-compose:VERSION")
 ```
 
-### Usage 👨‍💻
+## Usage 👨‍💻
 
 #### Destinations
 
