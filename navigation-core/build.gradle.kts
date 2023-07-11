@@ -50,7 +50,6 @@ kotlin {
 
                 implementation(KotlinX.coroutines.core)
                 implementation(KotlinX.serialization.core)
-                implementation(KotlinX.datetime)
             }
         }
 
