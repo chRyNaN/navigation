@@ -25,7 +25,7 @@ fun App() {
         NavigationContainer(
             navigator = navigator,
             modifier = Modifier.fillMaxSize()
-        ) { destination ->
+        ) { (_, destination) ->
             when (destination) {
                 AppDestination.MAIN_SCREEN -> MainScreen(
                     modifier = Modifier.matchParentSize(),
