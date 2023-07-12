@@ -121,6 +121,26 @@ internal class NavigationContextStacks<Destination : NavigationDestination, Cont
      * Returns a [Map] of the [Context] to [Stack] of [Destination]s.
      */
     fun toMap(): Map<Context, Stack<Destination>> = destinationStacksByContext
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NavigationContextStacks<*, *>) return false
+
+        if (initialContext != other.initialContext) return false
+
+        return destinationStacksByContext == other.destinationStacksByContext
+    }
+
+    override fun hashCode(): Int {
+        var result = initialContext.hashCode()
+        result = 31 * result + destinationStacksByContext.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "NavigationContextStacks(" +
+                "initialContext=$initialContext, " +
+                "destinationStacksByContext=$destinationStacksByContext)"
 }
 
 /**
@@ -152,13 +172,35 @@ internal class NavigationContextStacksSerializer<Destination : NavigationDestina
     }
 
     override fun serialize(encoder: Encoder, value: NavigationContextStacks<Destination, Context>) {
-        encoder.encodeSerializableValue(serializer = contextSerializer, value = value.initialContext)
-        encoder.encodeSerializableValue(serializer = mapSerializer, value = value.toMap())
+        val compositeEncoder = encoder.beginStructure(descriptor)
+        compositeEncoder.encodeSerializableElement(
+            serializer = contextSerializer,
+            descriptor = descriptor,
+            index = 0,
+            value = value.initialContext
+        )
+        compositeEncoder.encodeSerializableElement(
+            serializer = mapSerializer,
+            descriptor = descriptor,
+            index = 1,
+            value = value.toMap()
+        )
+        compositeEncoder.endStructure(descriptor)
     }
 
     override fun deserialize(decoder: Decoder): NavigationContextStacks<Destination, Context> {
-        val initialContext = decoder.decodeSerializableValue(deserializer = contextSerializer)
-        val contextStacks = decoder.decodeSerializableValue(deserializer = mapSerializer)
+        val compositeDecoder = decoder.beginStructure(descriptor)
+        val initialContext = compositeDecoder.decodeSerializableElement(
+            deserializer = contextSerializer,
+            descriptor = descriptor,
+            index = 0
+        )
+        val contextStacks = compositeDecoder.decodeSerializableElement(
+            deserializer = mapSerializer,
+            descriptor = descriptor,
+            index = 1
+        )
+        compositeDecoder.endStructure(descriptor)
 
         return NavigationContextStacks(
             initialContext = initialContext,
