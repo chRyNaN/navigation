@@ -8,7 +8,7 @@ Kotlin multi-platform application navigation library that supports Jetpack Compo
 ```kotlin
 val navigator = rememberNavigator(initialDestination = "Greeting")
 
-NavigationContainer(navigator) { destination ->
+NavigationContainer(navigator) { (_, destination) ->
     when (destination) {
         "Greeting" -> Column {
             Text("Hello")
@@ -117,7 +117,7 @@ recomposing its content accordingly. Just provide a `Navigator` instance and a c
 fun App() {
     val navigator = rememberNavigator(initialDestination = AppDestination.HOME)
 
-    NavigationContainer(navigator = navigator) { destination ->
+    NavigationContainer(navigator = navigator) { (context, destination) ->
         when (destination) {
             AppDestination.HOME -> HomeScreenComposable()
             AppDestination.SEARCH -> SearchScreenComposable()
@@ -215,7 +215,7 @@ val navigator = Navigator(initialContext = MainContext.HOME)
   navigation to non-composable UI components, such as starting new Activities or changing Fragments.
 
 ```kotlin
-NavigationContainer(navigator) { destination ->
+NavigationContainer(navigator) { (_, destination) ->
     when (destination) {
         is AppDestination.Details -> LaunchedEffect(destination) {
             context.startActivity(DetailsActivity.newIntent(context, destinatin.id))
