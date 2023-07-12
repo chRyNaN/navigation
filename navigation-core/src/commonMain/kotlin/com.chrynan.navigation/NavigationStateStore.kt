@@ -181,15 +181,46 @@ internal class NavigationStateStoreSerializer<Destination : NavigationDestinatio
     }
 
     override fun serialize(encoder: Encoder, value: NavigationStateStore<Destination, Context>) {
-        encoder.encodeSerializableValue(serializer = eventStateSerializer, value = value.event)
-        encoder.encodeSerializableValue(serializer = destinationStateSerializer, value = value.destination)
-        encoder.encodeSerializableValue(serializer = contextStateSerializer, value = value.context)
+        val compositeEncoder = encoder.beginStructure(descriptor)
+        compositeEncoder.encodeSerializableElement(
+            serializer = eventStateSerializer,
+            descriptor = descriptor,
+            index = 0,
+            value = value.event
+        )
+        compositeEncoder.encodeSerializableElement(
+            serializer = destinationStateSerializer,
+            descriptor = descriptor,
+            index = 1,
+            value = value.destination
+        )
+        compositeEncoder.encodeSerializableElement(
+            serializer = contextStateSerializer,
+            descriptor = descriptor,
+            index = 2,
+            value = value.context
+        )
+        compositeEncoder.endStructure(descriptor)
     }
 
     override fun deserialize(decoder: Decoder): NavigationStateStore<Destination, Context> {
-        val event = decoder.decodeSerializableValue(deserializer = eventStateSerializer)
-        val destination = decoder.decodeSerializableValue(deserializer = destinationStateSerializer)
-        val context = decoder.decodeSerializableValue(deserializer = contextStateSerializer)
+        val compositeDecoder = decoder.beginStructure(descriptor)
+        val event = compositeDecoder.decodeSerializableElement(
+            deserializer = eventStateSerializer,
+            descriptor = descriptor,
+            index = 0
+        )
+        val destination = compositeDecoder.decodeSerializableElement(
+            deserializer = destinationStateSerializer,
+            descriptor = descriptor,
+            index = 1
+        )
+        val context = compositeDecoder.decodeSerializableElement(
+            deserializer = contextStateSerializer,
+            descriptor = descriptor,
+            index = 2
+        )
+        compositeDecoder.endStructure(descriptor)
 
         return mutableNavigationStateStoreOf(
             initialEvent = event.initial,
@@ -239,15 +270,46 @@ internal class MutableNavigationStateStoreSerializer<Destination : NavigationDes
     }
 
     override fun serialize(encoder: Encoder, value: MutableNavigationStateStore<Destination, Context>) {
-        encoder.encodeSerializableValue(serializer = eventStateSerializer, value = value.event)
-        encoder.encodeSerializableValue(serializer = destinationStateSerializer, value = value.destination)
-        encoder.encodeSerializableValue(serializer = contextStateSerializer, value = value.context)
+        val compositeEncoder = encoder.beginStructure(descriptor)
+        compositeEncoder.encodeSerializableElement(
+            serializer = eventStateSerializer,
+            descriptor = descriptor,
+            index = 0,
+            value = value.event
+        )
+        compositeEncoder.encodeSerializableElement(
+            serializer = destinationStateSerializer,
+            descriptor = descriptor,
+            index = 1,
+            value = value.destination
+        )
+        compositeEncoder.encodeSerializableElement(
+            serializer = contextStateSerializer,
+            descriptor = descriptor,
+            index = 2,
+            value = value.context
+        )
+        compositeEncoder.endStructure(descriptor)
     }
 
     override fun deserialize(decoder: Decoder): MutableNavigationStateStore<Destination, Context> {
-        val event = decoder.decodeSerializableValue(deserializer = eventStateSerializer)
-        val destination = decoder.decodeSerializableValue(deserializer = destinationStateSerializer)
-        val context = decoder.decodeSerializableValue(deserializer = contextStateSerializer)
+        val compositeDecoder = decoder.beginStructure(descriptor)
+        val event = compositeDecoder.decodeSerializableElement(
+            deserializer = eventStateSerializer,
+            descriptor = descriptor,
+            index = 0
+        )
+        val destination = compositeDecoder.decodeSerializableElement(
+            deserializer = destinationStateSerializer,
+            descriptor = descriptor,
+            index = 1
+        )
+        val context = compositeDecoder.decodeSerializableElement(
+            deserializer = contextStateSerializer,
+            descriptor = descriptor,
+            index = 2
+        )
+        compositeDecoder.endStructure(descriptor)
 
         return mutableNavigationStateStoreOf(
             initialEvent = event.initial,
