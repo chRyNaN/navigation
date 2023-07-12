@@ -27,4 +27,4 @@ A [NavigationEvent](../index.md) that represents a forward movement, or addition
 | Name | Summary |
 |---|---|
 | [direction](direction.md) | [common]<br>open override val [direction](direction.md): [NavigationEvent.Direction](../-direction/index.md)<br>The navigation direction for this event. |
-| [instant](../instant.md) | [common]<br>abstract val [instant](../instant.md): Instant<br>The Instant that the event occurred. |
+| [elapsedMilliseconds](../elapsed-milliseconds.md) | [common]<br>abstract val [elapsedMilliseconds](../elapsed-milliseconds.md): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)<br>The amount of milliseconds that have elapsed on the system when the event occurred. |

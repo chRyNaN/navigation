@@ -10,7 +10,7 @@ Represents a &quot;ViewModel&quot; component used for navigation purposes. This 
 [android]\
 actual abstract class [NavigationViewModel](index.md) : [ViewModel](https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html)
 
-[ios, js, jvm]\
+[js, jvm]\
 actual abstract class [NavigationViewModel](index.md)
 
 ## Functions
