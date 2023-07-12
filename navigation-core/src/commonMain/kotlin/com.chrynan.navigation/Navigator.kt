@@ -6,6 +6,8 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
@@ -448,24 +450,123 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
 @ExperimentalNavigationApi
 internal class NavigatorSerializer<Destination : NavigationDestination, Context : NavigationContext<Destination>> internal constructor(
     destinationSerializer: KSerializer<Destination>,
-    contextSerializer: KSerializer<Context>
+    private val contextSerializer: KSerializer<Context>
 ) : KSerializer<Navigator<Destination, Context>> {
 
-    override val descriptor: SerialDescriptor
-        get() = delegateSerializer.descriptor
+    private val stateStoreSerializer = NavigationStateStore.serializer(destinationSerializer, contextSerializer)
+    private val contextStacksSerializer = NavigationContextStacks.serializer(destinationSerializer, contextSerializer)
+    private val eventStackSerializer =
+        StackSerializer(NavigationEvent.Forward.serializer(destinationSerializer, contextSerializer))
 
-    private val delegateSerializer = NavigatorSnapshot.serializer(destinationSerializer, contextSerializer)
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Navigator") {
+        element(elementName = "initial_context", descriptor = contextSerializer.descriptor)
+        element<NavigationStrategy.DuplicateDestination>(elementName = "duplication_destination_strategy")
+        element<NavigationStrategy.BackwardsNavigation>(elementName = "backwards_navigation_strategy")
+        element<NavigationStrategy.DestinationRetention>(elementName = "destination_retention_strategy")
+        element(elementName = "state_store", descriptor = stateStoreSerializer.descriptor)
+        element(elementName = "context_stacks", descriptor = contextStacksSerializer.descriptor)
+        element(elementName = "forwarding_event_stack", descriptor = eventStackSerializer.descriptor)
+    }
 
     override fun serialize(encoder: Encoder, value: Navigator<Destination, Context>) {
         require(value is NavigatorImpl) { "Only NavigatorImpl is supported for serialization." }
 
         val snapshot = value.snapshot()
 
-        encoder.encodeSerializableValue(serializer = delegateSerializer, value = snapshot)
+        val compositeEncoder = encoder.beginStructure(descriptor)
+        compositeEncoder.encodeSerializableElement(
+            descriptor = descriptor,
+            index = 0,
+            serializer = contextSerializer,
+            value = snapshot.initialContext
+        )
+        compositeEncoder.encodeSerializableElement(
+            descriptor = descriptor,
+            index = 1,
+            serializer = NavigationStrategy.DuplicateDestination.serializer(),
+            value = snapshot.duplicateDestinationStrategy
+        )
+        compositeEncoder.encodeSerializableElement(
+            descriptor = descriptor,
+            index = 2,
+            serializer = NavigationStrategy.BackwardsNavigation.serializer(),
+            value = snapshot.backwardsNavigationStrategy
+        )
+        compositeEncoder.encodeSerializableElement(
+            descriptor = descriptor,
+            index = 3,
+            serializer = NavigationStrategy.DestinationRetention.serializer(),
+            value = snapshot.destinationRetentionStrategy
+        )
+        compositeEncoder.encodeSerializableElement(
+            descriptor = descriptor,
+            index = 4,
+            serializer = stateStoreSerializer,
+            value = snapshot.stateStore
+        )
+        compositeEncoder.encodeSerializableElement(
+            descriptor = descriptor,
+            index = 5,
+            serializer = contextStacksSerializer,
+            value = snapshot.contextStacks
+        )
+        compositeEncoder.encodeSerializableElement(
+            descriptor = descriptor,
+            index = 6,
+            serializer = eventStackSerializer,
+            value = snapshot.forwardingEventStack
+        )
+        compositeEncoder.endStructure(descriptor)
     }
 
     override fun deserialize(decoder: Decoder): Navigator<Destination, Context> {
-        val snapshot = decoder.decodeSerializableValue(deserializer = delegateSerializer)
+        val compositeDecoder = decoder.beginStructure(descriptor)
+        val initialContext = compositeDecoder.decodeSerializableElement(
+            descriptor = descriptor,
+            index = 0,
+            deserializer = contextSerializer
+        )
+        val duplicateDestinationStrategy = compositeDecoder.decodeSerializableElement(
+            descriptor = descriptor,
+            index = 1,
+            deserializer = NavigationStrategy.DuplicateDestination.serializer()
+        )
+        val backwardsNavigationStrategy = compositeDecoder.decodeSerializableElement(
+            descriptor = descriptor,
+            index = 2,
+            deserializer = NavigationStrategy.BackwardsNavigation.serializer()
+        )
+        val destinationRetentionStrategy = compositeDecoder.decodeSerializableElement(
+            descriptor = descriptor,
+            index = 3,
+            deserializer = NavigationStrategy.DestinationRetention.serializer()
+        )
+        val stateStore = compositeDecoder.decodeSerializableElement(
+            descriptor = descriptor,
+            index = 4,
+            deserializer = stateStoreSerializer
+        )
+        val contextStacks = compositeDecoder.decodeSerializableElement(
+            descriptor = descriptor,
+            index = 5,
+            deserializer = contextStacksSerializer
+        )
+        val forwardingEventStack = compositeDecoder.decodeSerializableElement(
+            descriptor = descriptor,
+            index = 6,
+            deserializer = eventStackSerializer
+        )
+        compositeDecoder.endStructure(descriptor)
+
+        val snapshot = NavigatorSnapshot(
+            initialContext = initialContext,
+            duplicateDestinationStrategy = duplicateDestinationStrategy,
+            backwardsNavigationStrategy = backwardsNavigationStrategy,
+            destinationRetentionStrategy = destinationRetentionStrategy,
+            stateStore = stateStore,
+            contextStacks = contextStacks,
+            forwardingEventStack = forwardingEventStack
+        )
 
         return NavigatorImpl(snapshot = snapshot)
     }
@@ -474,12 +575,28 @@ internal class NavigatorSerializer<Destination : NavigationDestination, Context 
         if (this === other) return true
         if (other !is NavigatorSerializer<*, *>) return false
 
-        return delegateSerializer == other.delegateSerializer
+        if (contextSerializer != other.contextSerializer) return false
+        if (descriptor != other.descriptor) return false
+        if (stateStoreSerializer != other.stateStoreSerializer) return false
+        if (contextStacksSerializer != other.contextStacksSerializer) return false
+
+        return eventStackSerializer == other.eventStackSerializer
     }
 
-    override fun hashCode(): Int =
-        delegateSerializer.hashCode()
+    override fun hashCode(): Int {
+        var result = contextSerializer.hashCode()
+        result = 31 * result + descriptor.hashCode()
+        result = 31 * result + stateStoreSerializer.hashCode()
+        result = 31 * result + contextStacksSerializer.hashCode()
+        result = 31 * result + eventStackSerializer.hashCode()
+        return result
+    }
 
     override fun toString(): String =
-        "NavigatorSerializer(delegateSerializer=$delegateSerializer)"
+        "NavigatorSerializer(" +
+                "contextSerializer=$contextSerializer, " +
+                "descriptor=$descriptor, " +
+                "stateStoreSerializer=$stateStoreSerializer, " +
+                "contextStacksSerializer=$contextStacksSerializer, " +
+                "eventStackSerializer=$eventStackSerializer)"
 }
