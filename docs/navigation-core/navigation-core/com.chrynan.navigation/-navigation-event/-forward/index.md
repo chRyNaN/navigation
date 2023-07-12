@@ -2,7 +2,7 @@
 
 # Forward
 
-@Serializable
+@Serializable(with = [NavigationEventForwardSerializer::class](../../../../../navigation-core/com.chrynan.navigation/-navigation-event-forward-serializer/index.md))
 
 sealed class [Forward](index.md)&lt;[D](index.md) : [NavigationDestination](../../index.md#1223765350%2FClasslikes%2F-215881696), [C](index.md) : [NavigationContext](../../-navigation-context/index.md)&lt;[D](index.md)&gt;&gt; : [NavigationEvent](../index.md)&lt;[D](index.md), [C](index.md)&gt; 
 
@@ -28,3 +28,4 @@ A [NavigationEvent](../index.md) that represents a forward movement, or addition
 |---|---|
 | [direction](direction.md) | [common]<br>open override val [direction](direction.md): [NavigationEvent.Direction](../-direction/index.md)<br>The navigation direction for this event. |
 | [elapsedMilliseconds](../elapsed-milliseconds.md) | [common]<br>abstract val [elapsedMilliseconds](../elapsed-milliseconds.md): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)<br>The amount of milliseconds that have elapsed on the system when the event occurred. |
+| [type](../type.md) | [common]<br>abstract val [type](../type.md): [NavigationEvent.Type](../-type/index.md)<br>The type of [NavigationEvent](../index.md) that occurred. |
