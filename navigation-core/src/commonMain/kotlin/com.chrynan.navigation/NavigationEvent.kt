@@ -36,6 +36,11 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
     abstract val type: Type
 
     /**
+     * Creates a serializable [Snapshot] instance of this [NavigationEvent].
+     */
+    internal abstract fun toSnapshot(): Snapshot<D, C>
+
+    /**
      * Represents a direction for a [NavigationEvent]. A [NavigationEvent] can either be a [FORWARDS] direction event,
      * meaning the change is added to a [Stack], or a [BACKWARDS] direction event, meaning the change causes a removal
      * from a [Stack].
@@ -97,6 +102,12 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
         @Transient
         override val type: Type = Type.BACKWARDS
 
+        override fun toSnapshot(): Snapshot<D, C> = Snapshot(
+            type = type,
+            direction = direction,
+            elapsedMilliseconds = elapsedMilliseconds
+        )
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Backward<*, *>) return false
@@ -141,6 +152,13 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
             @Transient
             override val type: Type = Type.DESTINATION
 
+            override fun toSnapshot(): Snapshot<D, C> = Snapshot(
+                type = type,
+                direction = direction,
+                elapsedMilliseconds = elapsedMilliseconds,
+                destination = destination
+            )
+
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other !is Destination<*, *>) return false
@@ -177,6 +195,13 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
             @Transient
             override val type: Type = Type.CONTEXT
 
+            override fun toSnapshot(): Snapshot<D, C> = Snapshot(
+                type = type,
+                direction = direction,
+                elapsedMilliseconds = elapsedMilliseconds,
+                context = context
+            )
+
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other !is Context<*, *>) return false
@@ -197,5 +222,63 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
         }
     }
 
+    @Serializable
+    internal class Snapshot<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
+        @SerialName(value = "type") val type: Type,
+        @SerialName(value = "direction") val direction: Direction,
+        @SerialName(value = "elapsed_milliseconds") val elapsedMilliseconds: Long,
+        @SerialName(value = "destination") val destination: Destination? = null,
+        @SerialName(value = "context") val context: Context? = null
+    ) {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Snapshot<*, *>) return false
+
+            if (type != other.type) return false
+            if (direction != other.direction) return false
+            if (elapsedMilliseconds != other.elapsedMilliseconds) return false
+            if (destination != other.destination) return false
+
+            return context == other.context
+        }
+
+        override fun hashCode(): Int {
+            var result = type.hashCode()
+            result = 31 * result + direction.hashCode()
+            result = 31 * result + elapsedMilliseconds.hashCode()
+            result = 31 * result + (destination?.hashCode() ?: 0)
+            result = 31 * result + (context?.hashCode() ?: 0)
+            return result
+        }
+
+        override fun toString(): String =
+            "Snapshot(" +
+                    "type=$type, " +
+                    "direction=$direction, " +
+                    "elapsedMilliseconds=$elapsedMilliseconds, " +
+                    "destination=$destination, " +
+                    "context=$context)"
+    }
+
     companion object
 }
+
+/**
+ * Creates a [NavigationEvent] instance with the provided [NavigationEvent.Snapshot].
+ */
+internal fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> NavigationEvent(
+    snapshot: NavigationEvent.Snapshot<Destination, Context>
+): NavigationEvent<Destination, Context> =
+    when (snapshot.type) {
+        NavigationEvent.Type.BACKWARDS -> NavigationEvent.Backward(elapsedMilliseconds = snapshot.elapsedMilliseconds)
+        NavigationEvent.Type.DESTINATION -> NavigationEvent.Forward.Destination(
+            elapsedMilliseconds = snapshot.elapsedMilliseconds,
+            destination = snapshot.destination!!
+        )
+
+        NavigationEvent.Type.CONTEXT -> NavigationEvent.Forward.Context(
+            elapsedMilliseconds = snapshot.elapsedMilliseconds,
+            context = snapshot.context!!
+        )
+    }
