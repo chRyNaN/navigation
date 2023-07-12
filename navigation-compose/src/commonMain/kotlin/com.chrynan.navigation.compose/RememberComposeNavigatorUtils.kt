@@ -147,7 +147,7 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
 inline fun <reified Destination : NavigationDestination> rememberSavableNavigator(
     initialDestination: Destination,
     parcelable: Parcelable = Parcelable.Default,
-    destinationSerializer: KSerializer<Destination> = Parcelable.serializersModule.serializer(),
+    destinationSerializer: KSerializer<Destination> = parcelable.serializersModule.serializer(),
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
     backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
@@ -210,8 +210,8 @@ inline fun <reified Destination : NavigationDestination> rememberSavableNavigato
 inline fun <reified Destination : NavigationDestination, reified Context : NavigationContext<Destination>> rememberSavableNavigator(
     initialContext: Context,
     parcelable: Parcelable = Parcelable.Default,
-    destinationSerializer: KSerializer<Destination> = Parcelable.serializersModule.serializer(),
-    contextSerializer: KSerializer<Context> = Parcelable.serializersModule.serializer(),
+    destinationSerializer: KSerializer<Destination> = parcelable.serializersModule.serializer(),
+    contextSerializer: KSerializer<Context> = parcelable.serializersModule.serializer(),
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
     backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
