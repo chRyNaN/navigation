@@ -138,13 +138,35 @@ internal class NavigationStateSerializer<T> internal constructor(
     }
 
     override fun serialize(encoder: Encoder, value: NavigationState<T>) {
-        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.initial)
-        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.current)
+        val compositeEncoder = encoder.beginStructure(descriptor)
+        compositeEncoder.encodeSerializableElement(
+            serializer = elementSerializer,
+            descriptor = descriptor,
+            index = 0,
+            value = value.initial
+        )
+        compositeEncoder.encodeSerializableElement(
+            serializer = elementSerializer,
+            descriptor = descriptor,
+            index = 1,
+            value = value.current
+        )
+        compositeEncoder.endStructure(descriptor)
     }
 
     override fun deserialize(decoder: Decoder): NavigationState<T> {
-        val initial = decoder.decodeSerializableValue(deserializer = elementSerializer)
-        val current = decoder.decodeSerializableValue(deserializer = elementSerializer)
+        val compositeDecoder = decoder.beginStructure(descriptor)
+        val initial = compositeDecoder.decodeSerializableElement(
+            deserializer = elementSerializer,
+            descriptor = descriptor,
+            index = 0
+        )
+        val current = compositeDecoder.decodeSerializableElement(
+            deserializer = elementSerializer,
+            descriptor = descriptor,
+            index = 1
+        )
+        compositeDecoder.endStructure(descriptor)
 
         return mutableNavigationStateOf(initial = initial, current = current)
     }
@@ -177,13 +199,35 @@ internal class MutableNavigationStateSerializer<T> internal constructor(
     }
 
     override fun serialize(encoder: Encoder, value: MutableNavigationState<T>) {
-        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.initial)
-        encoder.encodeSerializableValue(serializer = elementSerializer, value = value.current)
+        val compositeEncoder = encoder.beginStructure(descriptor)
+        compositeEncoder.encodeSerializableElement(
+            serializer = elementSerializer,
+            descriptor = descriptor,
+            index = 0,
+            value = value.initial
+        )
+        compositeEncoder.encodeSerializableElement(
+            serializer = elementSerializer,
+            descriptor = descriptor,
+            index = 1,
+            value = value.current
+        )
+        compositeEncoder.endStructure(descriptor)
     }
 
     override fun deserialize(decoder: Decoder): MutableNavigationState<T> {
-        val initial = decoder.decodeSerializableValue(deserializer = elementSerializer)
-        val current = decoder.decodeSerializableValue(deserializer = elementSerializer)
+        val compositeDecoder = decoder.beginStructure(descriptor)
+        val initial = compositeDecoder.decodeSerializableElement(
+            deserializer = elementSerializer,
+            descriptor = descriptor,
+            index = 0
+        )
+        val current = compositeDecoder.decodeSerializableElement(
+            deserializer = elementSerializer,
+            descriptor = descriptor,
+            index = 1
+        )
+        compositeDecoder.endStructure(descriptor)
 
         return mutableNavigationStateOf(initial = initial, current = current)
     }
