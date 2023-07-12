@@ -41,9 +41,8 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.foundation)
 
-                implementation(KotlinX.serialization.core)
-                implementation("com.chrynan.parcelable:parcelable-core:_")
-                implementation("com.chrynan.parcelable:parcelable-compose:_")
+                api("com.chrynan.parcelable:parcelable-core:_")
+                api("com.chrynan.parcelable:parcelable-compose:_")
             }
         }
         if (isBuildingOnOSX()) {

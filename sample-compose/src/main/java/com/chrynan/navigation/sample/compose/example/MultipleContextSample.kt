@@ -10,6 +10,7 @@ import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.changeContext
 import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberNavigator
+import com.chrynan.navigation.compose.rememberSavableNavigator
 import com.chrynan.navigation.goBack
 import com.chrynan.navigation.goTo
 import com.chrynan.navigation.sample.compose.composable.Items

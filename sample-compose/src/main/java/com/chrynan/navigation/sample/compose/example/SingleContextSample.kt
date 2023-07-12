@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberNavigator
+import com.chrynan.navigation.compose.rememberSavableNavigator
 import com.chrynan.navigation.goBack
 import com.chrynan.navigation.goTo
 import com.chrynan.navigation.sample.compose.composable.Items
@@ -21,7 +22,10 @@ fun SingleContextSample(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    val navigator = rememberNavigator<AppDestination>(initialDestination = AppDestination.Home)
+    val navigator = rememberSavableNavigator<AppDestination>(
+        initialDestination = AppDestination.Home,
+        destinationSerializer = AppDestination.serializer()
+    )
 
     BackHandler {
         if (!navigator.goBack()) {

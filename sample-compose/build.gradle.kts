@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("org.jetbrains.compose")
+    kotlin("plugin.serialization")
 }
 
 group = LibraryConstants.group
@@ -61,6 +62,8 @@ dependencies {
     implementation(AndroidX.compose.compiler)
     implementation(AndroidX.compose.ui.tooling)
     implementation(AndroidX.activity.compose)
+
+    implementation(KotlinX.coroutines.core)
 
     implementation("com.chrynan.presentation:presentation-compose:_")
     implementation("com.chrynan.colors:colors-compose:_")

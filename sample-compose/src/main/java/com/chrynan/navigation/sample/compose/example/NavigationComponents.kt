@@ -6,18 +6,28 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.chrynan.navigation.NavigationContext
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class AppDestination {
 
+    @Serializable
     object Home : AppDestination()
 
+    @Serializable
     object Search : AppDestination()
 
+    @Serializable
     object Settings : AppDestination()
 
-    data class Details(val itemId: Int) : AppDestination()
+    @Serializable
+    data class Details(
+        @SerialName(value = "item_id") val itemId: Int
+    ) : AppDestination()
 }
 
+@Serializable
 enum class AppContext(
     val title: String,
     val icon: ImageVector,
