@@ -4,6 +4,7 @@ package com.chrynan.navigation
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 /**
  * Represents a navigation event that is sent to a [Navigator] to coordinate the navigation between UI components, such
@@ -30,6 +31,11 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
     abstract val direction: Direction
 
     /**
+     * The type of [NavigationEvent] that occurred.
+     */
+    abstract val type: Type
+
+    /**
      * Represents a direction for a [NavigationEvent]. A [NavigationEvent] can either be a [FORWARDS] direction event,
      * meaning the change is added to a [Stack], or a [BACKWARDS] direction event, meaning the change causes a removal
      * from a [Stack].
@@ -50,6 +56,28 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
         FORWARDS(serialName = "forwards")
     }
 
+    @Serializable
+    enum class Type(val serialName: String) {
+
+        /**
+         * Corresponds to the [NavigationEvent.Backward] type.
+         */
+        @SerialName(value = "backwards")
+        BACKWARDS(serialName = "backwards"),
+
+        /**
+         * Corresponds to the [NavigationEvent.Forward.Context] type.
+         */
+        @SerialName(value = "context")
+        CONTEXT(serialName = "context"),
+
+        /**
+         * Corresponds to the [NavigationEvent.Forward.Destination] type.
+         */
+        @SerialName(value = "destination")
+        DESTINATION(serialName = "destination")
+    }
+
     /**
      * A [NavigationEvent] that represents a reversal of a previous navigation event. A [Backward] navigation event can be
      * used to go to the previous [NavigationDestination] within the current [NavigationContext], or going back to a
@@ -59,12 +87,15 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
      * occurred. **Note:** This is not safe to persist or use between system reboots.
      */
     @Serializable
-    @SerialName(value = "back")
+    @SerialName(value = "backwards")
     class Backward<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
         @SerialName(value = "instant") override val elapsedMilliseconds: Long = elapsedSystemTime().inWholeMilliseconds
     ) : NavigationEvent<D, C>() {
 
         override val direction: Direction = Direction.BACKWARDS
+
+        @Transient
+        override val type: Type = Type.BACKWARDS
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -107,6 +138,9 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
             @SerialName(value = "destination") val destination: D
         ) : Forward<D, C>() {
 
+            @Transient
+            override val type: Type = Type.DESTINATION
+
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other !is Destination<*, *>) return false
@@ -139,6 +173,9 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
             @SerialName(value = "instant") override val elapsedMilliseconds: Long = elapsedSystemTime().inWholeMilliseconds,
             @SerialName(value = "context") val context: C
         ) : Forward<D, C>() {
+
+            @Transient
+            override val type: Type = Type.CONTEXT
 
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
