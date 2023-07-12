@@ -2,10 +2,7 @@
 
 package com.chrynan.navigation
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
@@ -131,7 +128,7 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
      * reversed by a [Backward] event. There are two forward navigation events: [Destination] representing a change in
      * destination on the current context stack, and [Context] representing a change in the context.
      */
-    @Serializable
+    @Serializable(with = NavigationEventForwardSerializer::class)
     @SerialName(value = "forward")
     sealed class Forward<D : NavigationDestination, C : NavigationContext<D>> private constructor() :
         NavigationEvent<D, C>() {
@@ -329,6 +326,58 @@ internal class NavigationEventSerializer<Destination : NavigationDestination, Co
 
     override fun toString(): String =
         "NavigationEventSerializer(" +
+                "delegateSerializer=$delegateSerializer, " +
+                "descriptor=$descriptor)"
+}
+
+internal class NavigationEventForwardSerializer<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
+    destinationSerializer: KSerializer<Destination>,
+    contextSerializer: KSerializer<Context>
+) : KSerializer<NavigationEvent.Forward<Destination, Context>> {
+
+    private val delegateSerializer = NavigationEvent.Snapshot.serializer(
+        destinationSerializer,
+        contextSerializer
+    )
+
+    override val descriptor: SerialDescriptor = destinationSerializer.descriptor
+
+    override fun serialize(encoder: Encoder, value: NavigationEvent.Forward<Destination, Context>) {
+        encoder.encodeSerializableValue(
+            serializer = delegateSerializer,
+            value = value.toSnapshot()
+        )
+    }
+
+    override fun deserialize(decoder: Decoder): NavigationEvent.Forward<Destination, Context> {
+        val snapshot = decoder.decodeSerializableValue(deserializer = delegateSerializer)
+
+        val event = NavigationEvent(snapshot = snapshot)
+
+        if (event !is NavigationEvent.Forward) {
+            throw SerializationException("${this::class.simpleName} only works for ${NavigationEvent.Forward::class.simpleName} types.")
+        }
+
+        return event
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NavigationEventForwardSerializer<*, *>) return false
+
+        if (delegateSerializer != other.delegateSerializer) return false
+
+        return descriptor == other.descriptor
+    }
+
+    override fun hashCode(): Int {
+        var result = delegateSerializer.hashCode()
+        result = 31 * result + descriptor.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "NavigationEventForwardSerializer(" +
                 "delegateSerializer=$delegateSerializer, " +
                 "descriptor=$descriptor)"
 }
