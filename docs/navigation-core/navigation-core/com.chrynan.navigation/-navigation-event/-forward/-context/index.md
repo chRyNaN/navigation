@@ -23,4 +23,4 @@ A [NavigationEvent](../../index.md) that changes the current [NavigationContext]
 |---|---|
 | [context](context.md) | [common]<br>val [context](context.md): [C](index.md)<br>The [NavigationContext](../../../-navigation-context/index.md) to go to. |
 | [direction](../direction.md) | [common]<br>open override val [direction](../direction.md): [NavigationEvent.Direction](../../-direction/index.md)<br>The navigation direction for this event. |
-| [instant](instant.md) | [common]<br>open override val [instant](instant.md): Instant<br>The Instant that the event occurred. |
+| [elapsedMilliseconds](elapsed-milliseconds.md) | [common]<br>open override val [elapsedMilliseconds](elapsed-milliseconds.md): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)<br>The amount of milliseconds that have elapsed on the system when the event occurred. **Note:** This is not safe to persist or use between system reboots. |

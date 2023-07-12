@@ -1,0 +1,6 @@
+//[navigation-core](../../../../../index.md)/[com.chrynan.navigation](../../../index.md)/[NavigationEvent](../../index.md)/[Forward](../index.md)/[Context](index.md)/[elapsedMilliseconds](elapsed-milliseconds.md)
+
+# elapsedMilliseconds
+
+[common]\
+open override val [elapsedMilliseconds](elapsed-milliseconds.md): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)

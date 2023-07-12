@@ -32,7 +32,7 @@ fun SingleContextSample(
     NavigationContainer(
         navigator = navigator,
         modifier = Modifier.fillMaxSize()
-    ) { destination ->
+    ) { (_, destination) ->
         when (destination) {
             is AppDestination.Home -> Items(
                 modifier = Modifier.matchParentSize(),

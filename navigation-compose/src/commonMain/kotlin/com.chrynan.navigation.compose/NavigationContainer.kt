@@ -15,7 +15,7 @@ import com.chrynan.navigation.*
  * NavContainer(
  *     navigator = navigator,
  *     modifier = modifier
- * ) { context, destination ->
+ * ) { (context, destination) ->
  *     Text("context = $context; destination = $destination")
  * }
  * ```
@@ -26,41 +26,12 @@ import com.chrynan.navigation.*
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> NavigationContainer(
     navigator: Navigator<Destination, Context>,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.(context: Context, destination: Destination) -> Unit
+    content: @Composable BoxScope.(contextAndDestination: ContextAndDestination<Context, Destination>) -> Unit
 ) {
     val context = navigator.store.context.collectAsState()
     val destination = navigator.store.destination.collectAsState()
 
     Box(modifier = modifier) {
-        content(this, context.value, destination.value)
-    }
-}
-
-/**
- * A [Composable] that listens to navigation destination changes for a [SingleNavigationContext] from the provided
- * [navigator] and calls the provided [content] [Composable] function with the latest values.
- *
- * Example usage:
- * ```kotlin
- * NavContainer(
- *     navigator = navigator,
- *     modifier = modifier
- * ) { context, destination ->
- *     Text("context = $context; destination = $destination")
- * }
- * ```
- */
-@Suppress("FunctionName")
-@Composable
-@ExperimentalNavigationApi
-fun <Destination : NavigationDestination> NavigationContainer(
-    navigator: Navigator<Destination, SingleNavigationContext<Destination>>,
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.(destination: Destination) -> Unit
-) {
-    val destination = navigator.store.destination.collectAsState()
-
-    Box(modifier = modifier) {
-        content(this, destination.value)
+        content(this, ContextAndDestination(context = context.value, destination = destination.value))
     }
 }

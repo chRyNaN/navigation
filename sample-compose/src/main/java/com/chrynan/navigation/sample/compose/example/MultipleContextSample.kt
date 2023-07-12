@@ -28,9 +28,9 @@ fun MultipleContextSample(
         }
     }
 
-    Column {
+    Column(modifier = modifier) {
         Box(modifier = Modifier.weight(1f)) {
-            NavigationContainer(navigator = navigator) { context, destination ->
+            NavigationContainer(navigator = navigator) { (context, destination) ->
                 when (destination) {
                     is AppDestination.Home -> Items(
                         modifier = Modifier.matchParentSize(),
