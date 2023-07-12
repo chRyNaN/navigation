@@ -49,7 +49,7 @@ kotlin {
                 implementation(Kotlin.stdlib.common)
 
                 implementation(KotlinX.coroutines.core)
-                implementation(KotlinX.serialization.core)
+                api(KotlinX.serialization.core)
             }
         }
 
