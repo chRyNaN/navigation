@@ -26,12 +26,12 @@ import com.chrynan.navigation.*
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> NavigationContainer(
     navigator: Navigator<Destination, Context>,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.(contextAndDestination: ContextAndDestination<Context, Destination>) -> Unit
+    content: @Composable BoxScope.(destinationAndContext: DestinationAndContext<Destination, Context>) -> Unit
 ) {
     val context = navigator.store.context.collectAsState()
     val destination = navigator.store.destination.collectAsState()
 
     Box(modifier = modifier) {
-        content(this, ContextAndDestination(context = context.value, destination = destination.value))
+        content(this, DestinationAndContext(context = context.value, destination = destination.value))
     }
 }

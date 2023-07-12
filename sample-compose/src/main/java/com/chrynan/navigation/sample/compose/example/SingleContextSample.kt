@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.compose.NavigationContainer
-import com.chrynan.navigation.compose.rememberNavigator
 import com.chrynan.navigation.compose.rememberSavableNavigator
 import com.chrynan.navigation.goBack
 import com.chrynan.navigation.goTo
@@ -36,7 +35,7 @@ fun SingleContextSample(
     NavigationContainer(
         navigator = navigator,
         modifier = Modifier.fillMaxSize()
-    ) { (_, destination) ->
+    ) { (destination, _) ->
         when (destination) {
             is AppDestination.Home -> Items(
                 modifier = Modifier.matchParentSize(),

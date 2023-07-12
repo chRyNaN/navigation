@@ -10,7 +10,6 @@ import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.changeContext
 import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberNavigator
-import com.chrynan.navigation.compose.rememberSavableNavigator
 import com.chrynan.navigation.goBack
 import com.chrynan.navigation.goTo
 import com.chrynan.navigation.sample.compose.composable.Items
@@ -31,7 +30,7 @@ fun MultipleContextSample(
 
     Column(modifier = modifier) {
         Box(modifier = Modifier.weight(1f)) {
-            NavigationContainer(navigator = navigator) { (context, destination) ->
+            NavigationContainer(navigator = navigator) { (destination, context) ->
                 when (destination) {
                     is AppDestination.Home -> Items(
                         modifier = Modifier.matchParentSize(),

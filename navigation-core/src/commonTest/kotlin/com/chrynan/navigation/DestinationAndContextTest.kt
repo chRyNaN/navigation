@@ -4,31 +4,31 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class ContextAndNavigationTest {
+class DestinationAndContextTest {
 
     @Test
-    fun componentOneIsContext() {
-        val value = ContextAndDestination(
+    fun componentOneIsDestination() {
+        val value = DestinationAndContext(
             context = TestContext.Home,
             destination = TestDestination.FAVORITES
         )
 
-        assertEquals(expected = TestContext.Home, actual = value.component1())
+        assertEquals(expected = TestDestination.FAVORITES, actual = value.component1())
     }
 
     @Test
-    fun componentTwoIsDestination() {
-        val value = ContextAndDestination(
+    fun componentTwoIsContext() {
+        val value = DestinationAndContext(
             context = TestContext.Home,
             destination = TestDestination.FAVORITES
         )
 
-        assertEquals(expected = TestDestination.FAVORITES, actual = value.component2())
+        assertEquals(expected = TestContext.Home, actual = value.component2())
     }
 
     @Test
     fun copyWithUpdatedContextWorks() {
-        val value = ContextAndDestination<TestContext, TestDestination>(
+        val value = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.HOME
         )
@@ -41,7 +41,7 @@ class ContextAndNavigationTest {
 
     @Test
     fun copyWithUpdatedDestinationWorks() {
-        val value = ContextAndDestination<TestContext, TestDestination>(
+        val value = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.HOME
         )
@@ -54,11 +54,11 @@ class ContextAndNavigationTest {
 
     @Test
     fun sameValuesAreEqual() {
-        val one = ContextAndDestination<TestContext, TestDestination>(
+        val one = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.HOME
         )
-        val two = ContextAndDestination<TestContext, TestDestination>(
+        val two = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.HOME
         )
@@ -68,11 +68,11 @@ class ContextAndNavigationTest {
 
     @Test
     fun differentValuesAreNotEqual() {
-        val one = ContextAndDestination<TestContext, TestDestination>(
+        val one = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.HOME
         )
-        val two = ContextAndDestination<TestContext, TestDestination>(
+        val two = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Favorites,
             destination = TestDestination.FAVORITES
         )
@@ -82,11 +82,11 @@ class ContextAndNavigationTest {
 
     @Test
     fun differentContextValuesAreNotEqual() {
-        val one = ContextAndDestination<TestContext, TestDestination>(
+        val one = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.HOME
         )
-        val two = ContextAndDestination<TestContext, TestDestination>(
+        val two = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Favorites,
             destination = TestDestination.HOME
         )
@@ -96,11 +96,11 @@ class ContextAndNavigationTest {
 
     @Test
     fun differentDestinationValuesAreNotEqual() {
-        val one = ContextAndDestination<TestContext, TestDestination>(
+        val one = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.HOME
         )
-        val two = ContextAndDestination<TestContext, TestDestination>(
+        val two = DestinationAndContext<TestDestination, TestContext>(
             context = TestContext.Home,
             destination = TestDestination.SETTINGS
         )
