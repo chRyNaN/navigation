@@ -2,9 +2,13 @@
 
 package com.chrynan.navigation
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * Represents a navigation event that is sent to a [Navigator] to coordinate the navigation between UI components, such
@@ -15,7 +19,7 @@ import kotlinx.serialization.Transient
  *
  * @see [Navigator.dispatch]
  */
-@Serializable
+@Serializable(with = NavigationEventSerializer::class)
 sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>> private constructor() {
 
     /**
@@ -282,3 +286,49 @@ internal fun <Destination : NavigationDestination, Context : NavigationContext<D
             context = snapshot.context!!
         )
     }
+
+internal class NavigationEventSerializer<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
+    destinationSerializer: KSerializer<Destination>,
+    contextSerializer: KSerializer<Context>
+) : KSerializer<NavigationEvent<Destination, Context>> {
+
+    private val delegateSerializer = NavigationEvent.Snapshot.serializer(
+        destinationSerializer,
+        contextSerializer
+    )
+
+    override val descriptor: SerialDescriptor = destinationSerializer.descriptor
+
+    override fun serialize(encoder: Encoder, value: NavigationEvent<Destination, Context>) {
+        encoder.encodeSerializableValue(
+            serializer = delegateSerializer,
+            value = value.toSnapshot()
+        )
+    }
+
+    override fun deserialize(decoder: Decoder): NavigationEvent<Destination, Context> {
+        val snapshot = decoder.decodeSerializableValue(deserializer = delegateSerializer)
+
+        return NavigationEvent(snapshot = snapshot)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NavigationEventSerializer<*, *>) return false
+
+        if (delegateSerializer != other.delegateSerializer) return false
+
+        return descriptor == other.descriptor
+    }
+
+    override fun hashCode(): Int {
+        var result = delegateSerializer.hashCode()
+        result = 31 * result + descriptor.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "NavigationEventSerializer(" +
+                "delegateSerializer=$delegateSerializer, " +
+                "descriptor=$descriptor)"
+}
