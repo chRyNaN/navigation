@@ -13,7 +13,7 @@ NavigationContainer(navigator) { (destination, _) ->
         "Greeting" -> Column {
             Text("Hello")
 
-            Button(onClick = { navigator.goTo("Farewell") }) {
+            Button(onClick = { navigator.push("Farewell") }) {
                 Text("Say Goodbye")
             }
         }
@@ -96,15 +96,15 @@ enum class MainContext(
 ### Navigator
 
 A `Navigator` is used to navigate between navigation contexts and destinations via the
-convenient `goTo`, `changeContext`, and `goBack` functions. A `Navigator` can be obtained via one of the constructor
-functions or the `remember`/`rememberSavable` functions when using Jetpack Compose/Multiplatform Compose.
+convenient `push`, `popContext`, and `popDestination` functions. A `Navigator` can be obtained via one of the
+constructor functions or the `remember`/`rememberSavable` functions when using Jetpack Compose/Multiplatform Compose.
 
 ```kotlin
 val navigator = rememberNavigator(initialDestination = AppDestination.HOME)
 
-BackHandler { navigator.goBack() }
+BackHandler { navigator.popDestination() }
 
-ListItem(modifier = Modifier.clickable { navigator.goTo(AppDestination.DETAILS) })
+ListItem(modifier = Modifier.clickable { navigator.push(AppDestination.DETAILS) })
 ```
 
 ### NavigationContainer
@@ -155,14 +155,14 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
 ```kotlin
 @Composable
 fun App() {
-    val navigator = rememberNavigator(...)
+  val navigator = rememberNavigator(...)
 
-    ...
+  ...
 
-    MyScreen(
-        onBackPressed = { navigator.goBack() },
-        onGoToDetails = { navigator.goTo(AppDestination.Details(it)) }
-    )
+  MyScreen(
+    onBackPressed = { navigator.popDestination() },
+    onGoToDetails = { navigator.push(AppDestination.Details(it)) }
+  )
 }
 ```
 
@@ -176,7 +176,7 @@ fun ParentComponent() {
 
     ...
 
-    ChildComponent(onBack = { parentNavigator.goBack() })
+    ChildComponent(onBack = { parentNavigator.popDestination() })
 }
 
 @Composable
@@ -186,7 +186,7 @@ fun ChildComponent(
     val childNavigator = rememberNavigator(...)
 
     BackHandler {
-        if (!childNavigator.goBack()) {
+        if (!childNavigator.canPopDestination()) {
             onBack.invoke()
         }
     }
@@ -259,7 +259,7 @@ repository a ⭐
 ## License ⚖️
 
 ```
-Copyright 2021 chRyNaN
+Copyright 2023 chRyNaN
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -5,7 +5,9 @@
 [common]\
 abstract fun [dispatch](dispatch.md)(event: [NavigationEvent](../-navigation-event/index.md)&lt;[Destination](index.md), [Context](index.md)&gt;): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
-Dispatches the provided navigation [event](dispatch.md) which mutates the underlying state values if the navigation event can be performed. The creation of [NavigationEvent](../-navigation-event/index.md)s is handled internally within this library's components, therefore, instead of invoking this function explicitly, use the [goBack](../go-back.md), [goTo](../go-to.md), and [changeContext](../change-context.md) functions.
+Dispatches the provided navigation [event](dispatch.md) which mutates the underlying state values if the navigation event can be performed.
+
+!Note The creation of [NavigationEvent](../-navigation-event/index.md)s is handled internally within this library's components, therefore, instead of invoking this function explicitly, use the [popDestination](../pop-destination.md), [push](../push.md), and [push](../push.md) functions.
 
 #### Return
 

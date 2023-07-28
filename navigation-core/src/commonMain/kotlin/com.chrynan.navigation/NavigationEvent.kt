@@ -66,61 +66,107 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
     enum class Type(val serialName: String) {
 
         /**
-         * Corresponds to the [NavigationEvent.Backward] type.
+         * Corresponds to the [NavigationEvent.Backward.Context] type.
          */
-        @SerialName(value = "backwards")
-        BACKWARDS(serialName = "backwards"),
+        @SerialName(value = "backward_context")
+        BACKWARD_CONTEXT(serialName = "backward_context"),
+
+        /**
+         * Corresponds to the [NavigationEvent.Backward.Destination] type.
+         */
+        @SerialName(value = "backward_destination")
+        BACKWARD_DESTINATION(serialName = "backward_destination"),
 
         /**
          * Corresponds to the [NavigationEvent.Forward.Context] type.
          */
-        @SerialName(value = "context")
-        CONTEXT(serialName = "context"),
+        @SerialName(value = "forward_context")
+        FORWARD_CONTEXT(serialName = "forward_context"),
 
         /**
          * Corresponds to the [NavigationEvent.Forward.Destination] type.
          */
-        @SerialName(value = "destination")
-        DESTINATION(serialName = "destination")
+        @SerialName(value = "forward_destination")
+        FORWARD_DESTINATION(serialName = "forward_destination")
     }
 
     /**
-     * A [NavigationEvent] that represents a reversal of a previous navigation event. A [Backward] navigation event can be
-     * used to go to the previous [NavigationDestination] within the current [NavigationContext], or going back to a
+     * A [NavigationEvent] that represents a reversal of a previous navigation event. A [Backward] navigation event can
+     * be used to go to the previous [NavigationDestination] within the current [NavigationContext], or going back to a
      * previous [NavigationContext] before a change in context.
      *
      * @property [elapsedMilliseconds] The amount of milliseconds that have elapsed on the system when the event
      * occurred. **Note:** This is not safe to persist or use between system reboots.
      */
-    @Serializable
-    @SerialName(value = "backwards")
-    class Backward<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
-        @SerialName(value = "instant") override val elapsedMilliseconds: Long = elapsedSystemTime().inWholeMilliseconds
-    ) : NavigationEvent<D, C>() {
+    @Serializable(with = NavigationEventBackwardSerializer::class)
+    @SerialName(value = "backward")
+    sealed class Backward<D : NavigationDestination, C : NavigationContext<D>> private constructor() :
+        NavigationEvent<D, C>() {
 
         override val direction: Direction = Direction.BACKWARDS
 
-        @Transient
-        override val type: Type = Type.BACKWARDS
+        /**
+         * A [NavigationEvent] that changes goes back to the previous [NavigationDestination] within the current
+         * [NavigationContext].
+         *
+         * @property [elapsedMilliseconds] The amount of milliseconds that have elapsed on the system when the event
+         * occurred. **Note:** This is not safe to persist or use between system reboots.
+         */
+        @SerialName(value = "backward_destination")
+        class Destination<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
+            @SerialName(value = "instant") override val elapsedMilliseconds: Long = elapsedSystemTime().inWholeMilliseconds
+        ) : Backward<D, C>() {
+
+            @Transient
+            override val type: Type = Type.BACKWARD_DESTINATION
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (other !is Destination<*, *>) return false
+
+                return elapsedMilliseconds == other.elapsedMilliseconds
+            }
+
+            override fun hashCode(): Int =
+                elapsedMilliseconds.hashCode()
+
+            override fun toString(): String =
+                "NavigationEvent.Backward.Destination(elapsedMilliseconds=$elapsedMilliseconds)"
+        }
+
+        /**
+         * A [NavigationEvent] that changes goes back to the previous [NavigationContext].
+         *
+         * @property [elapsedMilliseconds] The amount of milliseconds that have elapsed on the system when the event
+         * occurred. **Note:** This is not safe to persist or use between system reboots.
+         */
+        @SerialName(value = "backward_context")
+        class Context<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
+            @SerialName(value = "instant") override val elapsedMilliseconds: Long = elapsedSystemTime().inWholeMilliseconds
+        ) : Backward<D, C>() {
+
+            @Transient
+            override val type: Type = Type.BACKWARD_CONTEXT
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (other !is Context<*, *>) return false
+
+                return elapsedMilliseconds == other.elapsedMilliseconds
+            }
+
+            override fun hashCode(): Int =
+                elapsedMilliseconds.hashCode()
+
+            override fun toString(): String =
+                "NavigationEvent.Backward.Context(elapsedMilliseconds=$elapsedMilliseconds)"
+        }
 
         override fun toSnapshot(): Snapshot<D, C> = Snapshot(
             type = type,
             direction = direction,
             elapsedMilliseconds = elapsedMilliseconds
         )
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is Backward<*, *>) return false
-
-            return elapsedMilliseconds == other.elapsedMilliseconds
-        }
-
-        override fun hashCode(): Int =
-            elapsedMilliseconds.hashCode()
-
-        override fun toString(): String =
-            "NavigationEvent.Backward(elapsedMilliseconds=$elapsedMilliseconds, direction=$direction)"
     }
 
     /**
@@ -144,14 +190,14 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
          * of destinations within the current [NavigationContext].
          */
         @Serializable
-        @SerialName(value = "destination")
+        @SerialName(value = "forward_destination")
         class Destination<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
             @SerialName(value = "instant") override val elapsedMilliseconds: Long = elapsedSystemTime().inWholeMilliseconds,
             @SerialName(value = "destination") val destination: D
         ) : Forward<D, C>() {
 
             @Transient
-            override val type: Type = Type.DESTINATION
+            override val type: Type = Type.FORWARD_DESTINATION
 
             override fun toSnapshot(): Snapshot<D, C> = Snapshot(
                 type = type,
@@ -176,7 +222,7 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
             }
 
             override fun toString(): String =
-                "NavigationEvent.Forward.Destination(elapsedMilliseconds=$elapsedMilliseconds, destination=$destination, direction=$direction)"
+                "NavigationEvent.Forward.Destination(elapsedMilliseconds=$elapsedMilliseconds, destination=$destination)"
         }
 
         /**
@@ -187,14 +233,14 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
          * @property [context] The [NavigationContext] to go to.
          */
         @Serializable
-        @SerialName(value = "context")
+        @SerialName(value = "forward_context")
         class Context<D : NavigationDestination, C : NavigationContext<D>> internal constructor(
             @SerialName(value = "instant") override val elapsedMilliseconds: Long = elapsedSystemTime().inWholeMilliseconds,
             @SerialName(value = "context") val context: C
         ) : Forward<D, C>() {
 
             @Transient
-            override val type: Type = Type.CONTEXT
+            override val type: Type = Type.FORWARD_CONTEXT
 
             override fun toSnapshot(): Snapshot<D, C> = Snapshot(
                 type = type,
@@ -219,7 +265,7 @@ sealed class NavigationEvent<D : NavigationDestination, C : NavigationContext<D>
             }
 
             override fun toString(): String =
-                "NavigationEvent.Forward.Context(elapsedMilliseconds=$elapsedMilliseconds, context=$context, direction=$direction)"
+                "NavigationEvent.Forward.Context(elapsedMilliseconds=$elapsedMilliseconds, context=$context)"
         }
     }
 
@@ -272,13 +318,16 @@ internal fun <Destination : NavigationDestination, Context : NavigationContext<D
     snapshot: NavigationEvent.Snapshot<Destination, Context>
 ): NavigationEvent<Destination, Context> =
     when (snapshot.type) {
-        NavigationEvent.Type.BACKWARDS -> NavigationEvent.Backward(elapsedMilliseconds = snapshot.elapsedMilliseconds)
-        NavigationEvent.Type.DESTINATION -> NavigationEvent.Forward.Destination(
+        NavigationEvent.Type.BACKWARD_DESTINATION -> NavigationEvent.Backward.Destination(elapsedMilliseconds = snapshot.elapsedMilliseconds)
+
+        NavigationEvent.Type.BACKWARD_CONTEXT -> NavigationEvent.Backward.Context(elapsedMilliseconds = snapshot.elapsedMilliseconds)
+
+        NavigationEvent.Type.FORWARD_DESTINATION -> NavigationEvent.Forward.Destination(
             elapsedMilliseconds = snapshot.elapsedMilliseconds,
             destination = snapshot.destination!!
         )
 
-        NavigationEvent.Type.CONTEXT -> NavigationEvent.Forward.Context(
+        NavigationEvent.Type.FORWARD_CONTEXT -> NavigationEvent.Forward.Context(
             elapsedMilliseconds = snapshot.elapsedMilliseconds,
             context = snapshot.context!!
         )
@@ -329,6 +378,59 @@ internal class NavigationEventSerializer<Destination : NavigationDestination, Co
                 "delegateSerializer=$delegateSerializer, " +
                 "descriptor=$descriptor)"
 }
+
+internal class NavigationEventBackwardSerializer<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
+    destinationSerializer: KSerializer<Destination>,
+    contextSerializer: KSerializer<Context>
+) : KSerializer<NavigationEvent.Backward<Destination, Context>> {
+
+    private val delegateSerializer = NavigationEvent.Snapshot.serializer(
+        destinationSerializer,
+        contextSerializer
+    )
+
+    override val descriptor: SerialDescriptor = destinationSerializer.descriptor
+
+    override fun serialize(encoder: Encoder, value: NavigationEvent.Backward<Destination, Context>) {
+        encoder.encodeSerializableValue(
+            serializer = delegateSerializer,
+            value = value.toSnapshot()
+        )
+    }
+
+    override fun deserialize(decoder: Decoder): NavigationEvent.Backward<Destination, Context> {
+        val snapshot = decoder.decodeSerializableValue(deserializer = delegateSerializer)
+
+        val event = NavigationEvent(snapshot = snapshot)
+
+        if (event !is NavigationEvent.Backward) {
+            throw SerializationException("${this::class.simpleName} only works for ${NavigationEvent.Backward::class.simpleName} types.")
+        }
+
+        return event
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NavigationEventBackwardSerializer<*, *>) return false
+
+        if (delegateSerializer != other.delegateSerializer) return false
+
+        return descriptor == other.descriptor
+    }
+
+    override fun hashCode(): Int {
+        var result = delegateSerializer.hashCode()
+        result = 31 * result + descriptor.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "NavigationEventBackwardSerializer(" +
+                "delegateSerializer=$delegateSerializer, " +
+                "descriptor=$descriptor)"
+}
+
 
 internal class NavigationEventForwardSerializer<Destination : NavigationDestination, Context : NavigationContext<Destination>>(
     destinationSerializer: KSerializer<Destination>,

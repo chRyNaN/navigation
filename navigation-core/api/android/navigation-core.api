@@ -1,0 +1,287 @@
+public final class com/chrynan/navigation/DestinationAndContext {
+	public static final field Companion Lcom/chrynan/navigation/DestinationAndContext$Companion;
+	public synthetic fun <init> (ILjava/lang/Object;Lcom/chrynan/navigation/NavigationContext;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/lang/Object;Lcom/chrynan/navigation/NavigationContext;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Lcom/chrynan/navigation/NavigationContext;
+	public final fun copy (Ljava/lang/Object;Lcom/chrynan/navigation/NavigationContext;)Lcom/chrynan/navigation/DestinationAndContext;
+	public static synthetic fun copy$default (Lcom/chrynan/navigation/DestinationAndContext;Ljava/lang/Object;Lcom/chrynan/navigation/NavigationContext;ILjava/lang/Object;)Lcom/chrynan/navigation/DestinationAndContext;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContext ()Lcom/chrynan/navigation/NavigationContext;
+	public final fun getDestination ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/chrynan/navigation/DestinationAndContext;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+}
+
+public final class com/chrynan/navigation/DestinationAndContext$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/chrynan/navigation/DestinationAndContext;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/chrynan/navigation/DestinationAndContext;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/DestinationAndContext$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface annotation class com/chrynan/navigation/ExperimentalNavigationApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class com/chrynan/navigation/NavigationContext {
+	public static final field Companion Lcom/chrynan/navigation/NavigationContext$Companion;
+	public abstract fun getInitialDestination ()Ljava/lang/Object;
+}
+
+public final class com/chrynan/navigation/NavigationContext$Companion {
+}
+
+public abstract class com/chrynan/navigation/NavigationEvent {
+	public static final field Companion Lcom/chrynan/navigation/NavigationEvent$Companion;
+	public abstract fun getDirection ()Lcom/chrynan/navigation/NavigationEvent$Direction;
+	public abstract fun getElapsedMilliseconds ()J
+	public abstract fun getType ()Lcom/chrynan/navigation/NavigationEvent$Type;
+}
+
+public abstract class com/chrynan/navigation/NavigationEvent$Backward : com/chrynan/navigation/NavigationEvent {
+	public static final field Companion Lcom/chrynan/navigation/NavigationEvent$Backward$Companion;
+	public fun getDirection ()Lcom/chrynan/navigation/NavigationEvent$Direction;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Backward$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Backward$Context : com/chrynan/navigation/NavigationEvent$Backward {
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getElapsedMilliseconds ()J
+	public fun getType ()Lcom/chrynan/navigation/NavigationEvent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Backward$Destination : com/chrynan/navigation/NavigationEvent$Backward {
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getElapsedMilliseconds ()J
+	public fun getType ()Lcom/chrynan/navigation/NavigationEvent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Direction : java/lang/Enum {
+	public static final field BACKWARDS Lcom/chrynan/navigation/NavigationEvent$Direction;
+	public static final field Companion Lcom/chrynan/navigation/NavigationEvent$Direction$Companion;
+	public static final field FORWARDS Lcom/chrynan/navigation/NavigationEvent$Direction;
+	public final fun getSerialName ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chrynan/navigation/NavigationEvent$Direction;
+	public static fun values ()[Lcom/chrynan/navigation/NavigationEvent$Direction;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Direction$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/chrynan/navigation/NavigationEvent$Forward : com/chrynan/navigation/NavigationEvent {
+	public static final field Companion Lcom/chrynan/navigation/NavigationEvent$Forward$Companion;
+	public fun getDirection ()Lcom/chrynan/navigation/NavigationEvent$Direction;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Forward$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Forward$Context : com/chrynan/navigation/NavigationEvent$Forward {
+	public static final field Companion Lcom/chrynan/navigation/NavigationEvent$Forward$Context$Companion;
+	public synthetic fun <init> (IJLcom/chrynan/navigation/NavigationContext;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContext ()Lcom/chrynan/navigation/NavigationContext;
+	public fun getElapsedMilliseconds ()J
+	public fun getType ()Lcom/chrynan/navigation/NavigationEvent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/chrynan/navigation/NavigationEvent$Forward$Context;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Forward$Context$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/chrynan/navigation/NavigationEvent$Forward$Context;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/chrynan/navigation/NavigationEvent$Forward$Context;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Forward$Context$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Forward$Destination : com/chrynan/navigation/NavigationEvent$Forward {
+	public static final field Companion Lcom/chrynan/navigation/NavigationEvent$Forward$Destination$Companion;
+	public synthetic fun <init> (IJLjava/lang/Object;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDestination ()Ljava/lang/Object;
+	public fun getElapsedMilliseconds ()J
+	public fun getType ()Lcom/chrynan/navigation/NavigationEvent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/chrynan/navigation/NavigationEvent$Forward$Destination;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Forward$Destination$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/chrynan/navigation/NavigationEvent$Forward$Destination;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/chrynan/navigation/NavigationEvent$Forward$Destination;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Forward$Destination$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Type : java/lang/Enum {
+	public static final field BACKWARD_CONTEXT Lcom/chrynan/navigation/NavigationEvent$Type;
+	public static final field BACKWARD_DESTINATION Lcom/chrynan/navigation/NavigationEvent$Type;
+	public static final field Companion Lcom/chrynan/navigation/NavigationEvent$Type$Companion;
+	public static final field FORWARD_CONTEXT Lcom/chrynan/navigation/NavigationEvent$Type;
+	public static final field FORWARD_DESTINATION Lcom/chrynan/navigation/NavigationEvent$Type;
+	public final fun getSerialName ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chrynan/navigation/NavigationEvent$Type;
+	public static fun values ()[Lcom/chrynan/navigation/NavigationEvent$Type;
+}
+
+public final class com/chrynan/navigation/NavigationEvent$Type$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class com/chrynan/navigation/NavigationState {
+	public static final field Companion Lcom/chrynan/navigation/NavigationState$Companion;
+	public abstract fun getChanges ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getCurrent ()Ljava/lang/Object;
+	public abstract fun getInitial ()Ljava/lang/Object;
+}
+
+public final class com/chrynan/navigation/NavigationState$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class com/chrynan/navigation/NavigationStateStore {
+	public static final field Companion Lcom/chrynan/navigation/NavigationStateStore$Companion;
+	public abstract fun getContext ()Lcom/chrynan/navigation/NavigationState;
+	public abstract fun getDestination ()Lcom/chrynan/navigation/NavigationState;
+	public abstract fun getEvent ()Lcom/chrynan/navigation/NavigationState;
+}
+
+public final class com/chrynan/navigation/NavigationStateStore$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class com/chrynan/navigation/NavigationStrategy {
+	public static final field Companion Lcom/chrynan/navigation/NavigationStrategy$Companion;
+}
+
+public final class com/chrynan/navigation/NavigationStrategy$Companion {
+}
+
+public final class com/chrynan/navigation/NavigationStrategy$DestinationRetention : java/lang/Enum {
+	public static final field CLEAR Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;
+	public static final field Companion Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention$Companion;
+	public static final field RETAIN Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;
+	public final fun getSerialName ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;
+	public static fun values ()[Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;
+}
+
+public final class com/chrynan/navigation/NavigationStrategy$DestinationRetention$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigationStrategy$DuplicateDestination : java/lang/Enum {
+	public static final field ALLOW_DUPLICATES Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;
+	public static final field CLEAR_TO_ORIGINAL Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;
+	public static final field Companion Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination$Companion;
+	public final fun getSerialName ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;
+	public static fun values ()[Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;
+}
+
+public final class com/chrynan/navigation/NavigationStrategy$DuplicateDestination$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/chrynan/navigation/NavigationViewModel : androidx/lifecycle/ViewModel {
+}
+
+public abstract interface class com/chrynan/navigation/Navigator {
+	public static final field Companion Lcom/chrynan/navigation/Navigator$Companion;
+	public abstract fun canPopContext ()Z
+	public abstract fun canPopDestination ()Z
+	public abstract fun dispatch (Lcom/chrynan/navigation/NavigationEvent;)Z
+	public abstract fun getStore ()Lcom/chrynan/navigation/NavigationStateStore;
+	public abstract fun reset ()V
+}
+
+public final class com/chrynan/navigation/Navigator$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/NavigatorKt {
+	public static final fun Navigator (Lcom/chrynan/navigation/NavigationContext;Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;)Lcom/chrynan/navigation/Navigator;
+	public static final fun Navigator (Ljava/lang/Object;Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;)Lcom/chrynan/navigation/Navigator;
+	public static synthetic fun Navigator$default (Lcom/chrynan/navigation/NavigationContext;Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;ILjava/lang/Object;)Lcom/chrynan/navigation/Navigator;
+	public static synthetic fun Navigator$default (Ljava/lang/Object;Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;ILjava/lang/Object;)Lcom/chrynan/navigation/Navigator;
+	public static final fun changeContext (Lcom/chrynan/navigation/Navigator;Lcom/chrynan/navigation/NavigationContext;)Z
+	public static final fun goTo (Lcom/chrynan/navigation/Navigator;Ljava/lang/Object;)Z
+	public static final fun popContext (Lcom/chrynan/navigation/Navigator;)Z
+	public static final fun popDestination (Lcom/chrynan/navigation/Navigator;)Z
+	public static final fun push (Lcom/chrynan/navigation/Navigator;Lcom/chrynan/navigation/NavigationContext;)Z
+	public static final fun push (Lcom/chrynan/navigation/Navigator;Ljava/lang/Object;)Z
+}
+
+public final class com/chrynan/navigation/SingleNavigationContext : com/chrynan/navigation/NavigationContext {
+	public static final field Companion Lcom/chrynan/navigation/SingleNavigationContext$Companion;
+	public synthetic fun <init> (ILjava/lang/Object;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getInitialDestination ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/chrynan/navigation/SingleNavigationContext;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;)V
+}
+
+public final class com/chrynan/navigation/SingleNavigationContext$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;)V
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/chrynan/navigation/SingleNavigationContext;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/chrynan/navigation/SingleNavigationContext;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/SingleNavigationContext$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/android/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+

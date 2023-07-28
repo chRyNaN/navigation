@@ -1,5 +1,7 @@
 import com.chrynan.navigation.buildSrc.LibraryConstants
+import com.chrynan.navigation.buildSrc.isBuildingOnLinux
 import com.chrynan.navigation.buildSrc.isBuildingOnOSX
+import com.chrynan.navigation.buildSrc.isBuildingOnWindows
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -18,7 +20,11 @@ kotlin {
         publishAllLibraryVariants()
         publishLibraryVariantsGroupedByFlavor = true
     }
+
     targets {
+        // Enable the default target hierarchy:
+        targetHierarchy.default()
+
         android()
 
         jvm()
@@ -37,6 +43,18 @@ kotlin {
         if (isBuildingOnOSX()) {
             ios()
             iosSimulatorArm64()
+            tvos()
+            watchos()
+            macosX64()
+            macosArm64()
+        }
+
+        if (isBuildingOnLinux()) {
+            linuxX64()
+        }
+
+        if (isBuildingOnWindows()) {
+            mingwX64()
         }
     }
     sourceSets {
@@ -60,11 +78,7 @@ kotlin {
             }
         }
 
-        if (isBuildingOnOSX()) {
-            val iosMain by sourceSets.getting
-            val iosSimulatorArm64Main by sourceSets.getting
-            iosSimulatorArm64Main.dependsOn(iosMain)
-        }
+        val nativeMain by sourceSets.getting
     }
 }
 

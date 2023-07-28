@@ -1,0 +1,139 @@
+public final class com/chrynan/navigation/sample/compose/AppDestination : java/lang/Enum {
+	public static final field MAIN_SCREEN Lcom/chrynan/navigation/sample/compose/AppDestination;
+	public static final field MULTIPLE_CONTEXT_EXAMPLE Lcom/chrynan/navigation/sample/compose/AppDestination;
+	public static final field SINGLE_CONTEXT_EXAMPLE Lcom/chrynan/navigation/sample/compose/AppDestination;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chrynan/navigation/sample/compose/AppDestination;
+	public static fun values ()[Lcom/chrynan/navigation/sample/compose/AppDestination;
+}
+
+public final class com/chrynan/navigation/sample/compose/AppKt {
+	public static final fun App (Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/chrynan/navigation/sample/compose/BuildConfig {
+	public static final field APPLICATION_ID Ljava/lang/String;
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field VERSION_CODE I
+	public static final field VERSION_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/chrynan/navigation/sample/compose/ComposableSingletons$AppKt {
+	public static final field INSTANCE Lcom/chrynan/navigation/sample/compose/ComposableSingletons$AppKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function3;
+	public static field lambda-2 Lkotlin/jvm/functions/Function3;
+	public fun <init> ()V
+	public final fun getLambda-1$sample_compose_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-2$sample_compose_release ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/chrynan/navigation/sample/compose/ComposableSingletons$MainActivityKt {
+	public static final field INSTANCE Lcom/chrynan/navigation/sample/compose/ComposableSingletons$MainActivityKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$sample_compose_release ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/chrynan/navigation/sample/compose/MainActivity : androidx/appcompat/app/AppCompatActivity {
+	public static final field $stable I
+	public fun <init> ()V
+}
+
+public final class com/chrynan/navigation/sample/compose/composable/ItemsKt {
+	public static final fun Item (Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/graphics/vector/ImageVector;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Items (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppContext : java/lang/Enum, com/chrynan/navigation/NavigationContext {
+	public static final field Companion Lcom/chrynan/navigation/sample/compose/example/AppContext$Companion;
+	public static final field HOME Lcom/chrynan/navigation/sample/compose/example/AppContext;
+	public static final field SEARCH Lcom/chrynan/navigation/sample/compose/example/AppContext;
+	public static final field SETTINGS Lcom/chrynan/navigation/sample/compose/example/AppContext;
+	public final fun getIcon ()Landroidx/compose/ui/graphics/vector/ImageVector;
+	public fun getInitialDestination ()Lcom/chrynan/navigation/sample/compose/example/AppDestination;
+	public synthetic fun getInitialDestination ()Ljava/lang/Object;
+	public final fun getTitle ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chrynan/navigation/sample/compose/example/AppContext;
+	public static fun values ()[Lcom/chrynan/navigation/sample/compose/example/AppContext;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppContext$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/chrynan/navigation/sample/compose/example/AppDestination {
+	public static final field $stable I
+	public static final field Companion Lcom/chrynan/navigation/sample/compose/example/AppDestination$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final synthetic fun write$Self (Lcom/chrynan/navigation/sample/compose/example/AppDestination;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppDestination$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppDestination$Details : com/chrynan/navigation/sample/compose/example/AppDestination {
+	public static final field $stable I
+	public static final field Companion Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details$Companion;
+	public fun <init> (I)V
+	public synthetic fun <init> (IILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun copy (I)Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details;
+	public static synthetic fun copy$default (Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details;IILjava/lang/Object;)Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getItemId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppDestination$Details$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/chrynan/navigation/sample/compose/example/AppDestination$Details;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppDestination$Details$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppDestination$Home : com/chrynan/navigation/sample/compose/example/AppDestination {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/chrynan/navigation/sample/compose/example/AppDestination$Home;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppDestination$Search : com/chrynan/navigation/sample/compose/example/AppDestination {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/chrynan/navigation/sample/compose/example/AppDestination$Search;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/AppDestination$Settings : com/chrynan/navigation/sample/compose/example/AppDestination {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/chrynan/navigation/sample/compose/example/AppDestination$Settings;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/ComposableSingletons$SingleContextSampleKt {
+	public static final field INSTANCE Lcom/chrynan/navigation/sample/compose/example/ComposableSingletons$SingleContextSampleKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$sample_compose_release ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/chrynan/navigation/sample/compose/example/MultipleContextSampleKt {
+	public static final fun MultipleContextSample (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/chrynan/navigation/sample/compose/example/SingleContextSampleKt {
+	public static final fun SingleContextSample (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
+}
+

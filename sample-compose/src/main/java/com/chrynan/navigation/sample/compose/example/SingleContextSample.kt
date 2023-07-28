@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberSavableNavigator
-import com.chrynan.navigation.goBack
-import com.chrynan.navigation.goTo
+import com.chrynan.navigation.popDestination
+import com.chrynan.navigation.push
 import com.chrynan.navigation.sample.compose.composable.Items
 
 @Composable
@@ -27,7 +27,7 @@ fun SingleContextSample(
     )
 
     BackHandler {
-        if (!navigator.goBack()) {
+        if (!navigator.popDestination()) {
             onClose()
         }
     }
@@ -40,7 +40,7 @@ fun SingleContextSample(
             is AppDestination.Home -> Items(
                 modifier = Modifier.matchParentSize(),
                 onItemClick = {
-                    navigator.goTo(destination = AppDestination.Details(itemId = it))
+                    navigator.push(destination = AppDestination.Details(itemId = it))
                 },
                 header = {
                     Text(text = "Home", style = MaterialTheme.typography.h6)
