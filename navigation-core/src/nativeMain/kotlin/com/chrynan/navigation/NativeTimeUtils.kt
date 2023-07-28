@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package com.chrynan.navigation
 
 import kotlin.system.getTimeMillis
