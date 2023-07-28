@@ -11,9 +11,10 @@ enum [Type](index.md) : [Enum](https://kotlinlang.org/api/latest/jvm/stdlib/kotl
 
 | | |
 |---|---|
-| [BACKWARDS](-b-a-c-k-w-a-r-d-s/index.md) | [common]<br>[BACKWARDS](-b-a-c-k-w-a-r-d-s/index.md)<br>Corresponds to the [NavigationEvent.Backward](../-backward/index.md) type. |
-| [CONTEXT](-c-o-n-t-e-x-t/index.md) | [common]<br>[CONTEXT](-c-o-n-t-e-x-t/index.md)<br>Corresponds to the [NavigationEvent.Forward.Context](../-forward/-context/index.md) type. |
-| [DESTINATION](-d-e-s-t-i-n-a-t-i-o-n/index.md) | [common]<br>[DESTINATION](-d-e-s-t-i-n-a-t-i-o-n/index.md)<br>Corresponds to the [NavigationEvent.Forward.Destination](../-forward/-destination/index.md) type. |
+| [BACKWARD_CONTEXT](-b-a-c-k-w-a-r-d_-c-o-n-t-e-x-t/index.md) | [common]<br>[BACKWARD_CONTEXT](-b-a-c-k-w-a-r-d_-c-o-n-t-e-x-t/index.md)<br>Corresponds to the [NavigationEvent.Backward.Context](../-backward/-context/index.md) type. |
+| [BACKWARD_DESTINATION](-b-a-c-k-w-a-r-d_-d-e-s-t-i-n-a-t-i-o-n/index.md) | [common]<br>[BACKWARD_DESTINATION](-b-a-c-k-w-a-r-d_-d-e-s-t-i-n-a-t-i-o-n/index.md)<br>Corresponds to the [NavigationEvent.Backward.Destination](../-backward/-destination/index.md) type. |
+| [FORWARD_CONTEXT](-f-o-r-w-a-r-d_-c-o-n-t-e-x-t/index.md) | [common]<br>[FORWARD_CONTEXT](-f-o-r-w-a-r-d_-c-o-n-t-e-x-t/index.md)<br>Corresponds to the [NavigationEvent.Forward.Context](../-forward/-context/index.md) type. |
+| [FORWARD_DESTINATION](-f-o-r-w-a-r-d_-d-e-s-t-i-n-a-t-i-o-n/index.md) | [common]<br>[FORWARD_DESTINATION](-f-o-r-w-a-r-d_-d-e-s-t-i-n-a-t-i-o-n/index.md)<br>Corresponds to the [NavigationEvent.Forward.Destination](../-forward/-destination/index.md) type. |
 
 ## Functions
 

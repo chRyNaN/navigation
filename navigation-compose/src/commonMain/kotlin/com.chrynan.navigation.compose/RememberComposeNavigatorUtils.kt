@@ -25,10 +25,6 @@ import kotlinx.serialization.serializer
  * duplicate destination content within a [NavigationContext] stack. Read the documentation on
  * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
  * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
- * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
- * navigation (across contexts or just destinations within the current context). Read the documentation on
- * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
- * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
  * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
  * destination stacks within a [NavigationContext] when navigating between different [NavigationContext]s. Read the
  * documentation on [NavigationStrategy.DestinationRetention] for more information about the supported operations.
@@ -47,13 +43,11 @@ import kotlinx.serialization.serializer
 fun <Destination : NavigationDestination> rememberNavigator(
     initialDestination: Destination,
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
-    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, SingleNavigationContext<Destination>> = remember {
     Navigator(
         initialDestination = initialDestination,
         duplicateDestinationStrategy = duplicateDestinationStrategy,
-        backwardsNavigationStrategy = backwardsNavigationStrategy,
         destinationRetentionStrategy = destinationRetentionStrategy
     )
 }
@@ -72,10 +66,6 @@ fun <Destination : NavigationDestination> rememberNavigator(
  * duplicate destination content within a [Context] stack. Read the documentation on
  * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
  * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
- * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
- * navigation (across contexts or just destinations within the current context). Read the documentation on
- * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
- * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
  * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
  * destination stacks within a [Context] when navigating between different [NavigationContext]s. Read the documentation
  * on [NavigationStrategy.DestinationRetention] for more information about the supported operations. Defaults to
@@ -94,13 +84,11 @@ fun <Destination : NavigationDestination> rememberNavigator(
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> rememberNavigator(
     initialContext: Context,
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
-    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, Context> = remember {
     Navigator(
         initialContext = initialContext,
         duplicateDestinationStrategy = duplicateDestinationStrategy,
-        backwardsNavigationStrategy = backwardsNavigationStrategy,
         destinationRetentionStrategy = destinationRetentionStrategy
     )
 }
@@ -124,10 +112,6 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  * duplicate destination content within a [NavigationContext] stack. Read the documentation on
  * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
  * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
- * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
- * navigation (across contexts or just destinations within the current context). Read the documentation on
- * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
- * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
  * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
  * destination stacks within a [NavigationContext] when navigating between different [NavigationContext]s. Read the
  * documentation on [NavigationStrategy.DestinationRetention] for more information about the supported operations.
@@ -149,7 +133,6 @@ inline fun <reified Destination : NavigationDestination> rememberSavableNavigato
     parcelable: Parcelable = Parcelable.Default,
     destinationSerializer: KSerializer<Destination> = parcelable.serializersModule.serializer(),
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
-    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, SingleNavigationContext<Destination>> =
     rememberSavable(
@@ -162,7 +145,6 @@ inline fun <reified Destination : NavigationDestination> rememberSavableNavigato
         Navigator(
             initialDestination = initialDestination,
             duplicateDestinationStrategy = duplicateDestinationStrategy,
-            backwardsNavigationStrategy = backwardsNavigationStrategy,
             destinationRetentionStrategy = destinationRetentionStrategy
         )
     }
@@ -187,10 +169,6 @@ inline fun <reified Destination : NavigationDestination> rememberSavableNavigato
  * duplicate destination content within a [NavigationContext] stack. Read the documentation on
  * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
  * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
- * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
- * navigation (across contexts or just destinations within the current context). Read the documentation on
- * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
- * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
  * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
  * destination stacks within a [NavigationContext] when navigating between different [NavigationContext]s. Read the
  * documentation on [NavigationStrategy.DestinationRetention] for more information about the supported operations.
@@ -213,7 +191,6 @@ inline fun <reified Destination : NavigationDestination, reified Context : Navig
     destinationSerializer: KSerializer<Destination> = parcelable.serializersModule.serializer(),
     contextSerializer: KSerializer<Context> = parcelable.serializersModule.serializer(),
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
-    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, Context> =
     rememberSavable(
@@ -226,7 +203,6 @@ inline fun <reified Destination : NavigationDestination, reified Context : Navig
         Navigator(
             initialContext = initialContext,
             duplicateDestinationStrategy = duplicateDestinationStrategy,
-            backwardsNavigationStrategy = backwardsNavigationStrategy,
             destinationRetentionStrategy = destinationRetentionStrategy
         )
     }

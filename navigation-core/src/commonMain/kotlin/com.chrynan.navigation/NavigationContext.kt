@@ -44,7 +44,7 @@ interface NavigationContext<Destination : NavigationDestination> {
  *
  * **Note:** That this class has an internal constructor and therefore can only be constructed from within this
  * library. This is by design to prevent providing numerous instances of the [SingleNavigationContext] in the
- * [Navigator.changeContext] function.
+ * [Navigator.push] function.
  *
  * Example usage:
  *

@@ -14,7 +14,7 @@ import kotlinx.serialization.encoding.Encoder
 /**
  * A [Navigator] is responsible for coordinating the navigation between the different UI component groupings in an
  * application. It is a stateful component that reacts to [NavigationEvent]s that are emitted via calls to the
- * navigation functions ([goTo], [goBack], and [changeContext]) and updates its stored state values which can be
+ * navigation functions ([push], [popDestination], and [push]) and updates its stored state values which can be
  * accessed via its state [store]. It is up to the user of a [Navigator] to subscribe to the state changes of this
  * component and update the associated UI accordingly.
  *
@@ -36,11 +36,11 @@ import kotlinx.serialization.encoding.Encoder
  * ```
  *
  * @see [Navigator] The [Navigator] constructor function for creating an instance of this interface.
- * @see [goTo] For navigating to a new [NavigationDestination] within the current [NavigationContext].
- * @see [goBack] For navigating backwards, either within the current [NavigationContext] or across
- * [NavigationContext]s, depending on the [NavigationStrategy.BackwardsNavigation] strategy supplied to the [Navigator]
- * function when creating an instance of this [Navigator].
- * @see [changeContext] For navigating to a different [NavigationContext].
+ * @see [push] For navigating to a new [NavigationDestination] within the current [NavigationContext].
+ * @see [popDestination] For navigating backward to the previous [NavigationDestination] within the current
+ * [NavigationContext].
+ * @see [popContext] For navigating backward to the previous [NavigationContext].
+ * @see [push] For navigating to a different [NavigationContext].
  */
 @ExperimentalNavigationApi
 @Serializable(with = NavigatorSerializer::class)
@@ -54,9 +54,11 @@ sealed interface Navigator<Destination : NavigationDestination, Context : Naviga
 
     /**
      * Dispatches the provided navigation [event] which mutates the underlying state values if the navigation event can
-     * be performed. The creation of [NavigationEvent]s is handled internally within this library's components,
-     * therefore, instead of invoking this function explicitly, use the [goBack], [goTo], and [changeContext]
-     * functions.
+     * be performed.
+     *
+     * > [!Note] The creation of [NavigationEvent]s is handled internally within this library's components,
+     * > therefore, instead of invoking this function explicitly, use the [popDestination], [push], and [push]
+     * > functions.
      *
      * @param [event] The [NavigationEvent] that represents the navigation action to be performed.
      *
@@ -67,11 +69,19 @@ sealed interface Navigator<Destination : NavigationDestination, Context : Naviga
     fun dispatch(event: NavigationEvent<Destination, Context>): Boolean
 
     /**
-     * Determines whether this [Navigator] can navigate back.
+     * Determines whether this [Navigator] can navigate back to a previous destination in the current context.
      *
-     * @return `true` if this [Navigator] can navigate back, `false` otherwise.
+     * @return `true` if this [Navigator] can navigate back to a previous destination in the current context, `false`
+     * otherwise.
      */
-    fun canGoBack(): Boolean
+    fun canPopDestination(): Boolean
+
+    /**
+     * Determines whether this [Navigator] can navigate back to a previous context.
+     *
+     * @return `true` if this [Navigator] can navigate back to a previous context, `false` otherwise.
+     */
+    fun canPopContext(): Boolean
 
     /**
      * Resets this [Navigator] back to its initial state.
@@ -82,15 +92,26 @@ sealed interface Navigator<Destination : NavigationDestination, Context : Naviga
 }
 
 /**
- * Performs a back navigation operation, if possible, by removing the top [NavigationEvent.Forward] event from the
- * internal navigation stack. If this [Navigator] cannot navigate back, then this function will do nothing and return
+ * Performs a back navigation operation, if possible, by removing the top [NavigationDestination] within the current
+ * [NavigationContext]. If this [Navigator] cannot navigate to a previous [NavigationDestination], then this function
+ * will do nothing and return `false`.
+ *
+ * @return `true` if the back navigation operation was successful, `false` otherwise.
+ */
+@ExperimentalNavigationApi
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.popDestination(): Boolean =
+    dispatch(event = NavigationEvent.Backward.Destination())
+
+/**
+ * Performs a back navigation operation, if possible, by moving to the previous [NavigationContext]. If this
+ * [Navigator] cannot navigate to a previous [NavigationContext], then this function will do nothing and return
  * `false`.
  *
  * @return `true` if the back navigation operation was successful, `false` otherwise.
  */
 @ExperimentalNavigationApi
-fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goBack(): Boolean =
-    dispatch(event = NavigationEvent.Backward())
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.popContext(): Boolean =
+    dispatch(event = NavigationEvent.Backward.Context())
 
 /**
  * Navigates to the provided [destination] in the current [NavigationContext]. Depending on the provided
@@ -104,7 +125,7 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  * @return `true` if the navigation operation was successful, `false` otherwise.
  */
 @ExperimentalNavigationApi
-fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goTo(
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.push(
     destination: Destination
 ): Boolean = dispatch(event = NavigationEvent.Forward.Destination(destination = destination))
 
@@ -118,10 +139,47 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  * @return `true` if the navigation operation was successful, `false` otherwise.
  */
 @ExperimentalNavigationApi
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.push(
+    context: Context
+): Boolean = dispatch(event = NavigationEvent.Forward.Context(context = context))
+
+/**
+ * Convenience function for the [Navigator.push] function.
+ *
+ * > [!Warning] This function is deprecated and will be replaced with the [Navigator.push] function.
+ *
+ * @see [Navigator.push]
+ */
+@Deprecated(
+    message = "",
+    level = DeprecationLevel.WARNING,
+    replaceWith = ReplaceWith(
+        expression = "com.chrynan.navigation.Navigator.push"
+    )
+)
+@ExperimentalNavigationApi
+fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.goTo(
+    destination: Destination
+): Boolean = dispatch(event = NavigationEvent.Forward.Destination(destination = destination))
+
+/**
+ * Convenience function for the [Navigator.push] function.
+ *
+ * > [!Warning] This function is deprecated and will be replaced with the [Navigator.push] function.
+ *
+ * @see [Navigator.push]
+ */
+@Deprecated(
+    message = "",
+    level = DeprecationLevel.WARNING,
+    replaceWith = ReplaceWith(
+        expression = "com.chrynan.navigation.Navigator.push"
+    )
+)
+@ExperimentalNavigationApi
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator<Destination, Context>.changeContext(
     context: Context
-): Boolean =
-    dispatch(event = NavigationEvent.Forward.Context(context = context))
+): Boolean = dispatch(event = NavigationEvent.Forward.Context(context = context))
 
 /**
  * Creates a [Navigator] instance with the provided values.
@@ -131,10 +189,6 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  * duplicate destination content within a [Context] stack. Read the documentation on
  * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
  * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
- * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
- * navigation (across contexts or just destinations within the current context). Read the documentation on
- * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
- * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
  * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
  * destination stacks within a [Context] when navigating between different [NavigationContext]s. Read the documentation
  * on [NavigationStrategy.DestinationRetention] for more information about the supported operations. Defaults to
@@ -144,13 +198,11 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
 fun <Destination : NavigationDestination, Context : NavigationContext<Destination>> Navigator(
     initialContext: Context,
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
-    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, Context> =
     NavigatorImpl(
         initialContext = initialContext,
         duplicateDestinationStrategy = duplicateDestinationStrategy,
-        backwardsNavigationStrategy = backwardsNavigationStrategy,
         destinationRetentionStrategy = destinationRetentionStrategy
     )
 
@@ -162,10 +214,6 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
  * duplicate destination content within a [NavigationContext] stack. Read the documentation on
  * [NavigationStrategy.DuplicateDestination] for more information about the supported operations. Defaults to
  * [NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES].
- * @param [backwardsNavigationStrategy] The [NavigationStrategy.BackwardsNavigation] strategy of supported back
- * navigation (across contexts or just destinations within the current context). Read the documentation on
- * [NavigationStrategy.BackwardsNavigation] for more information about the operations that are supported. Defaults to
- * [NavigationStrategy.BackwardsNavigation.IN_CONTEXT].
  * @param [destinationRetentionStrategy] The [NavigationStrategy.DestinationRetention] strategy for handling of
  * destination stacks within a [NavigationContext] when navigating between different [NavigationContext]s. Read the
  * documentation on [NavigationStrategy.DestinationRetention] for more information about the supported operations.
@@ -175,13 +223,11 @@ fun <Destination : NavigationDestination, Context : NavigationContext<Destinatio
 fun <Destination : NavigationDestination> Navigator(
     initialDestination: Destination,
     duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
-    backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
     destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
 ): Navigator<Destination, SingleNavigationContext<Destination>> =
     NavigatorImpl(
         initialContext = SingleNavigationContext(initialDestination = initialDestination),
         duplicateDestinationStrategy = duplicateDestinationStrategy,
-        backwardsNavigationStrategy = backwardsNavigationStrategy,
         destinationRetentionStrategy = destinationRetentionStrategy
     )
 
@@ -194,11 +240,10 @@ fun <Destination : NavigationDestination> Navigator(
 internal class NavigatorSnapshot<Destination : NavigationDestination, Context : NavigationContext<Destination>> internal constructor(
     @SerialName(value = "initial_context") val initialContext: Context,
     @SerialName(value = "duplication_destination_strategy") val duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination,
-    @SerialName(value = "backwards_navigation_strategy") val backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation,
     @SerialName(value = "destination_retention_strategy") val destinationRetentionStrategy: NavigationStrategy.DestinationRetention,
     @SerialName(value = "state_store") val stateStore: NavigationStateStore<Destination, Context>,
     @SerialName(value = "context_stacks") val contextStacks: NavigationContextStacks<Destination, Context>,
-    @SerialName(value = "forwarding_event_stack") val forwardingEventStack: Stack<NavigationEvent.Forward<Destination, Context>>
+    @SerialName(value = "context_event_stack") val contextEventStack: MutableStack<NavigationEvent.Forward.Context<Destination, Context>>
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -209,22 +254,20 @@ internal class NavigatorSnapshot<Destination : NavigationDestination, Context : 
 
         if (initialContext != other.initialContext) return false
         if (duplicateDestinationStrategy != other.duplicateDestinationStrategy) return false
-        if (backwardsNavigationStrategy != other.backwardsNavigationStrategy) return false
         if (destinationRetentionStrategy != other.destinationRetentionStrategy) return false
         if (stateStore != other.stateStore) return false
         if (contextStacks != other.contextStacks) return false
 
-        return forwardingEventStack == other.forwardingEventStack
+        return contextEventStack == other.contextEventStack
     }
 
     override fun hashCode(): Int {
         var result = initialContext.hashCode()
         result = 31 * result + duplicateDestinationStrategy.hashCode()
-        result = 31 * result + backwardsNavigationStrategy.hashCode()
         result = 31 * result + destinationRetentionStrategy.hashCode()
         result = 31 * result + stateStore.hashCode()
         result = 31 * result + contextStacks.hashCode()
-        result = 31 * result + forwardingEventStack.hashCode()
+        result = 31 * result + contextEventStack.hashCode()
         return result
     }
 
@@ -232,11 +275,10 @@ internal class NavigatorSnapshot<Destination : NavigationDestination, Context : 
         "NavigatorSnapshot(" +
                 "initialContext=$initialContext, " +
                 "duplicateDestinationStrategy=$duplicateDestinationStrategy, " +
-                "backwardsNavigationStrategy=$backwardsNavigationStrategy, " +
                 "destinationRetentionStrategy=$destinationRetentionStrategy, " +
                 "stateStore=$stateStore, " +
                 "contextStacks=$contextStacks, " +
-                "forwardingEventStack=$forwardingEventStack)"
+                "contextEventStack=$contextEventStack)"
 }
 
 /**
@@ -249,37 +291,34 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
     internal constructor(
         initialContext: Context,
         duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination = NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES,
-        backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation = NavigationStrategy.BackwardsNavigation.IN_CONTEXT,
         destinationRetentionStrategy: NavigationStrategy.DestinationRetention = NavigationStrategy.DestinationRetention.RETAIN
     ) {
         this.initialContext = initialContext
         this.duplicateDestinationStrategy = duplicateDestinationStrategy
-        this.backwardsNavigationStrategy = backwardsNavigationStrategy
         this.destinationRetentionStrategy = destinationRetentionStrategy
         this.mutableStore = mutableNavigationStateStoreOf(initialContext = initialContext)
         this.navigationStacks = NavigationContextStacks(initialContext = initialContext)
-        this.forwardNavigationEventStack = mutableStackOf()
+        this.contextEventStack = mutableStackOf(NavigationEvent.Forward.Context(context = initialContext))
     }
 
     internal constructor(snapshot: NavigatorSnapshot<Destination, Context>) {
         this.initialContext = snapshot.initialContext
         this.duplicateDestinationStrategy = snapshot.duplicateDestinationStrategy
-        this.backwardsNavigationStrategy = snapshot.backwardsNavigationStrategy
         this.destinationRetentionStrategy = snapshot.destinationRetentionStrategy
         this.mutableStore = snapshot.stateStore.toMutableNavigationStateStore()
         this.navigationStacks = snapshot.contextStacks
-        this.forwardNavigationEventStack = snapshot.forwardingEventStack.toMutableStack()
+        this.contextEventStack = snapshot.contextEventStack
     }
 
     private val initialContext: Context
     private val duplicateDestinationStrategy: NavigationStrategy.DuplicateDestination
-    private val backwardsNavigationStrategy: NavigationStrategy.BackwardsNavigation
     private val destinationRetentionStrategy: NavigationStrategy.DestinationRetention
 
     private val mutableStore: MutableNavigationStateStore<Destination, Context>
 
     private val navigationStacks: NavigationContextStacks<Destination, Context>
-    private val forwardNavigationEventStack: MutableStack<NavigationEvent.Forward<Destination, Context>>
+
+    private val contextEventStack: MutableStack<NavigationEvent.Forward.Context<Destination, Context>>
 
     override val store: NavigationStateStore<Destination, Context>
         get() = mutableStore
@@ -293,22 +332,23 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
             is NavigationEvent.Forward.Context -> handleContext(event = event)
         }
 
-    override fun canGoBack(): Boolean {
-        if (forwardNavigationEventStack.isEmpty()) return false
+    override fun canPopContext(): Boolean =
+        contextEventStack.size > 1 // There must always be at least one item (the initial item) in the stack.
 
-        val lastForwardEvent = forwardNavigationEventStack.peek()
-
-        return when {
-            lastForwardEvent is NavigationEvent.Forward.Context && this.backwardsNavigationStrategy != NavigationStrategy.BackwardsNavigation.ACROSS_CONTEXTS -> false
-            lastForwardEvent is NavigationEvent.Forward.Context -> true
-            else -> navigationStacks.get(context = store.context.current).size > 1 // There must always be at least one item (the initial item) in the stack.
-        }
-    }
+    override fun canPopDestination(): Boolean =
+        navigationStacks.get(context = store.context.current).size > 1 // There must always be at least one item (the initial item) in the stack.
 
     override fun reset() {
+        // Reset the store
         mutableStore.reset()
+
+        // Clear the stack values
         navigationStacks.clearAll()
-        forwardNavigationEventStack.clear()
+        contextEventStack.clear()
+
+        // Reset the stack values
+        // The NavigationStacks component already handles that internally.
+        contextEventStack.push(NavigationEvent.Forward.Context(context = initialContext))
     }
 
     override fun equals(other: Any?): Boolean {
@@ -317,11 +357,10 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
 
         if (initialContext != other.initialContext) return false
         if (duplicateDestinationStrategy != other.duplicateDestinationStrategy) return false
-        if (backwardsNavigationStrategy != other.backwardsNavigationStrategy) return false
         if (destinationRetentionStrategy != other.destinationRetentionStrategy) return false
         if (mutableStore != other.mutableStore) return false
         if (navigationStacks != other.navigationStacks) return false
-        if (forwardNavigationEventStack != other.forwardNavigationEventStack) return false
+        if (contextEventStack != other.contextEventStack) return false
 
         return store == other.store
     }
@@ -329,17 +368,21 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
     override fun hashCode(): Int {
         var result = initialContext.hashCode()
         result = 31 * result + duplicateDestinationStrategy.hashCode()
-        result = 31 * result + backwardsNavigationStrategy.hashCode()
         result = 31 * result + destinationRetentionStrategy.hashCode()
         result = 31 * result + mutableStore.hashCode()
         result = 31 * result + navigationStacks.hashCode()
-        result = 31 * result + forwardNavigationEventStack.hashCode()
+        result = 31 * result + contextEventStack.hashCode()
         result = 31 * result + store.hashCode()
         return result
     }
 
     override fun toString(): String =
-        "NavigatorImpl(initialContext=$initialContext, duplicateDestinationStrategy=$duplicateDestinationStrategy, backwardsNavigationStrategy=$backwardsNavigationStrategy, destinationRetentionStrategy=$destinationRetentionStrategy, store=$store)"
+        "NavigatorImpl(" +
+                "initialContext=$initialContext, " +
+                "duplicateDestinationStrategy=$duplicateDestinationStrategy, " +
+                "destinationRetentionStrategy=$destinationRetentionStrategy, " +
+                "contextEventStack=$contextEventStack, " +
+                "store=$store)"
 
     /**
      * Creates a [NavigatorSnapshot] from the current state of this [Navigator] instance. This can be used to later
@@ -349,19 +392,16 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
         NavigatorSnapshot(
             initialContext = this.initialContext,
             duplicateDestinationStrategy = this.duplicateDestinationStrategy,
-            backwardsNavigationStrategy = this.backwardsNavigationStrategy,
             destinationRetentionStrategy = this.destinationRetentionStrategy,
             stateStore = this.mutableStore,
             contextStacks = this.navigationStacks,
-            forwardingEventStack = this.forwardNavigationEventStack
+            contextEventStack = this.contextEventStack
         )
 
     /**
      * Performs the destination change operation for the provided [NavigationEvent.Forward.Destination] event.
      */
     private fun handleDestination(event: NavigationEvent.Forward.Destination<Destination, Context>): Boolean {
-        forwardNavigationEventStack.push(event)
-
         val context = store.context.current
 
         if (duplicateDestinationStrategy == NavigationStrategy.DuplicateDestination.ALLOW_DUPLICATES) {
@@ -382,10 +422,10 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
      * Performs the context change operation for the provided [NavigationEvent.Forward.Context] event.
      */
     private fun handleContext(event: NavigationEvent.Forward.Context<Destination, Context>): Boolean {
-        forwardNavigationEventStack.push(event)
+        contextEventStack.push(event)
 
         if (destinationRetentionStrategy == NavigationStrategy.DestinationRetention.CLEAR) {
-            navigationStacks.clear(context = store.context.current)
+            navigationStacks.clear(context = event.context)
         }
 
         mutableStore.update(
@@ -401,33 +441,27 @@ internal class NavigatorImpl<Destination : NavigationDestination, Context : Navi
      * Performs the back operation for the provided [NavigationEvent.Backward] event.
      */
     private fun handleBack(event: NavigationEvent.Backward<Destination, Context>): Boolean {
-        if (forwardNavigationEventStack.isEmpty()) return false
+        when (event) {
+            is NavigationEvent.Backward.Context -> {
+                if (!canPopContext()) return false
 
-        when (forwardNavigationEventStack.peek()) {
-            is NavigationEvent.Forward.Context -> {
-                // If we can't navigate back across contexts, return false
-                if (this.backwardsNavigationStrategy != NavigationStrategy.BackwardsNavigation.ACROSS_CONTEXTS) {
-                    return false
-                }
-
-                forwardNavigationEventStack.pop()
+                contextEventStack.pop()
 
                 // Get the current context after we popped the last context change from the top of the stack.
-                val newCurrentContextEvent =
-                    (forwardNavigationEventStack.firstOrNull { it is NavigationEvent.Forward.Context } as? NavigationEvent.Forward.Context)
+                val newCurrentContextEvent = contextEventStack.peek()
+                val newDestination = navigationStacks.get(context = newCurrentContextEvent.context).peek()
 
                 mutableStore.update(
                     event = event,
-                    context = newCurrentContextEvent?.context ?: initialContext,
-                    destination = newCurrentContextEvent?.context?.let { navigationStacks.peek(context = it) }
-                        ?: initialContext.initialDestination
+                    context = newCurrentContextEvent.context,
+                    destination = newDestination
                 )
 
                 return true
             }
 
-            is NavigationEvent.Forward.Destination -> {
-                forwardNavigationEventStack.pop()
+            is NavigationEvent.Backward.Destination -> {
+                if (!canPopDestination()) return false
 
                 val context = store.context.current
                 val destination = navigationStacks.popToPreviousDestinationForContext(context = context) ?: return false
@@ -455,17 +489,16 @@ internal class NavigatorSerializer<Destination : NavigationDestination, Context 
 
     private val stateStoreSerializer = NavigationStateStore.serializer(destinationSerializer, contextSerializer)
     private val contextStacksSerializer = NavigationContextStacks.serializer(destinationSerializer, contextSerializer)
-    private val eventStackSerializer =
-        StackSerializer(NavigationEvent.Forward.serializer(destinationSerializer, contextSerializer))
+    private val contextEventStackSerializer =
+        StackSerializer(NavigationEvent.Forward.Context.serializer(destinationSerializer, contextSerializer))
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Navigator") {
         element(elementName = "initial_context", descriptor = contextSerializer.descriptor)
         element<NavigationStrategy.DuplicateDestination>(elementName = "duplication_destination_strategy")
-        element<NavigationStrategy.BackwardsNavigation>(elementName = "backwards_navigation_strategy")
         element<NavigationStrategy.DestinationRetention>(elementName = "destination_retention_strategy")
         element(elementName = "state_store", descriptor = stateStoreSerializer.descriptor)
         element(elementName = "context_stacks", descriptor = contextStacksSerializer.descriptor)
-        element(elementName = "forwarding_event_stack", descriptor = eventStackSerializer.descriptor)
+        element(elementName = "context_event_stack", descriptor = contextStacksSerializer.descriptor)
     }
 
     override fun serialize(encoder: Encoder, value: Navigator<Destination, Context>) {
@@ -489,32 +522,26 @@ internal class NavigatorSerializer<Destination : NavigationDestination, Context 
         compositeEncoder.encodeSerializableElement(
             descriptor = descriptor,
             index = 2,
-            serializer = NavigationStrategy.BackwardsNavigation.serializer(),
-            value = snapshot.backwardsNavigationStrategy
-        )
-        compositeEncoder.encodeSerializableElement(
-            descriptor = descriptor,
-            index = 3,
             serializer = NavigationStrategy.DestinationRetention.serializer(),
             value = snapshot.destinationRetentionStrategy
         )
         compositeEncoder.encodeSerializableElement(
             descriptor = descriptor,
-            index = 4,
+            index = 3,
             serializer = stateStoreSerializer,
             value = snapshot.stateStore
         )
         compositeEncoder.encodeSerializableElement(
             descriptor = descriptor,
-            index = 5,
+            index = 4,
             serializer = contextStacksSerializer,
             value = snapshot.contextStacks
         )
         compositeEncoder.encodeSerializableElement(
             descriptor = descriptor,
-            index = 6,
-            serializer = eventStackSerializer,
-            value = snapshot.forwardingEventStack
+            index = 5,
+            serializer = contextEventStackSerializer,
+            value = snapshot.contextEventStack
         )
         compositeEncoder.endStructure(descriptor)
     }
@@ -531,41 +558,35 @@ internal class NavigatorSerializer<Destination : NavigationDestination, Context 
             index = 1,
             deserializer = NavigationStrategy.DuplicateDestination.serializer()
         )
-        val backwardsNavigationStrategy = compositeDecoder.decodeSerializableElement(
-            descriptor = descriptor,
-            index = 2,
-            deserializer = NavigationStrategy.BackwardsNavigation.serializer()
-        )
         val destinationRetentionStrategy = compositeDecoder.decodeSerializableElement(
             descriptor = descriptor,
-            index = 3,
+            index = 2,
             deserializer = NavigationStrategy.DestinationRetention.serializer()
         )
         val stateStore = compositeDecoder.decodeSerializableElement(
             descriptor = descriptor,
-            index = 4,
+            index = 3,
             deserializer = stateStoreSerializer
         )
         val contextStacks = compositeDecoder.decodeSerializableElement(
             descriptor = descriptor,
-            index = 5,
+            index = 4,
             deserializer = contextStacksSerializer
         )
-        val forwardingEventStack = compositeDecoder.decodeSerializableElement(
+        val contextEventStack = compositeDecoder.decodeSerializableElement(
             descriptor = descriptor,
-            index = 6,
-            deserializer = eventStackSerializer
+            index = 5,
+            deserializer = contextEventStackSerializer
         )
         compositeDecoder.endStructure(descriptor)
 
         val snapshot = NavigatorSnapshot(
             initialContext = initialContext,
             duplicateDestinationStrategy = duplicateDestinationStrategy,
-            backwardsNavigationStrategy = backwardsNavigationStrategy,
             destinationRetentionStrategy = destinationRetentionStrategy,
             stateStore = stateStore,
             contextStacks = contextStacks,
-            forwardingEventStack = forwardingEventStack
+            contextEventStack = contextEventStack.toMutableStack()
         )
 
         return NavigatorImpl(snapshot = snapshot)
@@ -580,7 +601,7 @@ internal class NavigatorSerializer<Destination : NavigationDestination, Context 
         if (stateStoreSerializer != other.stateStoreSerializer) return false
         if (contextStacksSerializer != other.contextStacksSerializer) return false
 
-        return eventStackSerializer == other.eventStackSerializer
+        return contextEventStackSerializer == other.contextEventStackSerializer
     }
 
     override fun hashCode(): Int {
@@ -588,7 +609,7 @@ internal class NavigatorSerializer<Destination : NavigationDestination, Context 
         result = 31 * result + descriptor.hashCode()
         result = 31 * result + stateStoreSerializer.hashCode()
         result = 31 * result + contextStacksSerializer.hashCode()
-        result = 31 * result + eventStackSerializer.hashCode()
+        result = 31 * result + contextEventStackSerializer.hashCode()
         return result
     }
 
@@ -598,5 +619,5 @@ internal class NavigatorSerializer<Destination : NavigationDestination, Context 
                 "descriptor=$descriptor, " +
                 "stateStoreSerializer=$stateStoreSerializer, " +
                 "contextStacksSerializer=$contextStacksSerializer, " +
-                "eventStackSerializer=$eventStackSerializer)"
+                "contextEventStackSerializer=$contextEventStackSerializer)"
 }

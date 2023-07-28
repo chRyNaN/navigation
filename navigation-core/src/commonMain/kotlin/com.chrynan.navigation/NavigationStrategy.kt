@@ -46,36 +46,6 @@ sealed interface NavigationStrategy {
     }
 
     /**
-     * Represents the type of supported back navigation. An [IN_CONTEXT] value indicates that navigation to the
-     * previous [NavigationDestination] in the current [NavigationContext] should occur. An [ACROSS_CONTEXTS] value
-     * indicates that navigation across [NavigationContext]s is allowed, meaning that navigation can either be to
-     * the previous [NavigationDestination] within the current [NavigationContext] or to the previous
-     * [NavigationContext] depending on whether the previous [NavigationEvent] was a
-     * [NavigationEvent.Forward.Destination] or [NavigationEvent.Forward.Context] event.
-     */
-    @Serializable
-    enum class BackwardsNavigation(val serialName: String) {
-
-        /**
-         * Indicates that navigation to the previous [NavigationDestination] in the current [NavigationContext]
-         * should occur
-         */
-        @SerialName(value = "in_context")
-        IN_CONTEXT(serialName = "in_context"),
-
-        /**
-         * Indicates that navigation across [NavigationContext]s is allowed, meaning that navigation can either be
-         * to the previous [NavigationDestination] within the current [NavigationContext] or to the previous
-         * [NavigationContext] depending on whether the previous [NavigationEvent] was a
-         * [NavigationEvent.Forward.Destination] or [NavigationEvent.Forward.Context] event
-         */
-        @SerialName(value = "across_context")
-        ACROSS_CONTEXTS(serialName = "across_context");
-
-        companion object
-    }
-
-    /**
      * Represents the approach for retaining the [NavigationDestination] data structures associated with a particular
      * [NavigationContext], when navigating to other [NavigationContext]s. A [RETAIN] value indicates that the
      * [NavigationDestination] data structure associated with a [NavigationContext] should be kept when navigation to a

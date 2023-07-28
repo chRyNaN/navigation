@@ -11,8 +11,8 @@ import androidx.compose.ui.unit.dp
 import com.chrynan.navigation.ExperimentalNavigationApi
 import com.chrynan.navigation.compose.NavigationContainer
 import com.chrynan.navigation.compose.rememberNavigator
-import com.chrynan.navigation.goBack
-import com.chrynan.navigation.goTo
+import com.chrynan.navigation.popDestination
+import com.chrynan.navigation.push
 import com.chrynan.navigation.sample.compose.example.MultipleContextSample
 import com.chrynan.navigation.sample.compose.example.SingleContextSample
 
@@ -29,18 +29,18 @@ fun App() {
             when (destination) {
                 AppDestination.MAIN_SCREEN -> MainScreen(
                     modifier = Modifier.matchParentSize(),
-                    onSingleContextSelected = { navigator.goTo(AppDestination.SINGLE_CONTEXT_EXAMPLE) },
-                    onMultipleContextSelected = { navigator.goTo(AppDestination.MULTIPLE_CONTEXT_EXAMPLE) }
+                    onSingleContextSelected = { navigator.push(AppDestination.SINGLE_CONTEXT_EXAMPLE) },
+                    onMultipleContextSelected = { navigator.push(AppDestination.MULTIPLE_CONTEXT_EXAMPLE) }
                 )
 
                 AppDestination.SINGLE_CONTEXT_EXAMPLE -> SingleContextSample(
                     modifier = Modifier.matchParentSize(),
-                    onClose = { navigator.goBack() }
+                    onClose = { navigator.popDestination() }
                 )
 
                 AppDestination.MULTIPLE_CONTEXT_EXAMPLE -> MultipleContextSample(
                     modifier = Modifier.matchParentSize(),
-                    onClose = { navigator.goBack() }
+                    onClose = { navigator.popDestination() }
                 )
             }
         }
