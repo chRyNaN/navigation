@@ -1,0 +1,20 @@
+public final class com/chrynan/navigation/compose/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/chrynan/navigation/compose/NavigationContainerKt {
+	public static final fun NavigationContainer (Lcom/chrynan/navigation/Navigator;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/chrynan/navigation/compose/NavigationStateComposeUtilsKt {
+	public static final fun collectAsState (Lcom/chrynan/navigation/NavigationState;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+}
+
+public final class com/chrynan/navigation/compose/RememberComposeNavigatorUtilsKt {
+	public static final fun rememberNavigator (Lcom/chrynan/navigation/NavigationContext;Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;Landroidx/compose/runtime/Composer;II)Lcom/chrynan/navigation/Navigator;
+	public static final fun rememberNavigator (Ljava/lang/Object;Lcom/chrynan/navigation/NavigationStrategy$DuplicateDestination;Lcom/chrynan/navigation/NavigationStrategy$DestinationRetention;Landroidx/compose/runtime/Composer;II)Lcom/chrynan/navigation/Navigator;
+}
+

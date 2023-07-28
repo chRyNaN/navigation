@@ -11,6 +11,7 @@ plugins {
     id("com.android.application") version "7.3.1" apply false
     id("org.jetbrains.dokka") version "1.8.10"
     id("org.jetbrains.compose") version "1.4.1" apply false
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.13.2"
 }
 
 allprojects {
